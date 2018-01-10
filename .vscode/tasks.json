@@ -23,6 +23,18 @@
             "type": "shell",
             "command": ".\\gradlew deploy",
             "group": "build"
+        },
+        {
+            "label": "Riolog",
+            "type": "shell",
+            "command": ".\\gradlew riolog",
+            "group": "build"
+        },
+        {
+            "label": "Shuffleboard",
+            "type": "shell",
+            "command": ".\\gradlew shuffleboard",
+            "group": "build"
         }
     ]
 }
