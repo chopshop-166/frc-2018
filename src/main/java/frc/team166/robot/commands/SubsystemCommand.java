@@ -15,14 +15,14 @@ public abstract class SubsystemCommand extends Command {
         setSubsystem(subsystem.getName());
         requires(subsystem);
     }
+
     /**
      * Create a command that depends on a system
      * @param name The name of the command
      * @param subsystem The subsystem to depend on
      */
     public SubsystemCommand(String name, Subsystem subsystem) {
-        super(name);
-        setSubsystem(subsystem.getName());
-        requires(subsystem);
+        this(subsystem);
+        setName(name);
     }
 }

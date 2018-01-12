@@ -15,6 +15,7 @@ public class ActionCommand extends InstantCommand {
     public ActionCommand(Runnable action) {
         m_action = action;
     }
+
     /**
      * Create a command that depends on the given subsystem and calls
      * the provided action when run
@@ -25,6 +26,7 @@ public class ActionCommand extends InstantCommand {
         useSubsystem(subsystem);
         m_action = action;
     }
+
     /**
      * Create a named command that calls the given action when run
      * @param name The name of the command
@@ -34,6 +36,7 @@ public class ActionCommand extends InstantCommand {
         super(name);
         m_action = action;
     }
+
     /**
      * Create a named command that depends on the given subsystem and calls
      * the provided action when run
@@ -53,8 +56,9 @@ public class ActionCommand extends InstantCommand {
      */
     @Override
     protected void initialize() {
-        if(m_action != null)
+        if (m_action != null) {
             m_action.run();
+        }
     }
 
     /**
