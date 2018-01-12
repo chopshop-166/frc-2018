@@ -15,6 +15,7 @@ public class CommandChain extends CommandGroup {
      */
     public CommandChain() {
     }
+
     /**
      * Create a CommandChain with the given name
      * @param name The name of the command chain
@@ -22,6 +23,7 @@ public class CommandChain extends CommandGroup {
     public CommandChain(String name) {
         super(name);
     }
+
     /**
      * Create a CommandChain preloaded with commands to be run in parallel
      * @param cmds The first commands to run
@@ -29,6 +31,7 @@ public class CommandChain extends CommandGroup {
     public CommandChain(Command... cmds) {
         addCommands(cmds);
     }
+
     /**
      * Create a CommandChain with a name and commands to run
      * @param name The name of the command chain
@@ -42,14 +45,6 @@ public class CommandChain extends CommandGroup {
 
     //#region Then-commands
     /**
-     * Do a command after the ones already provided
-     * @param cmd The command to run next
-     */
-    public CommandChain then(Command cmd) {
-        addSequential(cmd);
-        return this;
-    }
-    /**
      * Do a set of commands after the ones already provided
      * @param cmds The commands to run next
      */
@@ -57,15 +52,7 @@ public class CommandChain extends CommandGroup {
         addCommands(cmds);
         return this;
     }
-    /**
-     * Do a command after the ones already provided, with a timeout
-     * @param timeout The maximum amount of time before moving on to the next commands
-     * @param cmd The command to run next
-     */
-    public CommandChain then(double timeout, Command cmd) {
-        addSequential(cmd, timeout);
-        return this;
-    }
+
     /**
      * Do a set of commands after the ones already provided, with a timeout
      * @param timeout The maximum amount of time before moving on to the next commands
@@ -82,20 +69,29 @@ public class CommandChain extends CommandGroup {
      * @param cmds The commands to run next
      */
     private void addCommands(Command... cmds) {
-        for(Command c : cmds) {
-            addParallel(c);
+        if (cmds.length == 1) {
+            addSequential(cmds[0]);
+        } else {
+            for (Command c : cmds) {
+                addParallel(c);
+            }
+            addSequential(new WaitForChildren());
         }
-        addSequential(new WaitForChildren());
     }
+
     /**
      * Add all provided commands as a group with a timeout
      * @param timeout The maximum amount of time before moving on to the next commands
      * @param cmds The commands to run next
      */
     private void addCommands(double timeout, Command... cmds) {
-        for(Command c : cmds) {
-            addParallel(c, timeout);
+        if (cmds.length == 1) {
+            addSequential(cmds[0], timeout);
+        } else {
+            for (Command c : cmds) {
+                addParallel(c, timeout);
+            }
+            addSequential(new WaitForChildren());
         }
-        addSequential(new WaitForChildren());
     }
 }
