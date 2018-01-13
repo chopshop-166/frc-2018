@@ -17,10 +17,10 @@ deploy {
         }
     }
     artifacts {
-        artifact("frcJava", jaci.openrio.gradle.frc.FRCJavaArtifact) {
+        artifact("frcJavaDebug", jaci.openrio.gradle.frc.FRCJavaArtifact) {
             targets << "roborio"
-            debug = true
-            debugPort = 8348
+            // debug = true
+            // debugPort = 8348
         }
     }
 }
