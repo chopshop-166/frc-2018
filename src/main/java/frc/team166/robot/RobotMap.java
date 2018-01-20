@@ -15,6 +15,7 @@ package frc.team166.robot;
  */
 public class RobotMap {
 	public static class CAN {
+		//changes motor ports into integers
 		public final static int frontright = 1;
 		public final static int frontleft = 3;
 		public final static int backright = 4;
@@ -22,11 +23,13 @@ public class RobotMap {
 	}
 
 	public static class Controller {
+		//changes controller ports into integers
 		public final static int leftcontrol = 0;
 		public final static int rightcontrol = 1;
 	}
 
 	public static class AnalogInputs {
+		//changes input ports into integers
 		public final static int tempestgyro = 1;
 	}
 }

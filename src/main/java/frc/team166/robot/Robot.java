@@ -25,6 +25,7 @@ import frc.team166.robot.subsystems.ExampleSubsystem;
  */
 public class Robot extends TimedRobot {
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
+	//this just adds a drive subsystem
 	public static final Drive drive = new Drive();
 	public static OI m_oi;
 

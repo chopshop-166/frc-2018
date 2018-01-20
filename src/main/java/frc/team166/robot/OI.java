@@ -9,16 +9,13 @@ package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-/**
- * This class is the glue that binds the controls on the physical operator
- * interface to the commands and command groups that allow control of the robot.
- */
 public class OI {
-
+	//creates joysticks (JoystickDrive is left, JoystickDrive2 is right)
 	public Joystick JoystickDrive;
 	public Joystick JoystickDrive2;
 
 	public OI() {
+		//defines the joysticks as joysticks and assigns left and right
 		JoystickDrive = new Joystick(RobotMap.Controller.leftcontrol);
 		JoystickDrive2 = new Joystick(RobotMap.Controller.rightcontrol);
 	}

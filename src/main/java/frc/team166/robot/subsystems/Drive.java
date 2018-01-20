@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import frc.team166.robot.PIDOutputVariable;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.commands.SubsystemCommand;
@@ -24,36 +23,54 @@ import frc.team166.robot.commands.SubsystemCommand;
  * An example subsystem.  You can replace me with your own Subsystem.
  */
 public class Drive extends Subsystem {
+
+	//defines the gyro
 	AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
+	//defines the left motors as motors and combines the left motors into one motor
 	WPI_TalonSRX m_rearleft = new WPI_TalonSRX(RobotMap.CAN.backleft);
 	WPI_TalonSRX m_frontleft = new WPI_TalonSRX(RobotMap.CAN.frontleft);
 	SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontleft, m_rearleft);
-
+	//defines the right motors as motors and combines the left motors into one motor
 	WPI_TalonSRX m_rearright = new WPI_TalonSRX(RobotMap.CAN.backright);
 	WPI_TalonSRX m_frontright = new WPI_TalonSRX(RobotMap.CAN.frontright);
 	SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
 
+	/**defines the left and right motors defined above into a differential drive
+	 * that can be used for arcade and tank drive, amung other things
+	 */
 	DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
-	PIDOutputVariable gyroOutput = new PIDOutputVariable();
+	//defines values that will be used in the PIDController (In order of where they will fall in the Controller)
 	final static double kP = 1.0 / 90.0;
 	final static double kI = 0.0003;
-	final static double kD = 0;
+	final static double kD = 1;
 	final static double kF = 0;
-	PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, gyroOutput);
 
+	//PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
+	PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
+		//this assigns the output to the angle (double) defined later in the code)
+		angle = value;
+	});
+
+	//defines a new double that is going to be used in the line that defines the drive type
 	double angle;
 
+	//this makes children that control the tempestGyro, drive motors, and PIDController loop. 
 	public Drive() {
 		addChild(tempestGyro);
 		addChild(m_drive);
 		addChild(drivePidController);
+		//this enables the PIDController loop
 		drivePidController.enable();
 	}
 
+	//the default command for this code is supposed to rotate the robot so that it's gyro value is 0
 	public void initDefaultCommand() {
 		setDefaultCommand(new SubsystemCommand(this) {
 
+			/**if there were something else that we wanted the robot, we would use this code to 
+			*figure out when to stop the default command.
+			*/
 			@Override
 			protected boolean isFinished() {
 				return false;
@@ -61,10 +78,10 @@ public class Drive extends Subsystem {
 
 			@Override
 			protected void execute() {
-				angle = tempestGyro.getAngle();
+				//this sets the desired gyro to zero
 				drivePidController.setSetpoint(0);
-				m_drive.arcadeDrive(-Robot.m_oi.JoystickDrive.getY(),
-						Robot.m_oi.JoystickDrive.getX() + gyroOutput.get());
+				//sets the drive control (arcade, 2 stick)
+				m_drive.arcadeDrive(-Robot.m_oi.JoystickDrive.getY(), -Robot.m_oi.JoystickDrive2.getX() + angle);
 			}
 		});
 	}
