@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.team166.robot.Robot;
@@ -42,7 +43,7 @@ public class Drive extends Subsystem {
 	DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
 	//defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-	final static double kP = 1.0 / 90.0;
+	final static double kP = 1.0 / 180.0;
 	final static double kI = 0.0003;
 	final static double kD = 1;
 	final static double kF = 0;
@@ -78,11 +79,57 @@ public class Drive extends Subsystem {
 
 			@Override
 			protected void execute() {
-				//this sets the desired gyro to zero
-				drivePidController.setSetpoint(0);
-				m_drive.arcadeDrive(-Robot.m_oi.Xboxtempest.getY(Hand.kLeft),
-						Robot.m_oi.Xboxtempest.getX(Hand.kRight) + gyroOutput.get());
+				m_drive.arcadeDrive(
+						Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kRight)
+								- Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kLeft),
+						Robot.m_oi.Xboxtempest.getX(Hand.kLeft));
 			}
 		});
+	}
+
+	public Command Ebrake() {
+		return new SubsystemCommand(this) {
+			@Override
+			protected void initialize() {
+				m_drive.stopMotor();
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+
+			}
+		};
+	}
+
+	public Command DriveStraight() {
+		return new SubsystemCommand(this) {
+			@Override
+			protected void initialize() {
+				drivePidController.setSetpoint(tempestGyro.getAngle());
+				drivePidController.enable();
+				drivePidController.reset();
+			}
+
+			@Override
+			protected void execute() {
+				m_drive.arcadeDrive(Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kRight)
+						- Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kLeft), angle);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				drivePidController.disable();
+			}
+		};
 	}
 }
