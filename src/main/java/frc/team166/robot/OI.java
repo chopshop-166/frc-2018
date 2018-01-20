@@ -8,16 +8,19 @@
 package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class OI {
 	//creates joysticks (JoystickDrive is left, JoystickDrive2 is right)
 	public Joystick JoystickDrive;
 	public Joystick JoystickDrive2;
+	public XboxController Xboxtempest;
 
 	public OI() {
 		//defines the joysticks as joysticks and assigns left and right
 		JoystickDrive = new Joystick(RobotMap.Controller.leftcontrol);
 		JoystickDrive2 = new Joystick(RobotMap.Controller.rightcontrol);
+		Xboxtempest = new XboxController(RobotMap.Controller.Xboxcontrol);
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a

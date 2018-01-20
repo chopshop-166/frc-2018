@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.team166.robot.Robot;
@@ -60,8 +61,7 @@ public class Drive extends Subsystem {
 		addChild(tempestGyro);
 		addChild(m_drive);
 		addChild(drivePidController);
-		//this enables the PIDController loop
-		drivePidController.enable();
+		drivePidController.disable();
 	}
 
 	//the default command for this code is supposed to rotate the robot so that it's gyro value is 0
@@ -80,8 +80,8 @@ public class Drive extends Subsystem {
 			protected void execute() {
 				//this sets the desired gyro to zero
 				drivePidController.setSetpoint(0);
-				//sets the drive control (arcade, 2 stick)
-				m_drive.arcadeDrive(-Robot.m_oi.JoystickDrive.getY(), -Robot.m_oi.JoystickDrive2.getX() + angle);
+				m_drive.arcadeDrive(-Robot.m_oi.Xboxtempest.getY(Hand.kLeft),
+						Robot.m_oi.Xboxtempest.getX(Hand.kRight) + gyroOutput.get());
 			}
 		});
 	}

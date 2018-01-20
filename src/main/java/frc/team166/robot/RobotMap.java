@@ -26,6 +26,7 @@ public class RobotMap {
 		//changes controller ports into integers
 		public final static int leftcontrol = 0;
 		public final static int rightcontrol = 1;
+		public final static int Xboxcontrol = 2;
 	}
 
 	public static class AnalogInputs {
