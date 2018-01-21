@@ -1,6 +1,18 @@
 # Style Guide
 Using a consistent style improves readability and makes it easier to maintain a code base. We will follow the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). The important parts of the guide are included below for ease of use. 
 
+## Order
+There are a number of different elements found in each file. By grouping these elements together in accordance with their functionality we can ensure that another programmer can quickly gain an understanding of our code. To this end, each source file will be ordered as follows:
+1. Imports
+1. Class declaration
+1. Properties (Public data with get and set functions)
+1. Fields (Private data)
+1. Constructors
+1. Methods (Any helper functions)
+1. Commands (Subsystem commands)
+
+Additionally, all variables and methods should be defined before they are first accessed or called. 
+
 ## Capitalization
 Camel Case is a way of writing names where the first letter of each word is capitalized. There are two forms of Camel Case, Upper and Lower.
 
