@@ -12,9 +12,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team166.robot.commands.ExampleCommand;
 import frc.team166.robot.subsystems.Drive;
-import frc.team166.robot.subsystems.ExampleSubsystem;
+import frc.team166.robot.subsystems.Flipper;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,12 +23,12 @@ import frc.team166.robot.subsystems.ExampleSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
     //this just adds a drive subsystem
     public static final Drive drive = new Drive();
+    public static final Flipper flipper = new Flipper();
     public static OI m_oi;
 
-    Command m_autonomousCommand;
+    Command m_driveCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
@@ -39,9 +38,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_oi = new OI();
-        m_chooser.addDefault("Default Auto", new ExampleCommand());
+        m_chooser.addDefault("xBox Arcade", drive.xBoxArcade());
+        m_chooser.addDefault("xBox Joystick Tank", drive.xBoxDriveTank());
+        m_chooser.addDefault("xBox Joystick Arcade", drive.xBoxDriveArcadeJoysticks());
+        m_chooser.addDefault("Joystick Tank", drive.joystickTank());
+        m_chooser.addDefault("Joystick Arcade One Stick", drive.joystickArcadeOneStick());
+        m_chooser.addDefault("Joystick Arcade Two Stick", drive.joystickArcadeTwoStick());
         // chooser.addObject("My Auto", new MyAutoCommand());
-        SmartDashboard.putData("Auto mode", m_chooser);
+        SmartDashboard.putData("Drive Mode", m_chooser);
 
     }
 
@@ -73,18 +77,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_chooser.getSelected();
-
-        /*
-         * String autoSelected = SmartDashboard.getString("Auto Selector",
-         * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-         * = new MyAutoCommand(); break; case "Default Auto": default:
-         * autonomousCommand = new ExampleCommand(); break; }
-         */
-
-        // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.start();
+        if (m_driveCommand != null) {
+            m_driveCommand.cancel();
         }
     }
 
@@ -98,12 +92,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        m_driveCommand = m_chooser.getSelected();
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
+        if (m_driveCommand != null) {
+            m_driveCommand.start();
         }
     }
 

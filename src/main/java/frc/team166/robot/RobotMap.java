@@ -29,14 +29,14 @@ public class RobotMap {
         public final static int Xboxcontrol = 2;
     }
 
-    public static class AnalogInputs {
-        //changes input ports into integers
-        public final static int tempestgyro = 1;
-    }
-
     public static class Buttons {
         //changes button ports into integers
         public final static int XboxAbutton = 1;
         public final static int XboxXbutton = 3;
+    }
+
+    public static class Solenoids {
+        public final static int FLIPPER_SOLENOID_A = 4;
+        public final static int FLIPPER_SOLENOID_B = 5;
     }
 }

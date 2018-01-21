@@ -8,8 +8,6 @@
 package frc.team166.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -25,8 +23,6 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
  */
 public class Drive extends Subsystem {
 
-    //defines the gyro
-    AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
     //defines the left motors as motors and combines the left motors into one motor
     WPI_TalonSRX m_rearleft = new WPI_TalonSRX(RobotMap.CAN.backleft);
     WPI_TalonSRX m_frontleft = new WPI_TalonSRX(RobotMap.CAN.frontleft);
@@ -41,49 +37,14 @@ public class Drive extends Subsystem {
      */
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
-    //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-    final static double kP = 1.0 / 180.0;
-    final static double kI = 0.0003;
-    final static double kD = 1;
-    final static double kF = 0;
-
-    //PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
-    PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
-        //this assigns the output to the angle (double) defined later in the code)
-        angle = value;
-    });
-
-    //defines a new double that is going to be used in the line that defines the drive type
-    double angle;
-
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
-        addChild(tempestGyro);
         addChild(m_drive);
-        addChild(drivePidController);
-        drivePidController.disable();
     }
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(new SubsystemCommand(this) {
-
-            /**if there were something else that we wanted the robot, we would use this code to 
-            *figure out when to stop the default command.
-            */
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void execute() {
-                m_drive.arcadeDrive(
-                        Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                                - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft),
-                        Robot.m_oi.xBoxTempest.getX(Hand.kLeft));
-            }
-        });
+        setDefaultCommand(xBoxArcade());
     }
 
     public Command Ebrake() {
@@ -105,19 +66,54 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command DriveStraight() {
+    public Command xBoxArcade() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                drivePidController.setSetpoint(tempestGyro.getAngle());
-                drivePidController.enable();
-                drivePidController.reset();
             }
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angle);
+                m_drive.arcadeDrive(
+                        Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
+                                - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft),
+                        Robot.m_oi.xBoxTempest.getX(Hand.kLeft));
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        };
+    }
+
+    public Command xBoxDriveTank() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.tankDrive(-Robot.m_oi.xBoxTempest.getY(Hand.kLeft), -Robot.m_oi.xBoxTempest.getY(Hand.kRight));
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        };
+    }
+
+    public Command xBoxDriveArcadeJoysticks() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(-Robot.m_oi.xBoxTempest.getY(Hand.kLeft), Robot.m_oi.xBoxTempest.getX(Hand.kRight));
             }
 
             @Override
@@ -127,7 +123,72 @@ public class Drive extends Subsystem {
 
             @Override
             protected void end() {
-                drivePidController.disable();
+            }
+        };
+    }
+
+    public Command joystickTank() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.tankDrive(-Robot.m_oi.leftDriveStick.getY(), -Robot.m_oi.rightDriveStick.getY());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
+            }
+        };
+    }
+
+    public Command joystickArcadeOneStick() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(-Robot.m_oi.leftDriveStick.getY(), Robot.m_oi.leftDriveStick.getX());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
+            }
+        };
+    }
+
+    public Command joystickArcadeTwoStick() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(-Robot.m_oi.leftDriveStick.getY(), Robot.m_oi.rightDriveStick.getX());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
             }
         };
     }
