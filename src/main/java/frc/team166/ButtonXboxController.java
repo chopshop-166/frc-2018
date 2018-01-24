@@ -2,7 +2,6 @@ package frc.team166;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.buttons.Button;
 import java.util.Vector;
 
 /**
@@ -11,7 +10,7 @@ import java.util.Vector;
  * This class serves as a wrapper for a Joystick and all it's buttons.
  */
 public class ButtonXboxController extends XboxController {
-    Vector<Button> buttons = new Vector<Button>();
+    Vector<JoystickButton> buttons = new Vector<JoystickButton>();
 
     /**
      * Construct an instance of an XboxController along with each button the xBox controller has.
@@ -34,7 +33,19 @@ public class ButtonXboxController extends XboxController {
         * @param buttonId The index of the button to accesss
         * @return The button object for the given ID
         */
-    public Button getButton(int buttonId) {
+    public JoystickButton getButton(int buttonId) {
         return buttons.get(buttonId);
+    }
+
+    public enum xBoxButton {
+        kBumperLeft(5), kBumperRight(6), kStickLeft(9), kStickRight(10), kA(1), kB(2), kX(3), kY(4), kBack(7), kStart(
+                8);
+
+        @SuppressWarnings("MemberName")
+        private int value;
+
+        xBoxButton(int value) {
+            this.value = value;
+        }
     }
 }

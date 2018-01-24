@@ -13,11 +13,13 @@ import frc.team166.ButtonXboxController;
 public class OI {
     // Creates joysticks
     public ButtonJoystick leftDriveStick;
+    public ButtonJoystick rightDriveStick;
     public ButtonXboxController xBoxTempest;
 
     public OI() {
         //defines the joysticks as joysticks and assigns left and right
         leftDriveStick = new ButtonJoystick(RobotMap.Controller.leftcontrol);
+        rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
         xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
         xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.DriveStraight());
