@@ -12,6 +12,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Sendable;
+
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
@@ -80,9 +82,9 @@ public class Drive extends Subsystem {
             @Override
             protected void execute() {
                 m_drive.arcadeDrive(
-                        Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kRight)
-                                - Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kLeft),
-                        Robot.m_oi.Xboxtempest.getX(Hand.kLeft));
+                        Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
+                                - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft),
+                        Robot.m_oi.xBoxTempest.getX(Hand.kLeft));
             }
         });
     }
@@ -117,8 +119,8 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.Xboxtempest.getTriggerAxis(Hand.kLeft), angle);
+                m_drive.arcadeDrive(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
+                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angle);
             }
 
             @Override

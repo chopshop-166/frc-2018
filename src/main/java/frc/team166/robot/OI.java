@@ -7,27 +7,20 @@
 
 package frc.team166.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.team166.ButtonJoystick;
+import frc.team166.ButtonXboxController;
 
 public class OI {
-    //creates joysticks (JoystickDrive is left, JoystickDrive2 is right)
-    public Joystick JoystickDrive;
-    public Joystick JoystickDrive2;
-    public XboxController Xboxtempest;
-    public JoystickButton XboxAbutton;
-    public JoystickButton XboxXButton;
+    // Creates joysticks
+    public ButtonJoystick leftDriveStick;
+    public ButtonXboxController xBoxTempest;
 
     public OI() {
         //defines the joysticks as joysticks and assigns left and right
-        JoystickDrive = new Joystick(RobotMap.Controller.leftcontrol);
-        JoystickDrive2 = new Joystick(RobotMap.Controller.rightcontrol);
-        Xboxtempest = new XboxController(RobotMap.Controller.Xboxcontrol);
-        XboxAbutton = new JoystickButton(Xboxtempest, RobotMap.Buttons.XboxAbutton);
-        XboxAbutton.whileHeld(Robot.drive.Ebrake());
-        XboxXButton = new JoystickButton(Xboxtempest, RobotMap.Buttons.XboxXbutton);
-        XboxXButton.whileHeld(Robot.drive.DriveStraight());
+        leftDriveStick = new ButtonJoystick(RobotMap.Controller.leftcontrol);
+        xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
+        xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
+        xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.DriveStraight());
     }
     //// CREATING BUTTONS
     // One type of button is a joystick button which is any button on a
@@ -53,7 +46,7 @@ public class OI {
     // the button is released.
     // button.whileHeld(new ExampleCommand());
 
-    // Start the command when the button is released and let it run the command
-    // until it is finished as determined by it's isFinished method.
-    // button.whenReleased(new ExampleCommand());
+    // Start the command when the button is released and let it run the command 
+    // until it is finished as determined by it's isFinished method. 
+    // button.whenReleased(new ExampleCommand()); 
 }
