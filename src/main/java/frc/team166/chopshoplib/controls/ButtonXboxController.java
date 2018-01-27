@@ -1,4 +1,4 @@
-package frc.team166;
+package frc.team166.chopshoplib.controls;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -34,7 +34,12 @@ public class ButtonXboxController extends XboxController {
         * @return The button object for the given ID
         */
     public JoystickButton getButton(int buttonId) {
-        return buttons.get(buttonId);
+        try {
+            return buttons.get(buttonId);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            buttons.add(buttonId, new JoystickButton(this, buttonId));
+            return buttons.get(buttonId);
+        }
     }
 
     public enum xBoxButton {

@@ -1,4 +1,4 @@
-package frc.team166;
+package frc.team166.chopshoplib.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -35,6 +35,11 @@ public class ButtonJoystick extends Joystick {
         * @return The button object for the given ID
         */
     public Button getButton(int buttonId) {
-        return buttons.get(buttonId);
+        try {
+            return buttons.get(buttonId);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            buttons.add(buttonId, new JoystickButton(this, buttonId));
+            return buttons.get(buttonId);
+        }
     }
 }

@@ -11,9 +11,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Sendable;
-
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
@@ -21,7 +18,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
-import frc.team166.robot.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.SubsystemCommand;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.

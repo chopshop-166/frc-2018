@@ -7,8 +7,8 @@
 
 package frc.team166.robot;
 
-import frc.team166.ButtonJoystick;
-import frc.team166.ButtonXboxController;
+import frc.team166.chopshoplib.controls.ButtonJoystick;
+import frc.team166.chopshoplib.controls.ButtonXboxController;;
 
 public class OI {
     // Creates joysticks

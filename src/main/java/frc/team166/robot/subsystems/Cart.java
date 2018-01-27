@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team166.robot.commands.SubsystemCommand;
+import frc.team166.chopshoplib.commands.SubsystemCommand;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
