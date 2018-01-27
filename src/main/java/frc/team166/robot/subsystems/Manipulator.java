@@ -11,12 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
-
-import frc.team166.robot.Robot;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.commands.SubsystemCommand;
 
@@ -29,6 +26,7 @@ public class Manipulator extends Subsystem {
 
 	WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.rollerLeft);
 	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.rollerRight);
+	SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
 	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
 
@@ -37,12 +35,12 @@ public class Manipulator extends Subsystem {
 
 	double rollerRadius = 1.4375; //inches
 	double distPerPulseIntake = (((rollerRadius * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
-	//	double leftRollerRate;
-	//	double rightRollerRate;
+	double motorSpeed;
 
 	public Manipulator() {
-		addChild(leftRoller);
-		addChild(rightRoller);
+		//		addChild(leftRoller);
+		//		addChild(rightRoller);
+		addChild(rollers);
 		addChild(irSensor);
 		addChild(leftIntakeEncoder);
 		addChild(rightIntakeEncoder);
@@ -54,18 +52,45 @@ public class Manipulator extends Subsystem {
 		rightIntakeEncoder.setDistancePerPulse(distPerPulseIntake);
 	}
 
+	public void resetEncoders() {
+		leftIntakeEncoder.reset();
+		rightIntakeEncoder.reset();
+	}
+
+	public double avgEncoderRate() {
+		double leftRate = leftIntakeEncoder.getRate();
+		double rightRate = rightIntakeEncoder.getRate();
+		return (leftRate + rightRate) / 2.0;
+	}
+
 	public void initDefaultCommand() {
 		setDefaultCommand(new SubsystemCommand(this) {
 
 			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+		});
+	}
+
+	public Command CubePickup() {
+		return new SubsystemCommand(this) {
+
+			@Override
 			protected void initialize() {
-				leftIntakeEncoder.reset();
-				rightIntakeEncoder.reset();
+				resetEncoders();
+				rollers.set(0);
+				motorSpeed = 0;
 			}
 
 			@Override
 			protected void execute() {
-				//Figure out how to make the motors go 542.865 rpm
+				//Figure out how to make the motors go 542.865 rpm or 6.81 ft/s
+				if (avgEncoderRate() < 6.81)
+					motorSpeed += 0.02;
+
+				rollers.set(motorSpeed);
 			}
 
 			@Override
@@ -75,34 +100,7 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			protected void end() {
-				leftRoller.stopMotor();
-				rightRoller.stopMotor();
-			}
-		});
-	}
-
-	public Command CubePickup() {
-		return new SubsystemCommand(this) {
-
-			@Override
-			protected void initialize() {
-
-			}
-
-			@Override
-			protected void execute() {
-				leftRoller.set(0.8);
-				rightRoller.set(-0.8); //inverted because it's on the opposite side
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
-
+				rollers.stopMotor();
 			}
 		};
 	}

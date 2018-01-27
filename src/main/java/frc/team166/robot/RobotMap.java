@@ -24,12 +24,12 @@ public class RobotMap {
 		public final static int rollerRight = 6;
 	}
 
-    public static class Controller {
-        //changes controller ports into integers
-        public final static int leftcontrol = 0;
-        public final static int rightcontrol = 1;
-        public final static int Xboxcontrol = 2;
-    }
+	public static class Controller {
+		//changes controller ports into integers
+		public final static int leftcontrol = 0;
+		public final static int rightcontrol = 1;
+		public final static int Xboxcontrol = 2;
+	}
 
 	public static class AnalogInputs {
 		//changes input ports into integers
@@ -41,6 +41,8 @@ public class RobotMap {
 		//changes button ports into integers
 		public final static int XboxAbutton = 1;
 		public final static int XboxXbutton = 3;
+	}
+
 	public static class Encoders {
 		public static final int leftRollerA = 4;
 		public static final int rightRollerA = 5;
