@@ -20,7 +20,9 @@ public class ButtonJoystick extends Joystick {
      */
     public ButtonJoystick(int port) {
         super(port);
-        for (int i = 0; i < this.getButtonCount(); i++) {
+        // Just pad the vector to match the joysticks
+        buttons.add(0, null);
+        for (int i = 1; i <= this.getButtonCount(); i++) {
             buttons.add(i, new JoystickButton(this, i));
         }
     }
@@ -35,13 +37,11 @@ public class ButtonJoystick extends Joystick {
         * @return The button object for the given ID
         */
     public Button getButton(int buttonId) {
-        try {
-            return buttons.get(buttonId);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            for (int i = buttons.size(); i < buttonId; i++) {
-                buttons.add(buttonId, new JoystickButton(this, i));
+        if (buttons.size() < buttonId) {
+            for (int i = buttons.size(); i <= buttonId; i++) {
+                buttons.add(i, new JoystickButton(this, i));
             }
-            return buttons.get(buttonId);
         }
+        return buttons.get(buttonId);
     }
 }
