@@ -49,4 +49,8 @@ public class RobotMap {
 		public static final int leftRollerB = 6;
 		public static final int rightRollerB = 7;
 	}
+
+	public static class Solenoids {
+		public static final int solenoidForManipulator = 1;
+	}
 }

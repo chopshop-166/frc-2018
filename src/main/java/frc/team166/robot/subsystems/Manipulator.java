@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -18,7 +19,8 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * The 'manipulatorSolenoid' causes the manipulator to open when it's set to 'false' and
+ * the manipulator closes when the 'manipulatorSolenoid' is set to 'true' 
  */
 public class Manipulator extends Subsystem {
 	// Put methods for controlling this subsystem
@@ -27,6 +29,8 @@ public class Manipulator extends Subsystem {
 	WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.rollerLeft);
 	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.rollerRight);
 	SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
+
+	Solenoid manipulatorSolenoid = new Solenoid(RobotMap.Solenoids.solenoidForManipulator);
 
 	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
 
@@ -73,14 +77,15 @@ public class Manipulator extends Subsystem {
 		return irSensor.getVoltage(); //Manipulate this data pending experimentation
 	}
 
-	/**
-	 * Gets average encoder rate
-	 * <p>
-	 * Returns the average of the speeds of the left and right encoders
-	 * 
-	 * @return The average speed of the two encoders
-	 */
-	public double getAvgEncoderRate() { //ft/s
+	public void openManipulator() {
+		manipulatorSolenoid.set(false);
+	}
+
+	public void closeManipulator() {
+		manipulatorSolenoid.set(true);
+	}
+
+	public double avgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
 		return (leftRate + rightRate) / 2.0;
@@ -117,6 +122,7 @@ public class Manipulator extends Subsystem {
 		rollers.set(-0.8); //change once you find optimal motor speed
 	}
 
+	//COMMANDS
 	public void initDefaultCommand() {
 		setDefaultCommand(new SubsystemCommand(this) {
 
@@ -126,6 +132,56 @@ public class Manipulator extends Subsystem {
 			}
 
 		});
+	}
+
+	public Command DropCube() {
+		return new SubsystemCommand(this) {
+
+			@Override
+			protected void initialize() {
+				openManipulator();
+			}
+
+			@Override
+			protected void execute() {
+
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+
+			}
+		};
+	}
+
+	public Command CloseManipulator() {
+		return new SubsystemCommand(this) {
+
+			@Override
+			protected void initialize() {
+				closeManipulator();
+			}
+
+			@Override
+			protected void execute() {
+
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+
+			}
+		};
 	}
 
 	public Command CubePickup() {
