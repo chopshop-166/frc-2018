@@ -89,7 +89,7 @@ public class Manipulator extends Subsystem {
 		manipulatorSolenoid.set(Value.kReverse);
 	}
 
-	public double avgEncoderRate() { //ft/s
+	public double getAvgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
 		return (leftRate + rightRate) / 2.0;
