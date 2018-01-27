@@ -28,12 +28,12 @@ public class Drive extends Subsystem {
     //defines the gyro
     AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
     //defines the left motors as motors and combines the left motors into one motor
-    WPI_TalonSRX m_rearleft = new WPI_TalonSRX(RobotMap.CAN.backleft);
-    WPI_TalonSRX m_frontleft = new WPI_TalonSRX(RobotMap.CAN.frontleft);
+    WPI_TalonSRX m_rearleft = new WPI_TalonSRX(RobotMap.CAN.BACK_LEFT);
+    WPI_TalonSRX m_frontleft = new WPI_TalonSRX(RobotMap.CAN.FRONT_LEFT);
     SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontleft, m_rearleft);
     //defines the right motors as motors and combines the left motors into one motor
-    WPI_TalonSRX m_rearright = new WPI_TalonSRX(RobotMap.CAN.backright);
-    WPI_TalonSRX m_frontright = new WPI_TalonSRX(RobotMap.CAN.frontright);
+    WPI_TalonSRX m_rearright = new WPI_TalonSRX(RobotMap.CAN.BACK_RIGHT);
+    WPI_TalonSRX m_frontright = new WPI_TalonSRX(RobotMap.CAN.FRONT_RIGHT);
     SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
 
     /**defines the left and right motors defined above into a differential drive
