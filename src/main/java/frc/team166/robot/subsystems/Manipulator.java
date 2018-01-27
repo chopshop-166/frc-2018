@@ -55,6 +55,10 @@ public class Manipulator extends Subsystem {
 		rightIntakeEncoder.reset();
 	}
 
+	public double irDistance() {
+		return irSensor.getVoltage(); //Manipulate this data pending experimentation
+	}
+
 	public double avgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
@@ -65,6 +69,14 @@ public class Manipulator extends Subsystem {
 		double leftDist = leftIntakeEncoder.getDistance();
 		double rightDist = rightIntakeEncoder.getDistance();
 		return (leftDist + rightDist) / 2;
+	}
+
+	public void setMotorsToIntake() {
+		rollers.set(0.8); //change once you find optimal motor speed
+	}
+
+	public void setMotorsToDischarge() {
+		rollers.set(-0.8);
 	}
 
 	public void initDefaultCommand() {
