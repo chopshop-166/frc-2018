@@ -22,6 +22,8 @@ public class RobotMap {
         public final static int BACK_LEFT = 2;
         public final static int ROLLER_LEFT = 5;
         public final static int ROLLER_RIGHT = 6;
+        public final static int LIFT_MOTOR_A = 7;
+        public final static int LIFT_MOTOR_B = 8;
     }
 
     public static class Controller {
@@ -44,14 +46,33 @@ public class RobotMap {
     }
 
     public static class Encoders {
+        //changes Encoder ports into integers
+        public final static int LIFT_A = 1;
+        public final static int LIFT_B = 2;
     }
 
     public static class Solenoids {
-        public static final int MANIPULATOR_SOLENOID_A = 1;
-        public static final int MANIPULATOR_SOLENOID_B = 2;
+        //changes Solenoid ports into integers
+        public final static int LIFT_TRANSMISSION_A = 1;
+        public final static int LIFT_TRANSMISSION_B = 2;
+        public static final int MANIPULATOR_SOLENOID_A = 3;
+        public static final int MANIPULATOR_SOLENOID_B = 4;
+    }
+
+    public static class DigitalInputs {
+        //changes digital imput ports into integers
+        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 1;
+        public final static int LIFT_LIMIT_SWITCH_TOP = 2;
     }
 
     public static class Preferences {
+        //changes preferences to strings
+        public static final String LIFT_UP_DOWN_INCREMENT = "liftUpDownIncrement";
+        public static final String K_P = "kP";
+        public static final String K_I = "kI";
+        public static final String K_D = "kD";
+        public static final String K_F = "kF";
+
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
