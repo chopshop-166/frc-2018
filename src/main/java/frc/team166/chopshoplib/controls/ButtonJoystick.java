@@ -38,7 +38,9 @@ public class ButtonJoystick extends Joystick {
         try {
             return buttons.get(buttonId);
         } catch (ArrayIndexOutOfBoundsException e) {
-            buttons.add(buttonId, new JoystickButton(this, buttonId));
+            for (int i = buttons.size(); i < buttonId; i++) {
+                buttons.add(buttonId, new JoystickButton(this, i));
+            }
             return buttons.get(buttonId);
         }
     }
