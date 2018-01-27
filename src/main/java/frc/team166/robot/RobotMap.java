@@ -16,12 +16,12 @@ package frc.team166.robot;
 public class RobotMap {
     public static class CAN {
         //changes motor ports into integers
-        public final static int frontright = 1;
-        public final static int frontleft = 3;
-        public final static int backright = 4;
-        public final static int backleft = 2;
-        public final static int rollerLeft = 5;
-        public final static int rollerRight = 6;
+        public final static int FRONT_RIGHT = 1;
+        public final static int FRONT_LEFT = 3;
+        public final static int BACK_RIGHT = 4;
+        public final static int BACK_LEFT = 2;
+        public final static int ROLLER_LEFT = 5;
+        public final static int ROLLER_RIGHT = 6;
     }
 
     public static class Controller {
@@ -44,14 +44,14 @@ public class RobotMap {
     }
 
     public static class Encoders {
-        public static final int leftRollerA = 4;
-        public static final int rightRollerA = 5;
-        public static final int leftRollerB = 6;
-        public static final int rightRollerB = 7;
+        public static final int LEFT_ROLLER_A = 4;
+        public static final int RIGHT_ROLLER_A = 5;
+        public static final int LEFT_ROLLER_B2 = 6;
+        public static final int RIGHT_ROLLER_B = 7;
     }
 
     public static class Solenoids {
-        public static final int manipulatorSolenoidA = 1;
-        public static final int manipulatorSolenoidB = 2;
+        public static final int MANIPULATOR_SOLENOID_A = 1;
+        public static final int MANIPULATOR_SOLENOID_B = 2;
     }
 }

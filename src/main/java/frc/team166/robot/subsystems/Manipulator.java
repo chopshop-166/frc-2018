@@ -27,12 +27,12 @@ public class Manipulator extends Subsystem {
 	// Put methods for controlling this subsystem
 	// here. Call these from Commands.
 
-	WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.rollerLeft);
-	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.rollerRight);
+	WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_LEFT);
+	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
 	SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-	DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.manipulatorSolenoidA,
-			RobotMap.Solenoids.manipulatorSolenoidB);
+	DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_A,
+			RobotMap.Solenoids.MANIPULATOR_SOLENOID_B);
 
 	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
 
