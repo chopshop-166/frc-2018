@@ -38,8 +38,6 @@ public class Manipulator extends Subsystem {
 	double motorSpeed;
 
 	public Manipulator() {
-		//		addChild(leftRoller);
-		//		addChild(rightRoller);
 		addChild(rollers);
 		addChild(irSensor);
 		addChild(leftIntakeEncoder);
@@ -57,10 +55,16 @@ public class Manipulator extends Subsystem {
 		rightIntakeEncoder.reset();
 	}
 
-	public double avgEncoderRate() {
+	public double avgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
 		return (leftRate + rightRate) / 2.0;
+	}
+
+	public double avgEncoderDistance() { //ft
+		double leftDist = leftIntakeEncoder.getDistance();
+		double rightDist = rightIntakeEncoder.getDistance();
+		return (leftDist + rightDist) / 2;
 	}
 
 	public void initDefaultCommand() {
@@ -86,7 +90,7 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			protected void execute() {
-				//Figure out how to make the motors go 542.865 rpm or 6.81 ft/s
+				//Figure out how to make the motors go 542.865 rpm or 6.81 ft/s without making them spool up
 				if (avgEncoderRate() < 6.81)
 					motorSpeed += 0.02;
 
@@ -96,6 +100,31 @@ public class Manipulator extends Subsystem {
 			@Override
 			protected boolean isFinished() {
 				return irSensor.getValue() == 2.0; //Change this once Mech has a prototype
+			}
+
+			@Override
+			protected void end() {
+				rollers.stopMotor();
+			}
+		};
+	}
+
+	public Command CubeEject() {
+		return new SubsystemCommand(this) {
+
+			@Override
+			protected void initialize() {
+				resetEncoders();
+			}
+
+			@Override
+			protected void execute() {
+				rollers.set(-0.8); //Change this once you figure out the optimal speed of the motors
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return avgEncoderDistance() > 3.0;
 			}
 
 			@Override
