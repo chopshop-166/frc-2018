@@ -10,9 +10,11 @@ package frc.team166.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
@@ -30,7 +32,8 @@ public class Manipulator extends Subsystem {
 	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.rollerRight);
 	SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-	Solenoid manipulatorSolenoid = new Solenoid(RobotMap.Solenoids.solenoidForManipulator);
+	DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.manipulatorSolenoidA,
+			RobotMap.Solenoids.manipulatorSolenoidB);
 
 	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
 
@@ -78,11 +81,12 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void openManipulator() {
-		manipulatorSolenoid.set(false);
+		manipulatorSolenoid.set(Value.kForward);
+		;
 	}
 
 	public void closeManipulator() {
-		manipulatorSolenoid.set(true);
+		manipulatorSolenoid.set(Value.kReverse);
 	}
 
 	public double avgEncoderRate() { //ft/s
