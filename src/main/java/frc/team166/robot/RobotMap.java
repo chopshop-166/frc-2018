@@ -46,7 +46,7 @@ public class RobotMap {
     public static class Encoders {
         public static final int LEFT_ROLLER_A = 4;
         public static final int RIGHT_ROLLER_A = 5;
-        public static final int LEFT_ROLLER_B2 = 6;
+        public static final int LEFT_ROLLER_B = 6;
         public static final int RIGHT_ROLLER_B = 7;
     }
 

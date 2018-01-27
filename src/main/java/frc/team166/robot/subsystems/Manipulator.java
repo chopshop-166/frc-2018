@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
@@ -36,8 +37,8 @@ public class Manipulator extends Subsystem {
 
 	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
 
-	Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.leftRollerA, RobotMap.Encoders.leftRollerB);
-	Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.rightRollerA, RobotMap.Encoders.rightRollerB);
+	Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.LEFT_ROLLER_A, RobotMap.Encoders.LEFT_ROLLER_B);
+	Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.RIGHT_ROLLER_A, RobotMap.Encoders.RIGHT_ROLLER_B);
 
 	double ROLLER_RADIUS = 1.4375; //inches
 	double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
@@ -88,7 +89,7 @@ public class Manipulator extends Subsystem {
 		manipulatorSolenoid.set(Value.kReverse);
 	}
 
-	public double getAvgEncoderRate() { //ft/s
+	public double avgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
 		return (leftRate + rightRate) / 2.0;
