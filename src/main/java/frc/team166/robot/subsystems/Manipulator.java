@@ -33,8 +33,10 @@ public class Manipulator extends Subsystem {
 	Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.leftRollerA, RobotMap.Encoders.leftRollerB);
 	Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.rightRollerA, RobotMap.Encoders.rightRollerB);
 
-	double rollerRadius = 1.4375; //inches
-	double distPerPulseIntake = (((rollerRadius * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
+	double ROLLER_RADIUS = 1.4375; //inches
+	double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
+	double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
+
 	double motorSpeed;
 
 	public Manipulator() {
@@ -46,37 +48,73 @@ public class Manipulator extends Subsystem {
 		leftIntakeEncoder.setReverseDirection(true);
 		leftRoller.setInverted(true);
 
-		leftIntakeEncoder.setDistancePerPulse(distPerPulseIntake);
-		rightIntakeEncoder.setDistancePerPulse(distPerPulseIntake);
+		leftIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
+		rightIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
 	}
 
+	/**
+	 * Resets encoders
+	 * <p>
+	 * Calls the reset function on the left and right intake encoders
+	 */
 	public void resetEncoders() {
 		leftIntakeEncoder.reset();
 		rightIntakeEncoder.reset();
 	}
 
-	public double irDistance() {
+	/**
+	 * Gets IR voltage
+	 * <p>
+	 * Returns the voltage value output from the IR sensor
+	 * 
+	 * @return The voltage from the IR sensor
+	 */
+	public double getIRDistance() {
 		return irSensor.getVoltage(); //Manipulate this data pending experimentation
 	}
 
-	public double avgEncoderRate() { //ft/s
+	/**
+	 * Gets average encoder rate
+	 * <p>
+	 * Returns the average of the speeds of the left and right encoders
+	 * 
+	 * @return The average speed of the two encoders
+	 */
+	public double getAvgEncoderRate() { //ft/s
 		double leftRate = leftIntakeEncoder.getRate();
 		double rightRate = rightIntakeEncoder.getRate();
 		return (leftRate + rightRate) / 2.0;
 	}
 
-	public double avgEncoderDistance() { //ft
+	/**
+	 * Gets average encoder distance
+	 * <p>
+	 * Returns the average distance of the left and right encoders
+	 * 
+	 * @return The average distance of the two encoders
+	 */
+	public double getAvgEncoderDistance() { //ft
 		double leftDist = leftIntakeEncoder.getDistance();
 		double rightDist = rightIntakeEncoder.getDistance();
-		return (leftDist + rightDist) / 2;
+		return (leftDist + rightDist) / 2.0;
 	}
 
+	/**
+	 * Sets motors to intake mode
+	 * <p>
+	 * Sets the motors to 4/5 power inward to take in a cube on the field
+	 */
 	public void setMotorsToIntake() {
 		rollers.set(0.8); //change once you find optimal motor speed
 	}
 
+	/**
+	 * Sets motors to discharge mode
+	 * <p>
+	 * Sets the motors to 4/5 power outward to eject a stored cube
+	 */
 	public void setMotorsToDischarge() {
-		rollers.set(-0.8);
+		rollers.set(-0.8); //change once you find optimal motor speed
 	}
 
 	public void initDefaultCommand() {
@@ -103,7 +141,7 @@ public class Manipulator extends Subsystem {
 			@Override
 			protected void execute() {
 				//Figure out how to make the motors go 542.865 rpm or 6.81 ft/s without making them spool up
-				if (avgEncoderRate() < 6.81)
+				if (getAvgEncoderRate() < OPTIMAL_MOTOR_RATE)
 					motorSpeed += 0.02;
 
 				rollers.set(motorSpeed);
@@ -136,7 +174,7 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			protected boolean isFinished() {
-				return avgEncoderDistance() > 3.0;
+				return getAvgEncoderDistance() > 3.0;
 			}
 
 			@Override
