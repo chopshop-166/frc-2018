@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
-import frc.team166.robot.commands.SubsystemCommand;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
