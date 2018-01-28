@@ -38,9 +38,6 @@ public class Manipulator extends Subsystem {
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
-    Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.LEFT_ROLLER_A, RobotMap.Encoders.LEFT_ROLLER_B);
-    Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.RIGHT_ROLLER_A, RobotMap.Encoders.RIGHT_ROLLER_B);
-
     double ROLLER_RADIUS = 1.4375; //inches
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
@@ -50,29 +47,12 @@ public class Manipulator extends Subsystem {
     public Manipulator() {
         addChild(rollers);
         addChild(irSensor);
-        addChild(leftIntakeEncoder);
-        addChild(rightIntakeEncoder);
-
-        leftIntakeEncoder.setReverseDirection(true);
 
         motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
 
         leftRoller.setInverted(true);
 
-        leftIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
-        rightIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
-
-    }
-
-    /**
-     * Resets encoders
-     * <p>
-     * Calls the reset function on the left and right intake encoders
-     */
-    public void resetEncoders() {
-        leftIntakeEncoder.reset();
-        rightIntakeEncoder.reset();
     }
 
     /**
@@ -92,25 +72,6 @@ public class Manipulator extends Subsystem {
 
     public void closeManipulator() {
         manipulatorSolenoid.set(Value.kReverse);
-    }
-
-    public double getAvgEncoderRate() { //ft/s
-        double leftRate = leftIntakeEncoder.getRate();
-        double rightRate = rightIntakeEncoder.getRate();
-        return (leftRate + rightRate) / 2.0;
-    }
-
-    /**
-     * Gets average encoder distance
-     * <p>
-     * Returns the average distance of the left and right encoders
-     * 
-     * @return The average distance of the two encoders
-     */
-    public double getAvgEncoderDistance() { //ft
-        double leftDist = leftIntakeEncoder.getDistance();
-        double rightDist = rightIntakeEncoder.getDistance();
-        return (leftDist + rightDist) / 2.0;
     }
 
     /**
@@ -191,23 +152,17 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
-                resetEncoders();
-                rollers.set(0);
-                motorSpeed = 0;
+                setMotorsToIntake();
             }
 
             @Override
             protected void execute() {
-                //Figure out how to make the motors go 542.865 rpm or 6.81 ft/s without making them spool up
-                if (getAvgEncoderRate() < OPTIMAL_MOTOR_RATE)
-                    motorSpeed += 0.02;
 
-                rollers.set(motorSpeed);
             }
 
             @Override
             protected boolean isFinished() {
-                return irSensor.getValue() == 2.0; //Change this once Mech has a prototype
+                return false;
             }
 
             @Override
@@ -222,17 +177,17 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
-                resetEncoders();
+                setMotorsToDischarge();
             }
 
             @Override
             protected void execute() {
-                rollers.set(-0.8); //Change this once you figure out the optimal speed of the motors
+
             }
 
             @Override
             protected boolean isFinished() {
-                return getAvgEncoderDistance() > 3.0;
+                return false;
             }
 
             @Override
