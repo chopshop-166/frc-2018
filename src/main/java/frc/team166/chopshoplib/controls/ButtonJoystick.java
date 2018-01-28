@@ -37,7 +37,7 @@ public class ButtonJoystick extends Joystick {
         * @return The button object for the given ID
         */
     public Button getButton(int buttonId) {
-        if (buttons.size() < buttonId) {
+        if (buttons.size() <= buttonId) {
             for (int i = buttons.size(); i <= buttonId; i++) {
                 buttons.add(i, new JoystickButton(this, i));
             }
