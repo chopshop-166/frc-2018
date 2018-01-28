@@ -22,10 +22,6 @@ import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
-/**
- * The 'manipulatorSolenoid' causes the manipulator to open when it's set to 'false' and
- * the manipulator closes when the 'manipulatorSolenoid' is set to 'true' 
- */
 public class Manipulator extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
