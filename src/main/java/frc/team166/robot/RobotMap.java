@@ -34,7 +34,7 @@ public class RobotMap {
     public static class AnalogInputs {
         //changes input ports into integers
         public final static int tempestgyro = 1;
-        public final static int ir = 2;
+        public final static int IR = 2;
     }
 
     public static class Buttons {
@@ -53,5 +53,10 @@ public class RobotMap {
     public static class Solenoids {
         public static final int MANIPULATOR_SOLENOID_A = 1;
         public static final int MANIPULATOR_SOLENOID_B = 2;
+    }
+
+    public static class Preferences {
+        public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
+        public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
     }
 }

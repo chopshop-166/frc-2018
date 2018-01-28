@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -25,222 +26,219 @@ import frc.team166.robot.RobotMap;
  * the manipulator closes when the 'manipulatorSolenoid' is set to 'true' 
  */
 public class Manipulator extends Subsystem {
-	// Put methods for controlling this subsystem
-	// here. Call these from Commands.
+    // Put methods for controlling this subsystem
+    // here. Call these from Commands.
 
-	WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_LEFT);
-	WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
-	SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
+    WPI_TalonSRX leftRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_LEFT);
+    WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
+    SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-	DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_A,
-			RobotMap.Solenoids.MANIPULATOR_SOLENOID_B);
+    DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_A,
+            RobotMap.Solenoids.MANIPULATOR_SOLENOID_B);
 
-	AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.ir);
+    AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
-	Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.LEFT_ROLLER_A, RobotMap.Encoders.LEFT_ROLLER_B);
-	Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.RIGHT_ROLLER_A, RobotMap.Encoders.RIGHT_ROLLER_B);
+    Encoder leftIntakeEncoder = new Encoder(RobotMap.Encoders.LEFT_ROLLER_A, RobotMap.Encoders.LEFT_ROLLER_B);
+    Encoder rightIntakeEncoder = new Encoder(RobotMap.Encoders.RIGHT_ROLLER_A, RobotMap.Encoders.RIGHT_ROLLER_B);
 
-	double ROLLER_RADIUS = 1.4375; //inches
-	double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
-	double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
+    double ROLLER_RADIUS = 1.4375; //inches
+    double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
+    double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
-	double motorSpeed;
+    double motorSpeed;
 
-	public Manipulator() {
-		addChild(rollers);
-		addChild(irSensor);
-		addChild(leftIntakeEncoder);
-		addChild(rightIntakeEncoder);
+    public Manipulator() {
+        addChild(rollers);
+        addChild(irSensor);
+        addChild(leftIntakeEncoder);
+        addChild(rightIntakeEncoder);
 
-		leftIntakeEncoder.setReverseDirection(true);
-		leftRoller.setInverted(true);
+        leftIntakeEncoder.setReverseDirection(true);
 
-		leftIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
-		rightIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
-	}
+        motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
+        motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
 
-	/**
-	 * Resets encoders
-	 * <p>
-	 * Calls the reset function on the left and right intake encoders
-	 */
-	public void resetEncoders() {
-		leftIntakeEncoder.reset();
-		rightIntakeEncoder.reset();
-	}
+        leftRoller.setInverted(true);
 
-	/**
-	 * Gets IR voltage
-	 * <p>
-	 * Returns the voltage value output from the IR sensor
-	 * 
-	 * @return The voltage from the IR sensor
-	 */
-	public double getIRDistance() {
-		return irSensor.getVoltage(); //Manipulate this data pending experimentation
-	}
+        leftIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
+        rightIntakeEncoder.setDistancePerPulse(DIST_PER_PULSE_INTAKE);
 
-	public void openManipulator() {
-		manipulatorSolenoid.set(Value.kForward);
-		;
-	}
+    }
 
-	public void closeManipulator() {
-		manipulatorSolenoid.set(Value.kReverse);
-	}
+    /**
+     * Resets encoders
+     * <p>
+     * Calls the reset function on the left and right intake encoders
+     */
+    public void resetEncoders() {
+        leftIntakeEncoder.reset();
+        rightIntakeEncoder.reset();
+    }
 
-	public double getAvgEncoderRate() { //ft/s
-		double leftRate = leftIntakeEncoder.getRate();
-		double rightRate = rightIntakeEncoder.getRate();
-		return (leftRate + rightRate) / 2.0;
-	}
+    /**
+     * Gets IR voltage
+     * <p>
+     * Returns the voltage value output from the IR sensor
+     * 
+     * @return The voltage from the IR sensor
+     */
+    public double getIRDistance() {
+        return irSensor.getVoltage(); //Manipulate this data pending experimentation
+    }
 
-	/**
-	 * Gets average encoder distance
-	 * <p>
-	 * Returns the average distance of the left and right encoders
-	 * 
-	 * @return The average distance of the two encoders
-	 */
-	public double getAvgEncoderDistance() { //ft
-		double leftDist = leftIntakeEncoder.getDistance();
-		double rightDist = rightIntakeEncoder.getDistance();
-		return (leftDist + rightDist) / 2.0;
-	}
+    public void openManipulator() {
+        manipulatorSolenoid.set(Value.kForward);
+    }
 
-	/**
-	 * Sets motors to intake mode
-	 * <p>
-	 * Sets the motors to 4/5 power inward to take in a cube on the field
-	 */
-	public void setMotorsToIntake() {
-		rollers.set(0.8); //change once you find optimal motor speed
-	}
+    public void closeManipulator() {
+        manipulatorSolenoid.set(Value.kReverse);
+    }
 
-	/**
-	 * Sets motors to discharge mode
-	 * <p>
-	 * Sets the motors to 4/5 power outward to eject a stored cube
-	 */
-	public void setMotorsToDischarge() {
-		rollers.set(-0.8); //change once you find optimal motor speed
-	}
+    public double getAvgEncoderRate() { //ft/s
+        double leftRate = leftIntakeEncoder.getRate();
+        double rightRate = rightIntakeEncoder.getRate();
+        return (leftRate + rightRate) / 2.0;
+    }
 
-	//COMMANDS
-	public void initDefaultCommand() {
-		setDefaultCommand(new SubsystemCommand(this) {
+    /**
+     * Gets average encoder distance
+     * <p>
+     * Returns the average distance of the left and right encoders
+     * 
+     * @return The average distance of the two encoders
+     */
+    public double getAvgEncoderDistance() { //ft
+        double leftDist = leftIntakeEncoder.getDistance();
+        double rightDist = rightIntakeEncoder.getDistance();
+        return (leftDist + rightDist) / 2.0;
+    }
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
+    /**
+     * Sets motors to intake mode
+     * <p>
+     * Sets the motors to 4/5 power inward to take in a cube on the field
+     */
+    public void setMotorsToIntake() {
+        //change once you find optimal motor speed
+        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8));
+    }
 
-		});
-	}
+    /**
+     * Sets motors to discharge mode
+     * <p>
+     * Sets the motors to 4/5 power outward to eject a stored cube
+     */
+    public void setMotorsToDischarge() {
+        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8)); //change once you find optimal motor speed
+    }
 
-	public Command DropCube() {
-		return new SubsystemCommand(this) {
+    //COMMANDS
+    public void initDefaultCommand() {
+    };
 
-			@Override
-			protected void initialize() {
-				openManipulator();
-			}
+    public Command DropCube() {
+        return new SubsystemCommand(this) {
 
-			@Override
-			protected void execute() {
+            @Override
+            protected void initialize() {
+                openManipulator();
+            }
 
-			}
+            @Override
+            protected void execute() {
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
+            }
 
-			@Override
-			protected void end() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
 
-			}
-		};
-	}
+            @Override
+            protected void end() {
 
-	public Command CloseManipulator() {
-		return new SubsystemCommand(this) {
+            }
+        };
+    }
 
-			@Override
-			protected void initialize() {
-				closeManipulator();
-			}
+    public Command CloseManipulator() {
+        return new SubsystemCommand(this) {
 
-			@Override
-			protected void execute() {
+            @Override
+            protected void initialize() {
+                closeManipulator();
+            }
 
-			}
+            @Override
+            protected void execute() {
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
+            }
 
-			@Override
-			protected void end() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
 
-			}
-		};
-	}
+            @Override
+            protected void end() {
 
-	public Command CubePickup() {
-		return new SubsystemCommand(this) {
+            }
+        };
+    }
 
-			@Override
-			protected void initialize() {
-				resetEncoders();
-				rollers.set(0);
-				motorSpeed = 0;
-			}
+    public Command CubePickup() {
+        return new SubsystemCommand(this) {
 
-			@Override
-			protected void execute() {
-				//Figure out how to make the motors go 542.865 rpm or 6.81 ft/s without making them spool up
-				if (getAvgEncoderRate() < OPTIMAL_MOTOR_RATE)
-					motorSpeed += 0.02;
+            @Override
+            protected void initialize() {
+                resetEncoders();
+                rollers.set(0);
+                motorSpeed = 0;
+            }
 
-				rollers.set(motorSpeed);
-			}
+            @Override
+            protected void execute() {
+                //Figure out how to make the motors go 542.865 rpm or 6.81 ft/s without making them spool up
+                if (getAvgEncoderRate() < OPTIMAL_MOTOR_RATE)
+                    motorSpeed += 0.02;
 
-			@Override
-			protected boolean isFinished() {
-				return irSensor.getValue() == 2.0; //Change this once Mech has a prototype
-			}
+                rollers.set(motorSpeed);
+            }
 
-			@Override
-			protected void end() {
-				rollers.stopMotor();
-			}
-		};
-	}
+            @Override
+            protected boolean isFinished() {
+                return irSensor.getValue() == 2.0; //Change this once Mech has a prototype
+            }
 
-	public Command CubeEject() {
-		return new SubsystemCommand(this) {
+            @Override
+            protected void end() {
+                rollers.stopMotor();
+            }
+        };
+    }
 
-			@Override
-			protected void initialize() {
-				resetEncoders();
-			}
+    public Command CubeEject() {
+        return new SubsystemCommand(this) {
 
-			@Override
-			protected void execute() {
-				rollers.set(-0.8); //Change this once you figure out the optimal speed of the motors
-			}
+            @Override
+            protected void initialize() {
+                resetEncoders();
+            }
 
-			@Override
-			protected boolean isFinished() {
-				return getAvgEncoderDistance() > 3.0;
-			}
+            @Override
+            protected void execute() {
+                rollers.set(-0.8); //Change this once you figure out the optimal speed of the motors
+            }
 
-			@Override
-			protected void end() {
-				rollers.stopMotor();
-			}
-		};
-	}
+            @Override
+            protected boolean isFinished() {
+                return getAvgEncoderDistance() > 3.0;
+            }
+
+            @Override
+            protected void end() {
+                rollers.stopMotor();
+            }
+        };
+    }
 }
