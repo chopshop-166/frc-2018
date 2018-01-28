@@ -39,7 +39,7 @@ public class Manipulator extends Subsystem {
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
-    double cubePickupDistance = getIRDistance();
+    double cubePickupDistance;
     double motorSpeed;
     double cubeEjectWaitTime;
 
@@ -120,7 +120,7 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (cubePickupDistance < Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
+                if (getIRDistance() < Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
                         0.5)) {
                     return true;
                 }
