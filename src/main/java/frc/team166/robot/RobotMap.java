@@ -56,5 +56,7 @@ public class RobotMap {
     public static class Preferences {
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
+        public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
+        public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
     }
 }

@@ -43,7 +43,9 @@ public class Manipulator extends Subsystem {
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
+    double cubePickupDistance = getIRDistance();
     double motorSpeed;
+    double cubeEjectWaitTime;
 
     public Manipulator() {
         addChild(rollers);
@@ -51,7 +53,8 @@ public class Manipulator extends Subsystem {
 
         motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         motorSpeed = Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
-
+        cubePickupDistance = Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
+        cubeEjectWaitTime = Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
         leftRoller.setInverted(true);
 
     }
@@ -121,6 +124,10 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected boolean isFinished() {
+                if (cubePickupDistance < Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
+                        0.5)) {
+                    return true;
+                }
                 return false;
             }
 
@@ -136,6 +143,7 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0));
                 setMotorsToDischarge();
             }
 
@@ -146,12 +154,18 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                return false;
+
+                return isTimedOut();
             }
 
             @Override
             protected void end() {
                 rollers.stopMotor();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
             }
         };
     }
