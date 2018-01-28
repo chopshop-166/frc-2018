@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_oi = new OI();
         m_chooser.addDefault("Default Auto", new ExampleCommand());
-        // chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
     }

@@ -66,7 +66,7 @@ public class Drive extends Subsystem {
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(new SubsystemCommand(this) {
+        setDefaultCommand(new SubsystemCommand("Default", this) {
 
             /**if there were something else that we wanted the robot, we would use this code to 
             *figure out when to stop the default command.
@@ -87,7 +87,7 @@ public class Drive extends Subsystem {
     }
 
     public Command Ebrake() {
-        return new SubsystemCommand(this) {
+        return new SubsystemCommand("Ebrake", this) {
             @Override
             protected void initialize() {
                 m_drive.stopMotor();
@@ -106,7 +106,7 @@ public class Drive extends Subsystem {
     }
 
     public Command DriveStraight() {
-        return new SubsystemCommand(this) {
+        return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
                 drivePidController.setSetpoint(tempestGyro.getAngle());

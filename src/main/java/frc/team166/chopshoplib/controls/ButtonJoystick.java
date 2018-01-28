@@ -28,14 +28,14 @@ public class ButtonJoystick extends Joystick {
     }
 
     /**
-        * Get a button from this joystick
-        * <p>
-        * Returns the sepcified button of a joystick without having to explicitly create
-        * each button.
-        * 
-        * @param buttonId The index of the button to accesss
-        * @return The button object for the given ID
-        */
+    * Get a button from this joystick
+    * <p>
+    * Returns the sepcified button of a joystick without having to explicitly create
+    * each button.
+    * 
+    * @param buttonId The index of the button to accesss
+    * @return The button object for the given ID
+    */
     public Button getButton(int buttonId) {
         if (buttons.size() <= buttonId) {
             for (int i = buttons.size(); i <= buttonId; i++) {
