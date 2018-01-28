@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
@@ -98,57 +99,15 @@ public class Manipulator extends Subsystem {
     };
 
     public Command DropCube() {
-        return new SubsystemCommand(this) {
-
-            @Override
-            protected void initialize() {
-                openManipulator();
-            }
-
-            @Override
-            protected void execute() {
-
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-
-            }
-        };
+        return new ActionCommand("Drop Cube", this, this::openManipulator);
     }
 
     public Command CloseManipulator() {
-        return new SubsystemCommand(this) {
-
-            @Override
-            protected void initialize() {
-                closeManipulator();
-            }
-
-            @Override
-            protected void execute() {
-
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-
-            }
-        };
+        return new ActionCommand("Close Manipulator", this, this::openManipulator);
     }
 
     public Command CubePickup() {
-        return new SubsystemCommand(this) {
+        return new SubsystemCommand("Pick Up Cube", this) {
 
             @Override
             protected void initialize() {
@@ -173,7 +132,7 @@ public class Manipulator extends Subsystem {
     }
 
     public Command CubeEject() {
-        return new SubsystemCommand(this) {
+        return new SubsystemCommand("Eject Cube", this) {
 
             @Override
             protected void initialize() {
