@@ -71,9 +71,11 @@ public class CommandChain extends CommandGroup {
     private void addCommands(Command... cmds) {
         if (cmds.length == 1) {
             addSequential(cmds[0]);
-        } else {
+        } else if (cmds.length != 0) {
             for (Command c : cmds) {
-                addParallel(c);
+                if (c != null) {
+                    addParallel(c);
+                }
             }
             addSequential(new WaitForChildren());
         }
@@ -87,9 +89,11 @@ public class CommandChain extends CommandGroup {
     private void addCommands(double timeout, Command... cmds) {
         if (cmds.length == 1) {
             addSequential(cmds[0], timeout);
-        } else {
+        } else if (cmds.length != 0) {
             for (Command c : cmds) {
-                addParallel(c, timeout);
+                if (c != null) {
+                    addParallel(c, timeout);
+                }
             }
             addSequential(new WaitForChildren());
         }
