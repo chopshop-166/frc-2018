@@ -37,16 +37,10 @@ public class Manipulator extends Subsystem {
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
-    double cubePickupDistance;
-    double motorSpeed;
-    double cubeEjectWaitTime;
-
     public Manipulator() {
         addChild(rollers);
         addChild(irSensor);
 
-        cubePickupDistance = Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
-        cubeEjectWaitTime = Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
         leftRoller.setInverted(true);
 
     }
@@ -58,15 +52,15 @@ public class Manipulator extends Subsystem {
      * 
      * @return The voltage from the IR sensor
      */
-    public double getIRDistance() {
+    private double getIRDistance() {
         return irSensor.getVoltage(); //Manipulate this data pending experimentation
     }
 
-    public void openManipulator() {
+    private void openManipulator() {
         manipulatorSolenoid.set(Value.kForward);
     }
 
-    public void closeManipulator() {
+    private void closeManipulator() {
         manipulatorSolenoid.set(Value.kReverse);
     }
 
@@ -75,7 +69,7 @@ public class Manipulator extends Subsystem {
      * <p>
      * Sets the motors to 4/5 power inward to take in a cube on the field
      */
-    public void setMotorsToIntake() {
+    private void setMotorsToIntake() {
         //change once you find optimal motor speed
         rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8));
     }
@@ -85,7 +79,7 @@ public class Manipulator extends Subsystem {
      * <p>
      * Sets the motors to 4/5 power outward to eject a stored cube
      */
-    public void setMotorsToDischarge() {
+    private void setMotorsToDischarge() {
         rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8)); //change once you find optimal motor speed
     }
 
