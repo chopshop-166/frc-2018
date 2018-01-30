@@ -44,8 +44,6 @@ public class RobotMap {
     }
 
     public static class Encoders {
-        public static final int LEFT_ROLLER_B = 6;
-        public static final int RIGHT_ROLLER_B = 7;
     }
 
     public static class Solenoids {
