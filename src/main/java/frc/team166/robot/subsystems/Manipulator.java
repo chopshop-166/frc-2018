@@ -92,7 +92,7 @@ public class Manipulator extends Subsystem {
     }
 
     public Command CloseManipulator() {
-        return new ActionCommand("Close Manipulator", this, this::openManipulator);
+        return new ActionCommand("Close Manipulator", this, this::closeManipulator);
     }
 
     public Command CubePickup() {
