@@ -25,4 +25,9 @@ public abstract class SubsystemCommand extends Command {
         this(subsystem);
         setName(name);
     }
+
+    @Override
+    protected void interrupted() {
+        end();
+    }
 }
