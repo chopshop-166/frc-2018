@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
     public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
     //this just adds a drive subsystem
     public static final Drive drive = new Drive();
-    public static final Manipulator manip = new Manipulator();
+    public static final Manipulator manipulator = new Manipulator();
     public static OI m_oi;
 
     Command m_autonomousCommand;
