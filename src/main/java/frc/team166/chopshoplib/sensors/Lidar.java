@@ -38,6 +38,7 @@ public class Lidar extends SensorBase {
         i2cDevice = new I2C(port, kAddress);
         setName("Lidar", kAddress);
         t = new Thread(new PollSensor());
+        t.start();
     }
 
     /**
