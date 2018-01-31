@@ -43,6 +43,11 @@ public class Manipulator extends Subsystem {
 
         leftRoller.setInverted(true);
 
+        //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
+        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
     }
 
     /**
