@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
+import frc.team166.robot.subsystems.LED;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
     public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
+    public static LED led = new LED();
     public static OI m_oi;
 
     Command m_autonomousCommand;
@@ -104,7 +106,7 @@ public class Robot extends TimedRobot {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
-        // this line or comment it out.
+        // this line or comment it out.s
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
