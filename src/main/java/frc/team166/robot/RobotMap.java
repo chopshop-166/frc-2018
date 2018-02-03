@@ -72,6 +72,8 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
+        public static final String UP_MAX_SPEED = "Up Max Speed";
+        public static final String DOWN_MAX_SPEED = "Down Max Speed";
 
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";

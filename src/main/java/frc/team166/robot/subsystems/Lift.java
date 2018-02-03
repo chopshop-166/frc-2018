@@ -63,6 +63,11 @@ public class Lift extends PIDSubsystem {
     final static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
     final static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
 
+    @Override
+    public void setAbsoluteTolerance(double t) {
+        super.setAbsoluteTolerance(0.05);
+    }
+
     //enumerator that will be pulled from for the GoToHeight Command
     public enum LiftHeight {
         //will be changed
@@ -83,6 +88,8 @@ public class Lift extends PIDSubsystem {
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
+        setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1),
+                Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
         //creates a child for the encoders
         addChild(liftEncoder);
         addChild(topLimitSwitch);
@@ -93,6 +100,8 @@ public class Lift extends PIDSubsystem {
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
     }
 
     protected double returnPIDInput() {
