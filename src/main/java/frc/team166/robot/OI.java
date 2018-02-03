@@ -22,10 +22,19 @@ public class OI {
         rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperLeft.get())
-                .whileHeld(Robot.flipper.activateFlipper());
+                .whenReleased(Robot.flipper.activateFlipper());
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperRight.get())
-                .whileHeld(Robot.flipper.deactivateFlipper());
+                .whenReleased(Robot.flipper.deactivateFlipper());
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get()).whenReleased(Robot.flipper.toggleFlipper());
+
+        /* Add controls to Right Joystick */
+        rightDriveStick.getButton(1).whenReleased(Robot.flipper.toggleFlipper());
+        rightDriveStick.getButton(4).whenReleased(Robot.flipper.activateFlipper());
+        rightDriveStick.getButton(5).whenReleased(Robot.flipper.deactivateFlipper());
+
+        leftDriveStick.getButton(1).whenReleased(Robot.flipper.toggleFlipper());
+        leftDriveStick.getButton(4).whenReleased(Robot.flipper.activateFlipper());
+        leftDriveStick.getButton(5).whenReleased(Robot.flipper.deactivateFlipper());
     }
     //// CREATING BUTTONS
     // One type of button is a joystick button which is any button on a
@@ -49,7 +58,7 @@ public class OI {
 
     // Run the command while the button is being held down and interrupt it once
     // the button is released.
-    // button.whileHeld(new ExampleCommand());
+    // button.whenReleased(new ExampleCommand());
 
     // Start the command when the button is released and let it run the command 
     // until it is finished as determined by it's isFinished method. 

@@ -39,12 +39,11 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_oi = new OI();
         m_chooser.addDefault("xBox Arcade", drive.xBoxArcade());
-        m_chooser.addDefault("xBox Joystick Tank", drive.xBoxDriveTank());
-        m_chooser.addDefault("xBox Joystick Arcade", drive.xBoxDriveArcadeJoysticks());
-        m_chooser.addDefault("Joystick Tank", drive.joystickTank());
-        m_chooser.addDefault("Joystick Arcade One Stick", drive.joystickArcadeOneStick());
-        m_chooser.addDefault("Joystick Arcade Two Stick", drive.joystickArcadeTwoStick());
-        // chooser.addObject("My Auto", new MyAutoCommand());
+        m_chooser.addObject("xBox Joystick Tank", drive.xBoxDriveTank());
+        m_chooser.addObject("xBox Joystick Arcade", drive.xBoxDriveArcadeJoysticks());
+        m_chooser.addObject("Joystick Tank", drive.joystickTank());
+        m_chooser.addObject("Joystick Arcade One Stick", drive.joystickArcadeOneStick());
+        m_chooser.addObject("Joystick Arcade Two Stick", drive.joystickArcadeTwoStick());
         SmartDashboard.putData("Drive Mode", m_chooser);
 
     }
