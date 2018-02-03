@@ -7,6 +7,7 @@
 
 package frc.team166.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -44,6 +46,8 @@ public class Robot extends TimedRobot {
         m_chooser.addDefault("Default Auto", new ExampleCommand());
         // chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", m_chooser);
+        CameraServer.getInstance().startAutomaticCapture();
+
 
     }
 
