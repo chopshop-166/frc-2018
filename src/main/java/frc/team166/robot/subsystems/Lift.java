@@ -63,7 +63,6 @@ public class Lift extends PIDSubsystem {
     final static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
     final static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
 
-    @Override
     public void setAbsoluteTolerance(double t) {
         super.setAbsoluteTolerance(0.05);
     }
@@ -88,7 +87,7 @@ public class Lift extends PIDSubsystem {
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
-        setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1),
+        setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, -1),
                 Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
         //creates a child for the encoders
         addChild(liftEncoder);
@@ -110,11 +109,15 @@ public class Lift extends PIDSubsystem {
 
     protected void usePIDOutput(double output) {
         if (topLimitSwitch.get() == true && output > 0) {
+            liftEncoder.reset();
             setSetpoint(LiftHeight.kMaxHeight.get());
+            liftDrive.stopMotor();
             return;
         }
         if (bottomLimitSwitch.get() == true && output < 0) {
+            liftEncoder.reset();
             setSetpoint(LiftHeight.kFloor.get());
+            liftDrive.stopMotor();
             return;
         }
         liftDrive.set(output);
@@ -139,15 +142,15 @@ public class Lift extends PIDSubsystem {
             protected void initialize() {
                 if (isHighGear == true) {
                     shiftToHighGear();
-                } else
+                } else {
                     shiftToLowGear();
-
+                }
                 setSetpoint(height.get());
             }
 
             @Override
             protected boolean isFinished() {
-                return false;
+                return true;
             }
         };
     }
