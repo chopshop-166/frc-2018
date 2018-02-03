@@ -18,6 +18,7 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
+import frc.team166.robot.subsystems.Manipulator;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -106,7 +107,7 @@ public class Robot extends TimedRobot {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
-        // this line or comment it out.s
+        // this line or comment it out.
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
