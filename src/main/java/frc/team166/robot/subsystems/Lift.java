@@ -89,6 +89,7 @@ public class Lift extends PIDSubsystem {
         super("Lift", kP, kI, kD, kF);
         setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, -1),
                 Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
+        liftEncoder.setDistancePerPulse(1);
         //creates a child for the encoders
         addChild(liftEncoder);
         addChild(topLimitSwitch);
@@ -109,7 +110,6 @@ public class Lift extends PIDSubsystem {
 
     protected void usePIDOutput(double output) {
         if (topLimitSwitch.get() == true && output > 0) {
-            liftEncoder.reset();
             setSetpoint(LiftHeight.kMaxHeight.get());
             liftDrive.stopMotor();
             return;
@@ -164,7 +164,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void execute() {
                 setSetpointRelative(
-                        Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 10));
+                        Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1));
             }
 
             @Override
@@ -183,7 +183,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void execute() {
                 setSetpointRelative(
-                        -Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 10));
+                        -Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1));
 
             }
 
