@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
-    public static LED led = new LED();
+    public static final LED led = new LED();
     public static OI m_oi;
 
     Command m_autonomousCommand;

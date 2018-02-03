@@ -33,6 +33,7 @@ public class LED extends Subsystem {
         SmartDashboard.putData("light team color", lightTeamColor());
         SmartDashboard.putData("flash team color", blinkTeamColor());
         SmartDashboard.putData("pulse team color", pulseTeamColor());
+        SmartDashboard.putData("flash green", blinkGreen(9));
     }
 
     private boolean isBlueTeam() {
@@ -281,6 +282,41 @@ public class LED extends Subsystem {
             @Override
             protected void end() {
                 setTeamColor(false);
+            }
+        };
+    }
+
+    public Command blinkGreen(int numberOfBlinks) {
+        return new SubsystemCommand(this) {
+            double delay = 0.25;
+            double count = 0;
+
+            @Override
+            protected void initialize() {
+                count = 0;
+            }
+
+            @Override
+            protected void execute() {
+                green.set(1);
+                Timer.delay(delay);
+                green.set(0);
+                Timer.delay(delay);
+                count++;
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (count >= numberOfBlinks) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void end() {
+                green.set(0);
             }
         };
     }
