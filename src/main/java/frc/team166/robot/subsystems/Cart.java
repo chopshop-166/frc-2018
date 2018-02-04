@@ -21,18 +21,20 @@ public class Cart extends Subsystem {
     DigitalInput sensorright = new DigitalInput(8);
     DigitalInput sensorleft = new DigitalInput(9);
 
+    public Cart() {
+        addChild(motor);
+        addChild(sensorleft);
+        addChild(sensorright);
+
+        motor.setInverted(true);
+    }
+
     private boolean sensorrighton() {
-        if (sensorright.get())
-            return true;
-        else
-            return false;
+        return !sensorright.get();
     }
 
     private boolean sensorlefton() {
-        if (sensorleft.get())
-            return true;
-        else
-            return false;
+        return !sensorleft.get();
     }
 
     private void setspeed(double speed) {
@@ -47,7 +49,7 @@ public class Cart extends Subsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                setspeed(0.2);
+                setspeed(0.4);
             }
 
             @Override
