@@ -58,14 +58,10 @@ public class Lift extends PIDSubsystem {
     DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
             RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
-    final static double kP = Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
-    final static double kI = Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
-    final static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
-    final static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
-
-    public void setAbsoluteTolerance(double t) {
-        super.setAbsoluteTolerance(0.05);
-    }
+    private static double kP = Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
+    private static double kI = Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
+    private static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
+    private static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
 
     //enumerator that will be pulled from for the GoToHeight Command
     public enum LiftHeight {
@@ -89,7 +85,8 @@ public class Lift extends PIDSubsystem {
         super("Lift", kP, kI, kD, kF);
         setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, -1),
                 Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
-        liftEncoder.setDistancePerPulse(1);
+        setAbsoluteTolerance(0.05);
+        liftEncoder.setDistancePerPulse(encoderDistancePerTick);
         //creates a child for the encoders
         addChild(liftEncoder);
         addChild(topLimitSwitch);
