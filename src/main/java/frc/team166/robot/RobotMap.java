@@ -43,6 +43,7 @@ public class RobotMap {
         //changes button ports into integers
         public final static int XboxAbutton = 1;
         public final static int XboxXbutton = 3;
+        public final static int JoystickTrigger = 1;
     }
 
     public static class Encoders {

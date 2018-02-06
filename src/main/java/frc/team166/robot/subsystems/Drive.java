@@ -66,11 +66,11 @@ public class Drive extends Subsystem {
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(new SubsystemCommand("Default", this) {
+        setDefaultCommand(joystickArcadeTwoStick());
+    }
 
-            /**if there were something else that we wanted the robot, we would use this code to 
-            *figure out when to stop the default command.
-            */
+    public Command xboxArcade() {
+        return new SubsystemCommand("Default", this) {
             @Override
             protected boolean isFinished() {
                 return false;
@@ -82,8 +82,10 @@ public class Drive extends Subsystem {
                         Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
                                 - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft),
                         Robot.m_oi.xBoxTempest.getX(Hand.kLeft));
+
             }
-        });
+
+        };
     }
 
     public Command Ebrake() {
@@ -104,6 +106,29 @@ public class Drive extends Subsystem {
             }
         };
     }
+
+    public Command joystickArcadeTwoStick() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(-Robot.m_oi.leftDriveStick.getY(), Robot.m_oi.rightDriveStick.getX());
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
+            }
+        };
+    };
 
     public Command DriveStraight() {
         return new SubsystemCommand("Drive Straight", this) {
