@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
@@ -28,8 +29,10 @@ public class Manipulator extends Subsystem {
     WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-    DoubleSolenoid manipulatorSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_A,
-            RobotMap.Solenoids.MANIPULATOR_SOLENOID_B);
+    DoubleSolenoid manipulatorInnerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
+            RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_B);
+    DoubleSolenoid manipulatorOuterSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
+            RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
@@ -61,12 +64,20 @@ public class Manipulator extends Subsystem {
         return irSensor.getVoltage(); //Manipulate this data pending experimentation
     }
 
-    private void openManipulator() {
-        manipulatorSolenoid.set(Value.kForward);
+    private void openInnerManipulator() {
+        manipulatorInnerSolenoid.set(Value.kForward);
     }
 
-    private void closeManipulator() {
-        manipulatorSolenoid.set(Value.kReverse);
+    private void closeInnerManipulator() {
+        manipulatorInnerSolenoid.set(Value.kReverse);
+    }
+
+    private void openOuterManipulator() {
+        manipulatorInnerSolenoid.set(Value.kForward);
+    }
+
+    private void closeOuterManipulator() {
+        manipulatorInnerSolenoid.set(Value.kReverse);
     }
 
     /**
@@ -92,12 +103,20 @@ public class Manipulator extends Subsystem {
     public void initDefaultCommand() {
     };
 
-    public Command DropCube() {
-        return new ActionCommand("Drop Cube", this, this::openManipulator);
+    public Command CloseInnerManipulator() {
+        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
     }
 
-    public Command CloseManipulator() {
-        return new ActionCommand("Close Manipulator", this, this::closeManipulator);
+    public Command CloseOuterManipulator() {
+        return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
+    }
+
+    public Command OpenOuterManipulator() {
+        return new ActionCommand("Open Outer Manipulator", this, this::openOuterManipulator);
+    }
+
+    public Command OpenInnerManipulator() {
+        return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
     }
 
     public Command CubePickup() {
@@ -105,6 +124,7 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
+                openOuterManipulator();
                 setMotorsToIntake();
             }
 
@@ -119,6 +139,7 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void end() {
+                closeOuterManipulator();
                 rollers.stopMotor();
             }
         };

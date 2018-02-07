@@ -47,8 +47,10 @@ public class RobotMap {
     }
 
     public static class Solenoids {
-        public static final int MANIPULATOR_SOLENOID_A = 1;
-        public static final int MANIPULATOR_SOLENOID_B = 2;
+        public static final int MANIPULATOR_SOLENOID_INNER_A = 1;
+        public static final int MANIPULATOR_SOLENOID_INNER_B = 2;
+        public static final int MANIPULATOR_SOLENOID_OUTER_A = 3;
+        public static final int MANIPULATOR_SOLENOID_OUTER_B = 4;
     }
 
     public static class Preferences {
