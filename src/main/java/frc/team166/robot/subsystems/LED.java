@@ -36,6 +36,12 @@ public class LED extends Subsystem {
         SmartDashboard.putData("flash green", blinkGreen(9));
     }
 
+    private void safeDelay(double secondsToWait) {
+        double lastUpdateTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() < lastUpdateTime + (secondsToWait * 1000)) {
+        }
+    }
+
     private boolean isBlueTeam() {
         Alliance team = DriverStation.getInstance().getAlliance();
         if (team == DriverStation.Alliance.Blue) {
@@ -63,14 +69,14 @@ public class LED extends Subsystem {
         }
     }
 
-    private boolean pulseColor(Victor color, double step, double delay, boolean goUp) {
+    private boolean pulseColor(Victor color, double step, boolean goUp) {
         if (color.get() >= 1) {
             goUp = false;
         }
         if (color.get() <= 0) {
             goUp = true;
         }
-        Timer.delay(delay);
+
         if (goUp) {
             color.set(color.get() + step);
         } else {
@@ -175,7 +181,6 @@ public class LED extends Subsystem {
             boolean goUpBlue = true;
             boolean goUpRed = true;
             double step = 0.05;
-            double delay = 0.01;
 
             @Override
             protected void initialize() {
@@ -186,9 +191,9 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                goUpGreen = pulseColor(green, step, delay, goUpGreen);
-                goUpBlue = pulseColor(blue, step, delay * 2, goUpBlue);
-                goUpRed = pulseColor(red, step, delay * 3, goUpRed);
+                goUpGreen = pulseColor(green, step, goUpGreen);
+                goUpBlue = pulseColor(blue, step, goUpBlue);
+                goUpRed = pulseColor(red, step, goUpRed);
             }
 
             @Override
@@ -224,19 +229,24 @@ public class LED extends Subsystem {
 
     public Command blinkTeamColor() {
         return new SubsystemCommand(this) {
-            double delay = 0.5;
+            double lastUpdateTime = System.currentTimeMillis();
+            boolean isOn = true;
 
             @Override
             protected void initialize() {
-
+                setTeamColor(true);
             }
 
             @Override
             protected void execute() {
-                setTeamColor(true);
-                Timer.delay(delay);
-                setTeamColor(false);
-                Timer.delay(delay);
+                if (System.currentTimeMillis() >= lastUpdateTime + 1000) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    if (isOn) {
+                        setTeamColor(false);
+                    } else {
+                        setTeamColor(true);
+                    }
+                }
             }
 
             @Override
@@ -267,10 +277,10 @@ public class LED extends Subsystem {
             protected void execute() {
                 if (isBlueTeam()) {
                     red.set(0);
-                    goUpBlue = pulseColor(blue, step, delay, goUpBlue);
+                    goUpBlue = pulseColor(blue, step, goUpBlue);
                 } else {
                     blue.set(0);
-                    goUpRed = pulseColor(red, step, delay, goUpRed);
+                    goUpRed = pulseColor(red, step, goUpRed);
                 }
             }
 
@@ -288,21 +298,27 @@ public class LED extends Subsystem {
 
     public Command blinkGreen(int numberOfBlinks) {
         return new SubsystemCommand(this) {
-            double delay = 0.25;
+            double lastUpdateTime = System.currentTimeMillis();
+            boolean isOn = true;
             double count = 0;
 
             @Override
             protected void initialize() {
                 count = 0;
+                green.set(1);
             }
 
             @Override
             protected void execute() {
-                green.set(1);
-                Timer.delay(delay);
-                green.set(0);
-                Timer.delay(delay);
-                count++;
+                if (System.currentTimeMillis() >= lastUpdateTime + 1000) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    if (isOn) {
+                        green.set(0);
+                    } else {
+                        green.set(1);
+                        count++;
+                    }
+                }
             }
 
             @Override
