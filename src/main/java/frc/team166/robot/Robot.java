@@ -8,6 +8,7 @@
 package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -28,6 +29,7 @@ import frc.team166.robot.subsystems.Manipulator;
 public class Robot extends TimedRobot {
     public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
     //this just adds a drive subsystem
+    public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static OI m_oi;
@@ -35,7 +37,6 @@ public class Robot extends TimedRobot {
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -47,8 +48,6 @@ public class Robot extends TimedRobot {
         // chooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
-
-
     }
 
     /**
