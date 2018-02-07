@@ -55,8 +55,10 @@ public class RobotMap {
         //changes Solenoid ports into integers
         public final static int LIFT_TRANSMISSION_A = 1;
         public final static int LIFT_TRANSMISSION_B = 2;
-        public static final int MANIPULATOR_SOLENOID_A = 3;
-        public static final int MANIPULATOR_SOLENOID_B = 4;
+        public final static int MANIPULATOR_SOLENOID_INNER_A = 3;
+        public final static int MANIPULATOR_SOLENOID_INNER_B = 4;
+        public final static int MANIPULATOR_SOLENOID_OUTER_A = 5;
+        public final static int MANIPULATOR_SOLENOID_OUTER_B = 6;
     }
 
     public static class DigitalInputs {
