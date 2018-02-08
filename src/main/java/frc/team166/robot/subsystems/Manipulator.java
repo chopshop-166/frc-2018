@@ -73,11 +73,11 @@ public class Manipulator extends Subsystem {
     }
 
     private void openOuterManipulator() {
-        manipulatorInnerSolenoid.set(Value.kForward);
+        manipulatorOuterSolenoid.set(Value.kForward);
     }
 
     private void closeOuterManipulator() {
-        manipulatorInnerSolenoid.set(Value.kReverse);
+        manipulatorOuterSolenoid.set(Value.kReverse);
     }
 
     /**
@@ -103,10 +103,6 @@ public class Manipulator extends Subsystem {
     public void initDefaultCommand() {
     };
 
-    public Command CloseInnerManipulator() {
-        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
-    }
-
     public Command CloseOuterManipulator() {
         return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
     }
@@ -117,6 +113,10 @@ public class Manipulator extends Subsystem {
 
     public Command OpenInnerManipulator() {
         return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
+    }
+
+    public Command CloseInnerManipulator() {
+        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
     }
 
     public Command CubePickup() {
