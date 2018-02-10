@@ -126,11 +126,9 @@ public class Lift extends PIDSubsystem {
         liftDrive.set(output);
     }
 
-    protected double liftLidarHeight = liftLidar.getDistance(true);
-
     public double liftHeight() {
-        if (liftLidarHeight > 72) {
-            return (liftLidarHeight);
+        if (liftLidar.getDistance(true) > 72) {
+            return (liftLidar.getDistance(true));
         } else
             return (liftEncoder.getDistance());
     }
