@@ -27,7 +27,6 @@ import frc.team166.robot.subsystems.Manipulator;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
     //this just adds a drive subsystem
     public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
