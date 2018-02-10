@@ -16,15 +16,20 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.sensors.Lidar;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
 public class Drive extends Subsystem {
 
+    // declare lidar
+    Lidar frontLidar = new Lidar(Port.kOnboard, 0x10);
     //defines the gyro
     AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
     //defines the left motors as motors and combines the left motors into one motor
@@ -42,9 +47,9 @@ public class Drive extends Subsystem {
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-    final static double kP = 1.0 / 180.0;
-    final static double kI = 0.0003;
-    final static double kD = 1;
+    final static double kP = 1.0 / 60;
+    final static double kI = 0.00003;
+    final static double kD = 0;
     final static double kF = 0;
 
     //PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
@@ -58,10 +63,17 @@ public class Drive extends Subsystem {
 
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
+        SmartDashboard.putData(Ebrake());
+        SmartDashboard.putData("XBox", xboxArcade());
+        SmartDashboard.putData("Turn -45", setTurn(-45));
+        SmartDashboard.putData("Turn 45", setTurn(45));
         addChild(tempestGyro);
         addChild(m_drive);
         addChild(drivePidController);
+        addChild(frontLidar);
         drivePidController.disable();
+        drivePidController.setInputRange(0, 360);
+        drivePidController.setContinuous();
     }
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
@@ -78,10 +90,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(
-                        Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                                - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft),
-                        Robot.m_oi.xBoxTempest.getX(Hand.kLeft));
+                m_drive.arcadeDrive(-Robot.m_oi.xBoxTempest.getY(Hand.kLeft), Robot.m_oi.xBoxTempest.getX(Hand.kRight));
 
             }
 
@@ -134,9 +143,9 @@ public class Drive extends Subsystem {
         return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
+                drivePidController.reset();
                 drivePidController.setSetpoint(tempestGyro.getAngle());
                 drivePidController.enable();
-                drivePidController.reset();
             }
 
             @Override
@@ -156,4 +165,69 @@ public class Drive extends Subsystem {
             }
         };
     }
+
+    public Command DriveDistance(double inches) {
+        return new SubsystemCommand("Drive Distance", this) {
+
+            double realDistanceInches = frontLidar.getDistance(true);
+
+            @Override
+            protected void initialize() {
+                drivePidController.setSetpoint(tempestGyro.getAngle());
+                drivePidController.enable();
+                drivePidController.reset();
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(.2, angle);
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (realDistanceInches <= inches) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            }
+
+            @Override
+            protected void end() {
+                drivePidController.disable();
+            }
+        };
+    }
+
+    public Command setTurn(double degrees) {
+        return new SubsystemCommand("Turn " + degrees, this) {
+            @Override
+            protected void initialize() {
+                tempestGyro.reset();
+                drivePidController.reset();
+                drivePidController.enable();
+                drivePidController.setAbsoluteTolerance(3);
+                drivePidController.setSetpoint(degrees);
+            }
+
+            @Override
+            protected void execute() {
+                SmartDashboard.putNumber("Drive Angle", angle);
+                m_drive.arcadeDrive(0.0, angle);
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return drivePidController.onTarget();
+            }
+
+            @Override
+            protected void end() {
+                drivePidController.disable();
+            }
+        };
+    }
+
 }
