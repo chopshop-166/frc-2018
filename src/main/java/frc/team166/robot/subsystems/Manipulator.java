@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
@@ -42,9 +42,17 @@ public class Manipulator extends Subsystem {
 
     public Manipulator() {
         addChild(rollers);
-        addChild(irSensor);
+        addChild("IR Sensor", irSensor);
+
+        SmartDashboard.putData("Close Outer", CloseOuterManipulator());
+        SmartDashboard.putData("Open Outer", OpenOuterManipulator());
+        SmartDashboard.putData("Close Inner", CloseInnerManipulator());
+        SmartDashboard.putData("Open Inner", OpenInnerManipulator());
+        SmartDashboard.putData("Cube Pickup", CubePickup());
+        SmartDashboard.putData("Cube Eject", CubeEject());
 
         leftRoller.setInverted(true);
+        rightRoller.setInverted(true);
 
         //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
@@ -73,11 +81,11 @@ public class Manipulator extends Subsystem {
     }
 
     private void openOuterManipulator() {
-        manipulatorInnerSolenoid.set(Value.kForward);
+        manipulatorOuterSolenoid.set(Value.kForward);
     }
 
     private void closeOuterManipulator() {
-        manipulatorInnerSolenoid.set(Value.kReverse);
+        manipulatorOuterSolenoid.set(Value.kReverse);
     }
 
     /**
@@ -87,7 +95,7 @@ public class Manipulator extends Subsystem {
      */
     private void setMotorsToIntake() {
         //change once you find optimal motor speed
-        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8));
+        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.4));
     }
 
     /**
@@ -96,16 +104,12 @@ public class Manipulator extends Subsystem {
      * Sets the motors to 4/5 power outward to eject a stored cube
      */
     private void setMotorsToDischarge() {
-        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8)); //change once you find optimal motor speed
+        rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.4)); //change once you find optimal motor speed
     }
 
     //COMMANDS
     public void initDefaultCommand() {
     };
-
-    public Command CloseInnerManipulator() {
-        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
-    }
 
     public Command CloseOuterManipulator() {
         return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
@@ -119,6 +123,14 @@ public class Manipulator extends Subsystem {
         return new ActionCommand("Open Inner Manipulator", this, this::openInnerManipulator);
     }
 
+    public Command CloseInnerManipulator() {
+        return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
+    }
+
+    public Command CubeDrop() {
+        return new ActionCommand("Drop Cube", this, this::openInnerManipulator);
+    }
+
     public Command CubePickup() {
         return new SubsystemCommand("Pick Up Cube", this) {
 
@@ -130,8 +142,8 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected boolean isFinished() {
-                if (getIRDistance() < Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
-                        0.5)) {
+                if (getIRDistance() > Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
+                        1.0)) {
                     return true;
                 }
                 return false;
@@ -150,7 +162,7 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 2.0));
                 setMotorsToDischarge();
             }
 
