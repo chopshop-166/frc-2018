@@ -68,7 +68,7 @@ public class Lift extends PIDSubsystem {
     private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
 
     //enumerator that will be pulled from for the GoToHeight Command
-    public enum DesiredLiftHeight {
+    public enum LiftHeights {
         //will be changed
         kFloor(0), kSwitch(1), kPortal(2), kIntake(3), kScaleLow(4), kScaleHigh(5), kClimb(6), kMaxHeight(7);
 
@@ -76,7 +76,7 @@ public class Lift extends PIDSubsystem {
         private double value;
 
         //
-        DesiredLiftHeight(double value) {
+        LiftHeights(double value) {
             this.value = value;
         }
 
@@ -84,6 +84,8 @@ public class Lift extends PIDSubsystem {
             return value;
         }
     }
+
+    private final static double kMaxLidarDistance = 60;
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
@@ -96,7 +98,7 @@ public class Lift extends PIDSubsystem {
         addChild(topLimitSwitch);
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
-        addChild(liftHeight());
+        addChild(findLiftHeight());
 
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
@@ -105,29 +107,30 @@ public class Lift extends PIDSubsystem {
         Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
+        Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false);
     }
 
     protected double returnPIDInput() {
-        return liftHeight();
+        return findLiftHeight();
     }
 
     protected void usePIDOutput(double output) {
         if (topLimitSwitch.get() == true && output > 0) {
-            setSetpoint(DesiredLiftHeight.kMaxHeight.get());
+            setSetpoint(LiftHeights.kMaxHeight.get());
             liftDrive.stopMotor();
             return;
         }
         if (bottomLimitSwitch.get() == true && output < 0) {
             liftEncoder.reset();
-            setSetpoint(DesiredLiftHeight.kFloor.get());
+            setSetpoint(LiftHeights.kFloor.get());
             liftDrive.stopMotor();
             return;
         }
         liftDrive.set(output);
     }
 
-    public double liftHeight() {
-        if (liftLidar.getDistance(true) > 72) {
+    public double findLiftHeight() {
+        if (liftLidar.getDistance(true) > kMaxLidarDistance) {
             return (liftLidar.getDistance(true));
         } else
             return (liftEncoder.getDistance());
@@ -146,7 +149,7 @@ public class Lift extends PIDSubsystem {
     public void initDefaultCommand() {
     }
 
-    public Command GoToHeight(DesiredLiftHeight height, boolean isHighGear) {
+    public Command GoToHeight(LiftHeights height, boolean isHighGear) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -205,8 +208,8 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command ClimbUp() {
-        return new CommandChain("Climb Up").then(GoToHeight(DesiredLiftHeight.kClimb, true))
-                .then(GoToHeight(DesiredLiftHeight.kScaleLow, false));
+        return new CommandChain("Climb Up").then(GoToHeight(LiftHeights.kClimb, true))
+                .then(GoToHeight(LiftHeights.kScaleLow, false));
     }
 
     public Command ShiftToHighGear() {

@@ -34,10 +34,10 @@ public class RobotMap {
     }
 
     public static class AnalogInputs {
-        //changes input ports into in tegers
+        //changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
-        public final static int liftEncoer = 3;d
+        public final static int liftEncoder = 3;
     }
 
     public static class Buttons {
@@ -56,10 +56,10 @@ public class RobotMap {
         //changes Solenoid ports into integers
         public final static int LIFT_TRANSMISSION_A = 1;
         public final static int LIFT_TRANSMISSION_B = 2;
-        public static final int MANIPULATOR_SOLENOID_INNER_A = 3;
-        public static final int MANIPULATOR_SOLENOID_INNER_B = 4;
-        public static final int MANIPULATOR_SOLENOID_OUTER_A = 5;
-        public static final int MANIPULATOR_SOLENOID_OUTER_B = 6;
+        public final static int MANIPULATOR_SOLENOID_INNER_A = 3;
+        public final static int MANIPULATOR_SOLENOID_INNER_B = 4;
+        public final static int MANIPULATOR_SOLENOID_OUTER_A = 5;
+        public final static int MANIPULATOR_SOLENOID_OUTER_B = 6;
     }
 
     public static class DigitalInputs {
@@ -75,12 +75,13 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
-        public static final String UP_MAX_SPEED = "Up Max Speed";
-        public static final String DOWN_MAX_SPEED = "Down Max Speed";
+        public static final String UP_MAX_SPEED = "upMaxSpeed";
+        public static final String DOWN_MAX_SPEED = "downMaxSpeed";
 
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
+        public static final String USE_LIDAR = "useLidar";
     }
 }
