@@ -18,7 +18,6 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.robot.subsystems.Drive;
 import frc.team166.robot.subsystems.Manipulator;
 import frc.team166.robot.subsystems.LED;
-import frc.team166.robot.subsystems.Manipulator;
 
 /**
  * The VM is configured to automatically run this class, and to call the
