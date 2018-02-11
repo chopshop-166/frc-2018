@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
@@ -65,12 +66,16 @@ public class Drive extends Subsystem {
     public Drive() {
         SmartDashboard.putData(Ebrake());
         SmartDashboard.putData("XBox", xboxArcade());
-        SmartDashboard.putData("Turn -45", setTurn(-45));
-        SmartDashboard.putData("Turn 45", setTurn(45));
+        SmartDashboard.putData("Turn -45", turnByDegrees(-45));
+        SmartDashboard.putData("Turn 45", turnByDegrees(45));
+
         addChild(tempestGyro);
         addChild(m_drive);
         addChild(drivePidController);
         addChild(frontLidar);
+
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
+
         drivePidController.disable();
         drivePidController.setInputRange(0, 360);
         drivePidController.setContinuous();
@@ -82,7 +87,7 @@ public class Drive extends Subsystem {
     }
 
     public Command xboxArcade() {
-        return new SubsystemCommand("Default", this) {
+        return new SubsystemCommand("XBoxArcade", this) {
             @Override
             protected boolean isFinished() {
                 return false;
@@ -117,7 +122,7 @@ public class Drive extends Subsystem {
     }
 
     public Command joystickArcadeTwoStick() {
-        return new SubsystemCommand(this) {
+        return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
             protected void initialize() {
             }
@@ -139,7 +144,7 @@ public class Drive extends Subsystem {
         };
     };
 
-    public Command DriveStraight() {
+    public Command driveStraight() {
         return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
@@ -166,10 +171,10 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command DriveDistance(double inches) {
+    public Command drivetoProximity(double inches) {
         return new SubsystemCommand("Drive Distance", this) {
 
-            double realDistanceInches = frontLidar.getDistance(true);
+            //double realDistanceInches = frontLidar.getDistance(true);
 
             @Override
             protected void initialize() {
@@ -180,12 +185,12 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(.2, angle);
+                m_drive.arcadeDrive(Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1), angle);
             }
 
             @Override
             protected boolean isFinished() {
-                if (realDistanceInches <= inches) {
+                if (frontLidar.getDistance(true) <= inches) {
                     return true;
                 } else {
                     return false;
@@ -200,7 +205,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command setTurn(double degrees) {
+    public Command turnByDegrees(double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
             protected void initialize() {
