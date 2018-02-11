@@ -28,11 +28,11 @@ import frc.team166.robot.subsystems.Manipulator;
  * project.
  */
 public class Robot extends TimedRobot {
+    public static final LED led = new LED();
     //this just adds a drive subsystem
     public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
-    public static final LED led = new LED();
     public static OI m_oi;
 
     Command m_autonomousCommand;

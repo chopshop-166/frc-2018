@@ -36,12 +36,6 @@ public class LED extends Subsystem {
         SmartDashboard.putData("flash green", blinkGreen(9));
     }
 
-    private void safeDelay(double secondsToWait) {
-        double lastUpdateTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() < lastUpdateTime + (secondsToWait * 1000)) {
-        }
-    }
-
     private boolean isBlueTeam() {
         Alliance team = DriverStation.getInstance().getAlliance();
         if (team == DriverStation.Alliance.Blue) {
@@ -69,6 +63,7 @@ public class LED extends Subsystem {
         }
     }
 
+    //TO DO:add delay here
     private boolean pulseColor(Victor color, double step, boolean goUp) {
         if (color.get() >= 1) {
             goUp = false;
@@ -266,7 +261,6 @@ public class LED extends Subsystem {
             boolean goUpBlue = true;
             boolean goUpRed = true;
             double step = 0.05;
-            double delay = 0.05;
 
             @Override
             protected void initialize() {
