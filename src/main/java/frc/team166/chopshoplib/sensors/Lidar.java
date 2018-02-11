@@ -1,7 +1,10 @@
 package frc.team166.chopshoplib.sensors;
 
 import java.nio.ByteBuffer;
-import java.text.Format;
+import java.util.Optional;
+
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.I2C;
@@ -14,7 +17,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class Lidar extends SensorBase implements PIDSource {
     I2C i2cDevice;
     Thread t;
-    private int distanceMM;
+    private double distanceMM;
+
+    private boolean isValid;
+    private double samples[];
+    private int sampleIndex;
+    private boolean reset;
+
+    private StandardDeviation sd;
+    private double standardDeviationValue;
+    double standardDeviationLimit;
 
     private class PollSensor implements Runnable {
         public void run() {
@@ -33,7 +45,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     public static class Settings {
         public enum opMode {
-            SINGLESTEP, CONTINOUS
+            SINGLESTEP, CONTINOUS, DEFAULT
         }
 
         public enum ledIndicator {
@@ -74,8 +86,10 @@ public class Lidar extends SensorBase implements PIDSource {
             /* Process the zeroth byte */
             if (response[0] == 0x43) {
                 operationMode = opMode.CONTINOUS;
-            } else {
+            } else if (response[0] == 0x53) {
                 operationMode = opMode.SINGLESTEP;
+            } else {
+                operationMode = opMode.DEFAULT;
             }
             /* Process the first byte */
             switch (response[1]) {
@@ -147,13 +161,67 @@ public class Lidar extends SensorBase implements PIDSource {
      * 
      * @param port The I2C port the sensor is connected to
      * @param kAddress The I2C address the sensor is found at
+     * @param averageOver The number of samples to average
      */
-    public Lidar(Port port, int kAddress) {
+    public Lidar(Port port, int kAddress, int averageOver) {
         i2cDevice = new I2C(port, kAddress);
         setName("Lidar", kAddress);
+
+        // Objects related to statistics
+        samples = new double[averageOver];
+        sd = new StandardDeviation();
+        standardDeviationLimit = 100;
+        reset = false;
+
         t = new Thread(new PollSensor());
         t.setName(String.format("LiDAR-0x%x", kAddress));
         t.start();
+    }
+
+    /**
+     * Create a LIDAR object
+     * 
+     * @param port The I2C port the sensor is connected to
+     * @param kAddress The I2C address the sensor is found at
+     */
+    public Lidar(Port port, int kAddress) {
+        // Default to averaging over 10 samples
+        this(port, kAddress, 25);
+    }
+
+    /**
+     * Set the maximum allowed standard deviation before the input is considered invalid
+     * 
+     * @param sdLimit The maximum standard deviation expected
+     */
+    public void setStandardDeviationLimit(double sdLimit) {
+        standardDeviationLimit = sdLimit;
+    }
+
+    /**
+     * Clear the samples
+     */
+    public synchronized void reset() {
+        for (int i = 0; i < samples.length; i++) {
+            samples[i] = 0;
+        }
+        sampleIndex = 0;
+        reset = true;
+    }
+
+    /**
+     * This function gets the distance from a LiDAR sensor
+     * @param bFlag True requests the distance in inches, false requests the distance in mm
+     */
+    public Optional<Double> getDistanceOptional(Boolean bFlag) {
+        if (isValid == false) {
+            return Optional.empty();
+        }
+        if (bFlag == true) {
+            return Optional.of((distanceMM / 25.4));
+        } else {
+            return Optional.of(new Double(distanceMM));
+        }
     }
 
     /**
@@ -162,7 +230,7 @@ public class Lidar extends SensorBase implements PIDSource {
      */
     public double getDistance(Boolean bFlag) {
         if (bFlag == true) {
-            return (distanceMM / 25.4);
+            return distanceMM / 25.4;
         } else {
             return distanceMM;
         }
@@ -174,21 +242,41 @@ public class Lidar extends SensorBase implements PIDSource {
         i2cDevice.write(0x44, 0x1);
         i2cDevice.readOnly(dataBuffer, 2);
         ByteBuffer bbConvert = ByteBuffer.wrap(dataBuffer);
-        distanceMM = bbConvert.getShort();
+        synchronized (this) {
+            samples[sampleIndex] = bbConvert.getShort();
+            sampleIndex++;
+            if (sampleIndex == samples.length) {
+                reset = false;
+                sampleIndex = 0;
+            }
+            distanceMM = new Mean().evaluate(samples, 0, reset ? sampleIndex : samples.length);
+            // If the standard deviation is really high then the sensor likely doesn't have a valid reading.
+            standardDeviationValue = sd.evaluate(samples, 0, reset ? sampleIndex : samples.length);
+            if (standardDeviationValue >= standardDeviationLimit) {
+                isValid = false;
+            } else {
+                isValid = true;
+            }
+        }
     }
 
     /**
      * Enable continous conversion mode on the LiDAR sensor
      */
-    private void setContinuousMode() {
-        i2cDevice.write(0x4d, 0x1);
-        i2cDevice.write(0x43, 0x1);
+    public void setContinuousMode() {
+        i2cDevice.writeBulk(new byte[] { 0x4d, 0x43 });
+    }
+
+    /**
+     * Enable single step mode on the LiDAR sensor
+     */
+    public void setSingleStepMode() {
+        i2cDevice.writeBulk(new byte[] { 0x4d, 0x53 });
     }
 
     public Settings querySettings() {
         byte[] dataBuffer = new byte[23];
-
-        i2cDevice.write(0x51, 0x1);
+        i2cDevice.writeBulk(new byte[] { 0x51 });
         i2cDevice.readOnly(dataBuffer, 23);
         return new Settings(dataBuffer);
     }
@@ -197,8 +285,12 @@ public class Lidar extends SensorBase implements PIDSource {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("LiDAR");
         NetworkTableEntry mmDistance = builder.getEntry("Distance");
+        NetworkTableEntry standardDeviation = builder.getEntry("Standard Deviation");
+        NetworkTableEntry isValidEntry = builder.getEntry("isValid");
         builder.setUpdateTable(() -> {
             mmDistance.setDouble(getDistance(true));
+            isValidEntry.setBoolean(isValid);
+            standardDeviation.setDouble(standardDeviationValue);
         });
     }
 
