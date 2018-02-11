@@ -45,7 +45,7 @@ public class Lidar extends SensorBase implements PIDSource {
 
     public static class Settings {
         public enum opMode {
-            SINGLESTEP, CONTINOUS, DEFAULT
+            SINGLESTEP, CONTINOUS, INVALID
         }
 
         public enum ledIndicator {
@@ -89,7 +89,7 @@ public class Lidar extends SensorBase implements PIDSource {
             } else if (response[0] == 0x53) {
                 operationMode = opMode.SINGLESTEP;
             } else {
-                operationMode = opMode.DEFAULT;
+                operationMode = opMode.INVALID;
             }
             /* Process the first byte */
             switch (response[1]) {
