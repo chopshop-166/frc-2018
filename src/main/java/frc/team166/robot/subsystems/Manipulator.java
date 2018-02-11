@@ -127,7 +127,7 @@ public class Manipulator extends Subsystem {
         return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
     }
 
-    public Command DropCube() {
+    public Command CubeDrop() {
         return new ActionCommand("Drop Cube", this, this::openInnerManipulator);
     }
 
