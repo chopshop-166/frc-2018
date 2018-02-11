@@ -24,8 +24,6 @@ lower lift
 
 package frc.team166.robot.subsystems;
 
-import javax.lang.model.util.ElementScanner6;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -135,10 +133,12 @@ public class Lift extends PIDSubsystem {
         if (Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false) == true) {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {
                 return (liftLidar.getDistance(true));
-            } else
+            } else {
                 return (liftEncoder.getDistance());
-        } else
+            }
+        } else {
             return (liftEncoder.getDistance());
+        }
     }
 
     //gear changes
