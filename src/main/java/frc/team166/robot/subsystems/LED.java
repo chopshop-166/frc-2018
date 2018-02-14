@@ -10,28 +10,36 @@ package frc.team166.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 
 public class LED extends Subsystem {
-    //these will be changed from Victors to something else when we get real hardware...
-    Victor blue = new Victor(1);
-    Victor green = new Victor(2);
-    Victor red = new Victor(3);
+
+    public void initDefaultCommand() {
+    };
+
+    //these will be changed from DigitalOutputs to something else when we get real hardware...
+    DigitalOutput blue = new DigitalOutput(1);
+    DigitalOutput green = new DigitalOutput(2);
+    DigitalOutput red = new DigitalOutput(3);
 
     public LED() {
         SmartDashboard.putData("green", greenOn());
         SmartDashboard.putData("red", redOn());
         SmartDashboard.putData("blue", blueOn());
         SmartDashboard.putData("cyan", cyanOn());
-        SmartDashboard.putData("color cycle", colorCycle());
         SmartDashboard.putData("light team color", lightTeamColor());
         SmartDashboard.putData("flash team color", blinkTeamColor());
-        SmartDashboard.putData("pulse team color", pulseTeamColor());
         SmartDashboard.putData("flash green", blinkGreen(9));
+    }
+
+    private void allOff() {
+        red.set(false);
+        green.set(false);
+        blue.set(false);
     }
 
     private boolean isBlueTeam() {
@@ -45,56 +53,27 @@ public class LED extends Subsystem {
 
     private void setTeamColor(boolean turnOn) {
         if (isBlueTeam()) {
-            red.set(0);
+            red.set(false);
             if (turnOn) {
-                blue.set(1);
+                blue.set(true);
             } else {
-                blue.set(0);
+                blue.set(false);
             }
         } else {
-            blue.set(0);
+            blue.set(false);
             if (turnOn) {
-                red.set(1);
+                red.set(true);
             } else {
-                red.set(0);
+                red.set(false);
             }
         }
-    }
-
-    //TO DO:add delay here
-    private boolean pulseColor(Victor color, double step, boolean goUp) {
-        if (color.get() >= 1) {
-            goUp = false;
-        }
-        if (color.get() <= 0) {
-            goUp = true;
-        }
-
-        if (goUp) {
-            color.set(color.get() + step);
-        } else {
-            color.set(color.get() - step);
-        }
-        return goUp;
-    }
-
-    private void allOff() {
-        red.set(0);
-        green.set(0);
-        blue.set(0);
-    }
-
-    public void initDefaultCommand() {
-
-        // Set the default command for a subsystem here.
-        // setDefaultCommand(new MySpecialCommand());
     }
 
     public Command greenOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                green.set(1);
+                green.set(true);
             }
 
             @Override
@@ -104,7 +83,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                green.set(0);
+                green.set(false);
             }
         };
     }
@@ -113,7 +92,7 @@ public class LED extends Subsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                red.set(1);
+                red.set(true);
             }
 
             @Override
@@ -123,7 +102,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                red.set(0);
+                red.set(false);
             }
         };
     }
@@ -132,7 +111,7 @@ public class LED extends Subsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                blue.set(1);
+                blue.set(true);
             }
 
             @Override
@@ -142,7 +121,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                blue.set(0);
+                blue.set(false);
             }
         };
     }
@@ -151,42 +130,9 @@ public class LED extends Subsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                red.set(0);
-                blue.set(1);
-                green.set(1);
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                allOff();
-            }
-        };
-    }
-
-    public Command colorCycle() {
-        return new SubsystemCommand(this) {
-            boolean goUpGreen = true;
-            boolean goUpBlue = true;
-            boolean goUpRed = true;
-            double step = 0.05;
-
-            @Override
-            protected void initialize() {
-                green.set(0);
-                blue.set(1);
-                red.set(0.5);
-            }
-
-            @Override
-            protected void execute() {
-                goUpGreen = pulseColor(green, step, goUpGreen);
-                goUpBlue = pulseColor(blue, step, goUpBlue);
-                goUpRed = pulseColor(red, step, goUpRed);
+                red.set(false);
+                blue.set(true);
+                green.set(true);
             }
 
             @Override
@@ -236,43 +182,11 @@ public class LED extends Subsystem {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
                         setTeamColor(false);
+                        isOn = false;
                     } else {
                         setTeamColor(true);
+                        isOn = true;
                     }
-                }
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                setTeamColor(false);
-            }
-        };
-    }
-
-    public Command pulseTeamColor() {
-        return new SubsystemCommand(this) {
-            boolean goUpBlue = true;
-            boolean goUpRed = true;
-            double step = 0.05;
-
-            @Override
-            protected void initialize() {
-
-            }
-
-            @Override
-            protected void execute() {
-                if (isBlueTeam()) {
-                    red.set(0);
-                    goUpBlue = pulseColor(blue, step, goUpBlue);
-                } else {
-                    blue.set(0);
-                    goUpRed = pulseColor(red, step, goUpRed);
                 }
             }
 
@@ -297,7 +211,7 @@ public class LED extends Subsystem {
             @Override
             protected void initialize() {
                 count = 0;
-                green.set(1);
+                green.set(true);
             }
 
             @Override
@@ -305,9 +219,11 @@ public class LED extends Subsystem {
                 if (System.currentTimeMillis() >= lastUpdateTime + 1000) {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
-                        green.set(0);
+                        green.set(false);
+                        isOn = false;
                     } else {
-                        green.set(1);
+                        green.set(true);
+                        isOn = true;
                         count++;
                     }
                 }
@@ -324,7 +240,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                green.set(0);
+                green.set(false);
             }
         };
     }
