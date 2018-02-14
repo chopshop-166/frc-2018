@@ -22,9 +22,9 @@ public class LED extends Subsystem {
     };
 
     //these will be changed from DigitalOutputs to something else when we get real hardware...
-    DigitalOutput blue = new DigitalOutput(1);
-    DigitalOutput green = new DigitalOutput(2);
-    DigitalOutput red = new DigitalOutput(3);
+    DigitalOutput red = new DigitalOutput(0);
+    DigitalOutput green = new DigitalOutput(1);
+    DigitalOutput blue = new DigitalOutput(2);
 
     public LED() {
         SmartDashboard.putData("green", greenOn());
@@ -33,7 +33,7 @@ public class LED extends Subsystem {
         SmartDashboard.putData("cyan", cyanOn());
         SmartDashboard.putData("light team color", lightTeamColor());
         SmartDashboard.putData("flash team color", blinkTeamColor());
-        SmartDashboard.putData("flash green", blinkGreen(9));
+        SmartDashboard.putData("flash green", blinkGreen(5));
     }
 
     private void allOff() {
@@ -178,7 +178,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 1000) {
+                if (System.currentTimeMillis() >= lastUpdateTime + 750) {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
                         setTeamColor(false);
@@ -216,15 +216,16 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 1000) {
+                if (System.currentTimeMillis() >= lastUpdateTime + 250) {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
                         green.set(false);
                         isOn = false;
+                        count++;
                     } else {
                         green.set(true);
                         isOn = true;
-                        count++;
+
                     }
                 }
             }
