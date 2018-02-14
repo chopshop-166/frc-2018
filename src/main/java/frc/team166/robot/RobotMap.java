@@ -24,6 +24,7 @@ public class RobotMap {
         public final static int ROLLER_RIGHT = 6;
         public final static int LIFT_MOTOR_A = 7;
         public final static int LIFT_MOTOR_B = 8;
+        public final static int DEPLOYMENT_MOTOR = 9;
     }
 
     public static class Controller {
@@ -81,5 +82,7 @@ public class RobotMap {
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
+        public static final String DEPLOY_MANIPULATOR_TIME = "deployManipulatorTime";
+        public static final String DEPLOY_MANIPULATOR_SPEED = "deployManipulatorSpeed";
     }
 }

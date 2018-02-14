@@ -7,6 +7,7 @@
 
 package frc.team166.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -25,6 +26,7 @@ public class Manipulator extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
+    WPI_TalonSRX deploymentMotor = new WPI_TalonSRX(RobotMap.CAN.DEPLOYMENT_MOTOR);
     WPI_VictorSPX leftRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_LEFT);
     WPI_VictorSPX rightRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_RIGHT);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
@@ -59,6 +61,8 @@ public class Manipulator extends Subsystem {
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.5);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5);
     }
 
     /**
@@ -86,6 +90,10 @@ public class Manipulator extends Subsystem {
 
     private void closeOuterManipulator() {
         manipulatorOuterSolenoid.set(Value.kReverse);
+    }
+
+    private void deployManipulator() {
+        deploymentMotor.set(Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5));
     }
 
     /**
@@ -180,6 +188,38 @@ public class Manipulator extends Subsystem {
             @Override
             protected void end() {
                 rollers.stopMotor();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+        };
+    }
+
+    public Command DeployManipulator() {
+        return new SubsystemCommand("Deploy Manipulator", this) {
+
+            @Override
+            protected void initialize() {
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.0));
+                deployManipulator();
+            }
+
+            @Override
+            protected void execute() {
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+
+                return isTimedOut();
+            }
+
+            @Override
+            protected void end() {
+                deploymentMotor.stopMotor();
             }
 
             @Override
