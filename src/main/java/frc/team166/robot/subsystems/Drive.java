@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
+import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -48,8 +49,8 @@ public class Drive extends Subsystem {
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-    final static double kP = 1.0 / 60;
-    final static double kI = 0.00003;
+    final static double kP = 1.0 / 100;
+    final static double kI = 0.000085;
     final static double kD = 0;
     final static double kF = 0;
 
@@ -71,6 +72,8 @@ public class Drive extends Subsystem {
         SmartDashboard.putData("XBox", xboxArcade());
         SmartDashboard.putData("Turn -45", turnByDegrees(-45));
         SmartDashboard.putData("Turn 45", turnByDegrees(45));
+        SmartDashboard.putData("Drive .5s", driveTime(2));
+        SmartDashboard.putData("Drive Box", driveBox());
 
         addChild(tempestGyro);
         addChild(m_drive);
@@ -220,6 +223,40 @@ public class Drive extends Subsystem {
                 drivePidController.disable();
             }
         };
+    }
+
+    public Command driveTime(double seconds) {
+        return new SubsystemCommand("Drive Time", this) {
+            @Override
+            protected void initialize() {
+                drivePidController.reset();
+                drivePidController.setSetpoint(tempestGyro.getAngle());
+                drivePidController.enable();
+                setTimeout(seconds);
+            }
+
+            @Override
+            protected void execute() {
+                m_drive.arcadeDrive(.8, angle);
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return isTimedOut();
+            }
+
+            @Override
+            protected void end() {
+                drivePidController.disable();
+            }
+        };
+    }
+
+    public Command driveBox() {
+        return new CommandChain("Box Drive").then(driveTime(1)).then(turnByDegrees(90)).then(driveTime(.5))
+                .then(turnByDegrees(90)).then(driveTime(1)).then(turnByDegrees(90)).then(driveTime(.5))
+                .then(turnByDegrees(90));
+
     }
 
 }
