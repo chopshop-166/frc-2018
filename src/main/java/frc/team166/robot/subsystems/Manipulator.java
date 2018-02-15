@@ -16,9 +16,12 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
 public class Manipulator extends Subsystem {
@@ -42,7 +45,9 @@ public class Manipulator extends Subsystem {
 
     public Manipulator() {
         addChild(rollers);
-        addChild("IR Sensor", irSensor);
+        addChild(irSensor);
+        SmartDashboard.putData("cube pickup", CubePickup());
+        SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
 
         SmartDashboard.putData("Close Outer", CloseOuterManipulator());
         SmartDashboard.putData("Open Outer", OpenOuterManipulator());
@@ -155,6 +160,10 @@ public class Manipulator extends Subsystem {
                 rollers.stopMotor();
             }
         };
+    }
+
+    public Command CubePickupWithLights(int blinkCount) {
+        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
     }
 
     public Command CubeEject() {
