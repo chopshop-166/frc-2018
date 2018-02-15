@@ -22,7 +22,7 @@ public class OI {
         rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
         leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.driveStraight());
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
-        xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
+        // xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
         xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.driveStraight());
 
         //// CREATING BUTTONS

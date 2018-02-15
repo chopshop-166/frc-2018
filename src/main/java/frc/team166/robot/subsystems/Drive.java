@@ -7,7 +7,6 @@
 
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
@@ -127,9 +126,6 @@ public class Drive extends Subsystem {
                 return false;
             }
 
-            /*  @Override
-            protected void end() {
-            }*/
         };
     };
 
@@ -153,10 +149,10 @@ public class Drive extends Subsystem {
                 return false;
             }
 
-            /*    @Override
+            @Override
             protected void end() {
                 drivePidController.disable();
-            } */
+            }
         };
     }
 
@@ -188,10 +184,10 @@ public class Drive extends Subsystem {
 
             }
 
-            /*   @Override
+            @Override
             protected void end() {
                 drivePidController.disable();
-            }  */
+            }
         };
     }
 
@@ -202,8 +198,8 @@ public class Drive extends Subsystem {
                 tempestGyro.reset();
                 drivePidController.reset();
                 drivePidController.enable();
-                drivePidController.setAbsoluteTolerance( Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
-                );
+                drivePidController.setAbsoluteTolerance(Preferences.getInstance()
+                        .getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
                 drivePidController.setSetpoint(degrees);
             }
 
@@ -219,10 +215,10 @@ public class Drive extends Subsystem {
                 return drivePidController.onTarget();
             }
 
-        /*    @Override
+            @Override
             protected void end() {
                 drivePidController.disable();
-            } */
+            }
         };
     }
 
