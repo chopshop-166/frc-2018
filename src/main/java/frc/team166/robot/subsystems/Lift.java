@@ -31,12 +31,14 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.Encoders;
@@ -63,8 +65,10 @@ public class Lift extends PIDSubsystem {
     private static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
     private static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
 
+    private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
+
     //enumerator that will be pulled from for the GoToHeight Command
-    public enum LiftHeight {
+    public enum LiftHeights {
         //will be changed
         kFloor(0), kSwitch(1), kPortal(2), kIntake(3), kScaleLow(4), kScaleHigh(5), kClimb(6), kMaxHeight(7);
 
@@ -72,7 +76,7 @@ public class Lift extends PIDSubsystem {
         private double value;
 
         //
-        LiftHeight(double value) {
+        LiftHeights(double value) {
             this.value = value;
         }
 
@@ -81,16 +85,20 @@ public class Lift extends PIDSubsystem {
         }
     }
 
+    private final static double kMaxLidarDistance = 60;
+
     public Lift() {
         super("Lift", kP, kI, kD, kF);
         setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, -1),
                 Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
-        //creates a child for the encoders
+        //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
         addChild(liftEncoder);
         addChild(topLimitSwitch);
         addChild(bottomLimitSwitch);
+        addChild(liftLidar);
+        addChild(findLiftHeight());
 
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
@@ -99,25 +107,38 @@ public class Lift extends PIDSubsystem {
         Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
+        Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false);
     }
 
     protected double returnPIDInput() {
-        return liftEncoder.getDistance();
+        return findLiftHeight();
     }
 
     protected void usePIDOutput(double output) {
         if (topLimitSwitch.get() == true && output > 0) {
-            setSetpoint(LiftHeight.kMaxHeight.get());
+            setSetpoint(LiftHeights.kMaxHeight.get());
             liftDrive.stopMotor();
             return;
         }
         if (bottomLimitSwitch.get() == true && output < 0) {
             liftEncoder.reset();
-            setSetpoint(LiftHeight.kFloor.get());
+            setSetpoint(LiftHeights.kFloor.get());
             liftDrive.stopMotor();
             return;
         }
         liftDrive.set(output);
+    }
+
+    public double findLiftHeight() {
+        if (Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false) == true) {
+            if (liftLidar.getDistance(true) > kMaxLidarDistance) {
+                return (liftLidar.getDistance(true));
+            } else {
+                return (liftEncoder.getDistance());
+            }
+        } else {
+            return (liftEncoder.getDistance());
+        }
     }
 
     //gear changes
@@ -133,7 +154,7 @@ public class Lift extends PIDSubsystem {
     public void initDefaultCommand() {
     }
 
-    public Command GoToHeight(LiftHeight height, boolean isHighGear) {
+    public Command GoToHeight(LiftHeights height, boolean isHighGear) {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -192,8 +213,8 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command ClimbUp() {
-        return new CommandChain("Climb Up").then(GoToHeight(LiftHeight.kClimb, true))
-                .then(GoToHeight(LiftHeight.kScaleLow, false));
+        return new CommandChain("Climb Up").then(GoToHeight(LiftHeights.kClimb, true))
+                .then(GoToHeight(LiftHeights.kScaleLow, false));
     }
 
     public Command ShiftToHighGear() {

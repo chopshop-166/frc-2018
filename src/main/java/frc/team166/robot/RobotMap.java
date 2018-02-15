@@ -37,6 +37,7 @@ public class RobotMap {
         //changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
+        public final static int liftEncoder = 3;
     }
 
     public static class Buttons {
@@ -74,12 +75,13 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
-        public static final String UP_MAX_SPEED = "Up Max Speed";
-        public static final String DOWN_MAX_SPEED = "Down Max Speed";
+        public static final String UP_MAX_SPEED = "upMaxSpeed";
+        public static final String DOWN_MAX_SPEED = "downMaxSpeed";
 
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
+        public static final String USE_LIDAR = "useLidar";
     }
 }
