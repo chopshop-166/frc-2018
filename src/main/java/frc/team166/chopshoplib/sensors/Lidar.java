@@ -261,17 +261,15 @@ public class Lidar extends SensorBase implements PIDSource {
     }
 
     /**
-     * Enable continous conversion mode on the LiDAR sensor
+     * Change the mode of the LiDAR sensor
+     * @param mode Which mode to change to
      */
-    public void setContinuousMode() {
-        i2cDevice.writeBulk(new byte[] { 0x4d, 0x43 });
-    }
-
-    /**
-     * Enable single step mode on the LiDAR sensor
-     */
-    public void setSingleStepMode() {
-        i2cDevice.writeBulk(new byte[] { 0x4d, 0x53 });
+    public void setMode(Settings.opMode mode) {
+        if (mode == Settings.opMode.CONTINOUS) {
+            i2cDevice.writeBulk(new byte[] { 0x4d, 0x43 });
+        } else if (mode == Settings.opMode.SINGLESTEP) {
+            i2cDevice.writeBulk(new byte[] { 0x4d, 0x53 });
+        }
     }
 
     public Settings querySettings() {
