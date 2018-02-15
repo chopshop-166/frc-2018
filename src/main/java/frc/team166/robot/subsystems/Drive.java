@@ -8,6 +8,7 @@
 package frc.team166.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDController;
@@ -34,12 +35,12 @@ public class Drive extends Subsystem {
     //defines the gyro
     AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
     //defines the left motors as motors and combines the left motors into one motor
-    WPI_TalonSRX m_rearleft = new WPI_TalonSRX(RobotMap.CAN.BACK_LEFT);
-    WPI_TalonSRX m_frontleft = new WPI_TalonSRX(RobotMap.CAN.FRONT_LEFT);
+    WPI_VictorSPX m_rearleft = new WPI_VictorSPX(RobotMap.CAN.BACK_LEFT);
+    WPI_VictorSPX m_frontleft = new WPI_VictorSPX(RobotMap.CAN.FRONT_LEFT);
     SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontleft, m_rearleft);
     //defines the right motors as motors and combines the left motors into one motor
-    WPI_TalonSRX m_rearright = new WPI_TalonSRX(RobotMap.CAN.BACK_RIGHT);
-    WPI_TalonSRX m_frontright = new WPI_TalonSRX(RobotMap.CAN.FRONT_RIGHT);
+    WPI_VictorSPX m_rearright = new WPI_VictorSPX(RobotMap.CAN.BACK_RIGHT);
+    WPI_VictorSPX m_frontright = new WPI_VictorSPX(RobotMap.CAN.FRONT_RIGHT);
     SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
 
     /**defines the left and right motors defined above into a differential drive
@@ -53,18 +54,21 @@ public class Drive extends Subsystem {
     final static double kD = 0;
     final static double kF = 0;
 
+    //defines a new double that is going to be used in the line that defines the drive type
+    double angle;
+
     //PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
     PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
         //this assigns the output to the angle (double) defined later in the code)
         angle = value;
     });
 
-    //defines a new double that is going to be used in the line that defines the drive type
-    double angle;
+    final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
+    final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
 
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
-        SmartDashboard.putData(Ebrake());
+
         SmartDashboard.putData("XBox", xboxArcade());
         SmartDashboard.putData("Turn -45", turnByDegrees(-45));
         SmartDashboard.putData("Turn 45", turnByDegrees(45));
@@ -74,11 +78,15 @@ public class Drive extends Subsystem {
         addChild(drivePidController);
         addChild(frontLidar);
 
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.AUTOMATIC_ROBOT_FORWARD_SPEED,
+                AUTOMATIC_ROBOT_FORWARD_SPEED);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
 
         drivePidController.disable();
         drivePidController.setInputRange(0, 360);
         drivePidController.setContinuous();
+        drivePidController.setAbsoluteTolerance(Preferences.getInstance()
+                .getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
     }
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
@@ -102,25 +110,6 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command Ebrake() {
-        return new SubsystemCommand("Ebrake", this) {
-            @Override
-            protected void initialize() {
-                m_drive.stopMotor();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            protected void end() {
-
-            }
-        };
-    }
-
     public Command joystickArcadeTwoStick() {
         return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
@@ -138,9 +127,9 @@ public class Drive extends Subsystem {
                 return false;
             }
 
-            @Override
+            /*  @Override
             protected void end() {
-            }
+            }*/
         };
     };
 
@@ -164,10 +153,10 @@ public class Drive extends Subsystem {
                 return false;
             }
 
-            @Override
+            /*    @Override
             protected void end() {
                 drivePidController.disable();
-            }
+            } */
         };
     }
 
@@ -185,7 +174,8 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1), angle);
+                m_drive.arcadeDrive(Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE,
+                        ABSOLUTE_TOLERANCE_ANGLE), angle);
             }
 
             @Override
@@ -198,10 +188,10 @@ public class Drive extends Subsystem {
 
             }
 
-            @Override
+            /*   @Override
             protected void end() {
                 drivePidController.disable();
-            }
+            }  */
         };
     }
 
@@ -212,7 +202,8 @@ public class Drive extends Subsystem {
                 tempestGyro.reset();
                 drivePidController.reset();
                 drivePidController.enable();
-                drivePidController.setAbsoluteTolerance(3);
+                drivePidController.setAbsoluteTolerance( Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
+                );
                 drivePidController.setSetpoint(degrees);
             }
 
@@ -228,10 +219,10 @@ public class Drive extends Subsystem {
                 return drivePidController.onTarget();
             }
 
-            @Override
+        /*    @Override
             protected void end() {
                 drivePidController.disable();
-            }
+            } */
         };
     }
 
