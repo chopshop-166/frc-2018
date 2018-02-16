@@ -44,6 +44,7 @@ public class RobotMap {
         //changes button ports into integers
         public final static int XboxAbutton = 1;
         public final static int XboxXbutton = 3;
+        public final static int JoystickTrigger = 1;
     }
 
     public static class Encoders {
@@ -82,6 +83,10 @@ public class RobotMap {
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
+
+        public static final String AUTOMATIC_ROBOT_FORWARD_SPEED = "automaticrobotforwardspeed";
+        public static final String ABSOLUTE_TOLERANCE_ANGLE = "absolutetoleranceangle";
         public static final String USE_LIDAR = "useLidar";
     }
+
 }
