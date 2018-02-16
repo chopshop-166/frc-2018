@@ -24,12 +24,17 @@ deploy {
         }
     }
 }
+
+repositories {
+    mavenCentral()
+}
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
