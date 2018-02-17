@@ -70,10 +70,8 @@ public class Lift extends PIDSubsystem {
         //will be changed
         kFloor(0), kSwitch(1), kPortal(2), kIntake(3), kScaleLow(4), kScaleHigh(5), kClimb(6), kMaxHeight(7);
 
-        @SuppressWarnings("MemberName")
         private double value;
 
-        //
         LiftHeights(double value) {
             this.value = value;
         }
