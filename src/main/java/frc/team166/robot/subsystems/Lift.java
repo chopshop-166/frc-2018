@@ -47,7 +47,7 @@ public class Lift extends PIDSubsystem {
     DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
     // Defines Encoders 
     Encoder liftEncoder = new Encoder(RobotMap.Encoders.LIFT_A, RobotMap.Encoders.LIFT_B);
-    // TODO we still need to calculate this
+    // we still need to calculate this
     private final double encoderDistancePerTick = 0.01;
     // Defines Motors 
     WPI_TalonSRX liftMotorA = new WPI_TalonSRX(RobotMap.CAN.LIFT_MOTOR_A);
@@ -70,10 +70,8 @@ public class Lift extends PIDSubsystem {
         //will be changed
         kFloor(0), kSwitch(1), kPortal(2), kIntake(3), kScaleLow(4), kScaleHigh(5), kClimb(6), kMaxHeight(7);
 
-        @SuppressWarnings("MemberName")
         private double value;
 
-        //
         LiftHeights(double value) {
             this.value = value;
         }
