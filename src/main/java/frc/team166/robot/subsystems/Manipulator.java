@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.RobotMap;
 
-public class Manipulator extends Subsystem {
+public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
@@ -31,18 +31,26 @@ public class Manipulator extends Subsystem {
     WPI_VictorSPX rightRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_RIGHT);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-    DoubleSolenoid manipulatorInnerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
+    DoubleSolenoid innerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_B);
-    DoubleSolenoid manipulatorOuterSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
+    DoubleSolenoid outerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
+    AnalogInput potentiometer = new AnalogInput(RobotMap.AnalogInputs.potentiometer);
 
     double ROLLER_RADIUS = 1.4375; //inches
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
+    private static double kPatrick = Preferences.getInstance().getDouble(RobotMap.Preferences.K_PATRICK, 1);
+    private static double kIbsen = Preferences.getInstance().getDouble(RobotMap.Preferences.K_IBSEN, 1);
+    private static double kDerrick = Preferences.getInstance().getDouble(RobotMap.Preferences.K_DERRICK, 1);
+    private static double kForbath = Preferences.getInstance().getDouble(RobotMap.Preferences.K_FORBATH, 1);
+
     public Manipulator() {
+        super("Manipulator (AKA Chadwick)", kPatrick, kIbsen, kDerrick, kForbath);
+
         addChild(rollers);
         addChild("IR Sensor", irSensor);
 
@@ -57,12 +65,17 @@ public class Manipulator extends Subsystem {
         rightRoller.setInverted(true);
 
         //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_PATRICK, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_IBSEN, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_DERRICK, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_FORBATH, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
         Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.5);
         Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
     }
 
     /**
@@ -72,28 +85,32 @@ public class Manipulator extends Subsystem {
      * 
      * @return The voltage from the IR sensor
      */
+    protected double returnPIDInput() {
+        return potentiometer.pidGet();
+    }
+
+    protected void usePIDOutput(double output) {
+        deploymentMotor.set(output);
+    }
+
     private double getIRDistance() {
         return irSensor.getVoltage(); //Manipulate this data pending experimentation
     }
 
     private void openInnerManipulator() {
-        manipulatorInnerSolenoid.set(Value.kForward);
+        innerSolenoid.set(Value.kForward);
     }
 
     private void closeInnerManipulator() {
-        manipulatorInnerSolenoid.set(Value.kReverse);
+        innerSolenoid.set(Value.kReverse);
     }
 
     private void openOuterManipulator() {
-        manipulatorOuterSolenoid.set(Value.kForward);
+        outerSolenoid.set(Value.kForward);
     }
 
     private void closeOuterManipulator() {
-        manipulatorOuterSolenoid.set(Value.kReverse);
-    }
-
-    private void deployManipulator() {
-        deploymentMotor.set(Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5));
+        outerSolenoid.set(Value.kReverse);
     }
 
     /**
@@ -202,8 +219,8 @@ public class Manipulator extends Subsystem {
 
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.0));
-                deployManipulator();
+                setSetpoint(
+                        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5));
             }
 
             @Override

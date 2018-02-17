@@ -38,6 +38,7 @@ public class RobotMap {
         //changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
+        public final static int potentiometer = 3;
     }
 
     public static class Buttons {
@@ -75,6 +76,10 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
+        public static final String K_PATRICK = "kPatrick";
+        public static final String K_IBSEN = "kIbsen";
+        public static final String K_DERRICK = "kDerrick";
+        public static final String K_FORBATH = "kForbath";
         public static final String UP_MAX_SPEED = "Up Max Speed";
         public static final String DOWN_MAX_SPEED = "Down Max Speed";
 
@@ -84,5 +89,6 @@ public class RobotMap {
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
         public static final String DEPLOY_MANIPULATOR_TIME = "deployManipulatorTime";
         public static final String DEPLOY_MANIPULATOR_SPEED = "deployManipulatorSpeed";
+        public static final String MANIPULATOR_HORIZONTAL_INPUT = "manipulatorHorizontalInput";
     }
 }
