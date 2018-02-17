@@ -70,7 +70,9 @@ public class CommandChain extends CommandGroup {
      */
     private void addCommands(Command... cmds) {
         if (cmds.length == 1) {
-            addSequential(cmds[0]);
+            if (cmds[0] != null) {
+                addSequential(cmds[0]);
+            }
         } else if (cmds.length != 0) {
             for (Command c : cmds) {
                 if (c != null) {
@@ -88,7 +90,9 @@ public class CommandChain extends CommandGroup {
      */
     private void addCommands(double timeout, Command... cmds) {
         if (cmds.length == 1) {
-            addSequential(cmds[0], timeout);
+            if (cmds[0] != null) {
+                addSequential(cmds[0], timeout);
+            }
         } else if (cmds.length != 0) {
             for (Command c : cmds) {
                 if (c != null) {
