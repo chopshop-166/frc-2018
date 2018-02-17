@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -37,7 +38,7 @@ public class Manipulator extends PIDSubsystem {
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
-    AnalogInput potentiometer = new AnalogInput(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
+    AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
     double ROLLER_RADIUS = 1.4375; //inches
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
