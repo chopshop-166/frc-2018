@@ -72,7 +72,7 @@ public class Drive extends Subsystem {
         SmartDashboard.putData("XBox", xboxArcade());
         SmartDashboard.putData("Turn -45", turnByDegrees(-45));
         SmartDashboard.putData("Turn 45", turnByDegrees(45));
-        SmartDashboard.putData("Drive .5s", driveTime(2));
+        SmartDashboard.putData("Drive 2s", driveTime(2, .6));
         SmartDashboard.putData("Drive Box", driveBox());
 
         addChild(tempestGyro);
@@ -225,7 +225,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command driveTime(double seconds) {
+    public Command driveTime(double seconds, double speed) {
         return new SubsystemCommand("Drive Time", this) {
             @Override
             protected void initialize() {
@@ -237,7 +237,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(.8, angleCorrection);
+                m_drive.arcadeDrive(speed, angleCorrection);
             }
 
             @Override
@@ -253,8 +253,8 @@ public class Drive extends Subsystem {
     }
 
     public Command driveBox() {
-        return new CommandChain("Box Drive").then(driveTime(1)).then(turnByDegrees(90)).then(driveTime(.5))
-                .then(turnByDegrees(90)).then(driveTime(1)).then(turnByDegrees(90)).then(driveTime(.5))
+        return new CommandChain("Box Drive").then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
+                .then(turnByDegrees(90)).then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
                 .then(turnByDegrees(90));
 
     }
