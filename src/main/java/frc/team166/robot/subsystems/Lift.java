@@ -204,6 +204,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
+                disengageBrake();
             }
 
             @Override
