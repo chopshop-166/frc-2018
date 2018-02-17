@@ -7,13 +7,12 @@
 
 package frc.team166.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class LED extends Subsystem {
 
@@ -26,15 +25,10 @@ public class LED extends Subsystem {
     DigitalOutput blue = new DigitalOutput(2);
 
     public LED() {
-        SmartDashboard.putData("green", greenOn());
-        SmartDashboard.putData("red", redOn());
-        SmartDashboard.putData("blue", blueOn());
-        SmartDashboard.putData("cyan", cyanOn());
-        SmartDashboard.putData("light team color", lightTeamColor());
-        SmartDashboard.putData("flash team color", blinkTeamColor());
-        SmartDashboard.putData("flash green", blinkGreen(5));
+
     }
 
+    // METHODS
     private void allOff() {
         red.set(false);
         green.set(false);
@@ -68,16 +62,42 @@ public class LED extends Subsystem {
         }
     }
 
-    public Command greenOn() {
+    // COMMANDS
+    public Command blinkGreen(int numberOfBlinks) {
         return new SubsystemCommand(this) {
+            double lastUpdateTime = System.currentTimeMillis();
+            boolean isOn = true;
+            double count = 0;
+
             @Override
             protected void initialize() {
+                count = 0;
                 green.set(true);
             }
 
             @Override
+            protected void execute() {
+                if (System.currentTimeMillis() >= lastUpdateTime + 250) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    if (isOn) {
+                        green.set(false);
+                        isOn = false;
+                        count++;
+                    } else {
+                        green.set(true);
+                        isOn = true;
+
+                    }
+                }
+            }
+
+            @Override
             protected boolean isFinished() {
-                return false;
+                if (count >= numberOfBlinks) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             @Override
@@ -87,11 +107,28 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command redOn() {
+    public Command blinkTeamColor() {
         return new SubsystemCommand(this) {
+            double lastUpdateTime = System.currentTimeMillis();
+            boolean isOn = true;
+
             @Override
             protected void initialize() {
-                red.set(true);
+                setTeamColor(true);
+            }
+
+            @Override
+            protected void execute() {
+                if (System.currentTimeMillis() >= lastUpdateTime + 750) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    if (isOn) {
+                        setTeamColor(false);
+                        isOn = false;
+                    } else {
+                        setTeamColor(true);
+                        isOn = true;
+                    }
+                }
             }
 
             @Override
@@ -101,7 +138,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                red.set(false);
+                setTeamColor(false);
             }
         };
     }
@@ -146,6 +183,25 @@ public class LED extends Subsystem {
         };
     }
 
+    public Command greenOn() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                green.set(true);
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
+                green.set(false);
+            }
+        };
+    }
+
     public Command lightTeamColor() {
         return new SubsystemCommand(this) {
             @Override
@@ -165,28 +221,11 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command blinkTeamColor() {
+    public Command redOn() {
         return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            boolean isOn = true;
-
             @Override
             protected void initialize() {
-                setTeamColor(true);
-            }
-
-            @Override
-            protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 750) {
-                    lastUpdateTime = System.currentTimeMillis();
-                    if (isOn) {
-                        setTeamColor(false);
-                        isOn = false;
-                    } else {
-                        setTeamColor(true);
-                        isOn = true;
-                    }
-                }
+                red.set(true);
             }
 
             @Override
@@ -196,52 +235,9 @@ public class LED extends Subsystem {
 
             @Override
             protected void end() {
-                setTeamColor(false);
+                red.set(false);
             }
         };
     }
 
-    public Command blinkGreen(int numberOfBlinks) {
-        return new SubsystemCommand(this) {
-            double lastUpdateTime = System.currentTimeMillis();
-            boolean isOn = true;
-            double count = 0;
-
-            @Override
-            protected void initialize() {
-                count = 0;
-                green.set(true);
-            }
-
-            @Override
-            protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 250) {
-                    lastUpdateTime = System.currentTimeMillis();
-                    if (isOn) {
-                        green.set(false);
-                        isOn = false;
-                        count++;
-                    } else {
-                        green.set(true);
-                        isOn = true;
-
-                    }
-                }
-            }
-
-            @Override
-            protected boolean isFinished() {
-                if (count >= numberOfBlinks) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            protected void end() {
-                green.set(false);
-            }
-        };
-    }
 }
