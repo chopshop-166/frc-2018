@@ -8,7 +8,6 @@
 package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -28,8 +27,6 @@ import frc.team166.robot.subsystems.LED;
  */
 public class Robot extends TimedRobot {
     public static final LED led = new LED();
-    //this just adds a drive subsystem
-    public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static OI m_oi;
