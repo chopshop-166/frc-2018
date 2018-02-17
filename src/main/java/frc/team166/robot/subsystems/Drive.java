@@ -55,12 +55,12 @@ public class Drive extends Subsystem {
     final static double kF = 0;
 
     //defines a new double that is going to be used in the line that defines the drive type
-    double angle;
+    double angleCorrection;
 
     //PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
     PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
         //this assigns the output to the angle (double) defined later in the code)
-        angle = value;
+        angleCorrection = value;
     });
 
     final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
@@ -144,7 +144,7 @@ public class Drive extends Subsystem {
             @Override
             protected void execute() {
                 m_drive.arcadeDrive(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angle);
+                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft), angleCorrection);
             }
 
             @Override
@@ -167,14 +167,14 @@ public class Drive extends Subsystem {
             @Override
             protected void initialize() {
                 drivePidController.setSetpoint(tempestGyro.getAngle());
-                drivePidController.enable();
                 drivePidController.reset();
+                drivePidController.enable();
             }
 
             @Override
             protected void execute() {
                 m_drive.arcadeDrive(Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE,
-                        ABSOLUTE_TOLERANCE_ANGLE), angle);
+                        ABSOLUTE_TOLERANCE_ANGLE), angleCorrection);
             }
 
             @Override
@@ -200,16 +200,16 @@ public class Drive extends Subsystem {
             protected void initialize() {
                 tempestGyro.reset();
                 drivePidController.reset();
-                drivePidController.enable();
                 drivePidController.setAbsoluteTolerance(Preferences.getInstance()
                         .getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
                 drivePidController.setSetpoint(degrees);
+                drivePidController.enable();
             }
 
             @Override
             protected void execute() {
-                SmartDashboard.putNumber("Drive Angle", angle);
-                m_drive.arcadeDrive(0.0, angle);
+                SmartDashboard.putNumber("Drive Angle", angleCorrection);
+                m_drive.arcadeDrive(0.0, angleCorrection);
 
             }
 
@@ -237,7 +237,7 @@ public class Drive extends Subsystem {
 
             @Override
             protected void execute() {
-                m_drive.arcadeDrive(.8, angle);
+                m_drive.arcadeDrive(.8, angleCorrection);
             }
 
             @Override
