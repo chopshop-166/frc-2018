@@ -116,7 +116,7 @@ public class Lift extends PIDSubsystem {
         liftBrake.set(Value.kForward);
     }
 
-    private void dontBrake() {
+    private void disengageBrake() {
         liftBrake.set(Value.kReverse);
     }
 
@@ -164,7 +164,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                dontBrake();
+                disengageBrake();
                 if (isHighGear == true) {
                     shiftToHighGear();
                 } else {
@@ -184,7 +184,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
-                dontBrake();
+                disengageBrake();
             }
 
             @Override
@@ -221,7 +221,7 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command ClimbUp() {
-        return new CommandChain("Climb Up").then(DontBrake()).then(ShiftToHighGear())
+        return new CommandChain("Climb Up").then(DisengageBrake()).then(ShiftToHighGear())
                 .then(GoToHeight(LiftHeights.kClimb, true)).then(ShiftToLowGear())
                 .then(GoToHeight(LiftHeights.kScaleLow, false)).then(Brake());
     }
@@ -238,7 +238,7 @@ public class Lift extends PIDSubsystem {
         return new ActionCommand("Brake", this, this::brake);
     }
 
-    public Command DontBrake() {
-        return new ActionCommand("Don't Brake", this, this::dontBrake);
+    public Command DisengageBrake() {
+        return new ActionCommand("Don't Brake", this, this::disengageBrake);
     }
 }
