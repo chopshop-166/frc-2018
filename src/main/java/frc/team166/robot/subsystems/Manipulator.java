@@ -7,15 +7,17 @@
 
 package frc.team166.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
@@ -24,26 +26,37 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 
-public class Manipulator extends Subsystem {
+public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
+    WPI_TalonSRX deploymentMotor = new WPI_TalonSRX(RobotMap.CAN.DEPLOYMENT_MOTOR);
     WPI_VictorSPX leftRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_LEFT);
     WPI_VictorSPX rightRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_RIGHT);
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
-    DoubleSolenoid manipulatorInnerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
+    DoubleSolenoid innerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_B);
-    DoubleSolenoid manipulatorOuterSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
+    DoubleSolenoid outerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
+    AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
     double ROLLER_RADIUS = 1.4375; //inches
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
+    private static double kP_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
+    private static double kI_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
+    private static double kD_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
+    private static double kF_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
+
     public Manipulator() {
+        super("Manipulator (AKA Chadwick)", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
+
+        setAbsoluteTolerance(5);
+
         addChild(rollers);
         addChild(irSensor);
         SmartDashboard.putData("cube pickup", CubePickup());
@@ -60,10 +73,17 @@ public class Manipulator extends Subsystem {
         rightRoller.setInverted(true);
 
         //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.5);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
     }
 
     /**
@@ -73,24 +93,32 @@ public class Manipulator extends Subsystem {
      * 
      * @return The voltage from the IR sensor
      */
+    protected double returnPIDInput() {
+        return potentiometer.pidGet();
+    }
+
+    protected void usePIDOutput(double output) {
+        deploymentMotor.set(output);
+    }
+
     private double getIRDistance() {
         return irSensor.getVoltage(); //Manipulate this data pending experimentation
     }
 
     private void openInnerManipulator() {
-        manipulatorInnerSolenoid.set(Value.kForward);
+        innerSolenoid.set(Value.kForward);
     }
 
     private void closeInnerManipulator() {
-        manipulatorInnerSolenoid.set(Value.kReverse);
+        innerSolenoid.set(Value.kReverse);
     }
 
     private void openOuterManipulator() {
-        manipulatorOuterSolenoid.set(Value.kForward);
+        outerSolenoid.set(Value.kForward);
     }
 
     private void closeOuterManipulator() {
-        manipulatorOuterSolenoid.set(Value.kReverse);
+        outerSolenoid.set(Value.kReverse);
     }
 
     /**
@@ -189,6 +217,33 @@ public class Manipulator extends Subsystem {
             @Override
             protected void end() {
                 rollers.stopMotor();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+        };
+    }
+
+    public Command DeployManipulator() {
+        return new SubsystemCommand("Deploy Manipulator", this) {
+
+            @Override
+            protected void initialize() {
+                setSetpoint(
+                        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5));
+            }
+
+            @Override
+            protected void execute() {
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+
+                return onTarget();
             }
 
             @Override

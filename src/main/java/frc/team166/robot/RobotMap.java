@@ -24,6 +24,7 @@ public class RobotMap {
         public final static int ROLLER_RIGHT = 6;
         public final static int LIFT_MOTOR_A = 7;
         public final static int LIFT_MOTOR_B = 8;
+        public final static int DEPLOYMENT_MOTOR = 9;
     }
 
     public static class Controller {
@@ -38,6 +39,7 @@ public class RobotMap {
         public final static int tempestgyro = 1;
         public final static int IR = 2;
         public final static int liftEncoder = 3;
+        public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
 
     public static class Buttons {
@@ -78,16 +80,22 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
-        public static final String UP_MAX_SPEED = "upMaxSpeed";
-        public static final String DOWN_MAX_SPEED = "downMaxSpeed";
+        public static final String K_P_MANIPULATOR = "kP_Manipulator";
+        public static final String K_I_MANIPULATOR = "kI_Manipulator";
+        public static final String K_D_MANIPULATOR = "kD_Manipulator";
+        public static final String K_F_MANIPULATOR = "kF_Manipulator";
+        public static final String UP_MAX_SPEED = "Up Max Speed";
+        public static final String DOWN_MAX_SPEED = "Down Max Speed";
 
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
         public static final String CUBE_EJECT_WAIT_TIME = "cubeEjectWaitTime";
-
         public static final String AUTOMATIC_ROBOT_FORWARD_SPEED = "automaticrobotforwardspeed";
         public static final String ABSOLUTE_TOLERANCE_ANGLE = "absolutetoleranceangle";
         public static final String USE_LIDAR = "useLidar";
+        public static final String DEPLOY_MANIPULATOR_TIME = "deployManipulatorTime";
+        public static final String DEPLOY_MANIPULATOR_SPEED = "deployManipulatorSpeed";
+        public static final String MANIPULATOR_HORIZONTAL_INPUT = "manipulatorHorizontalInput";
     }
 }
