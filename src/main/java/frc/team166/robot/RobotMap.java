@@ -38,7 +38,7 @@ public class RobotMap {
         //changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
-        public final static int potentiometer = 3;
+        public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
 
     public static class Buttons {
