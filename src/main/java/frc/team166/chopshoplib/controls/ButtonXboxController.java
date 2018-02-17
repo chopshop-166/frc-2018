@@ -28,14 +28,14 @@ public class ButtonXboxController extends XboxController {
     }
 
     /**
-        * Get a button from this joystick
-        * <p>
-        * Returns the sepcified button of a joystick without having to explicitly create
-        * each button.
-        * 
-        * @param buttonId The index of the button to accesss
-        * @return The button object for the given ID
-        */
+    * Get a button from this joystick
+    * <p>
+    * Returns the sepcified button of a joystick without having to explicitly create
+    * each button.
+    * 
+    * @param buttonId The index of the button to accesss
+    * @return The button object for the given ID
+    */
     public Button getButton(int buttonId) {
         if (buttons.size() <= buttonId) {
             for (int i = buttons.size(); i <= buttonId; i++) {
@@ -49,7 +49,6 @@ public class ButtonXboxController extends XboxController {
         kBumperLeft(5), kBumperRight(6), kStickLeft(9), kStickRight(10), kA(1), kB(2), kX(3), kY(4), kBack(7), kStart(
                 8);
 
-        @SuppressWarnings("MemberName")
         private int value;
 
         xBoxButton(int value) {

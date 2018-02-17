@@ -35,7 +35,8 @@
             "label": "Shuffleboard",
             "type": "shell",
             "command": ".\\gradlew shuffleboard",
-            "group": "build"
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }
