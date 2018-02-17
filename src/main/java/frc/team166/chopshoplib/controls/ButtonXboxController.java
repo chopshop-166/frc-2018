@@ -49,7 +49,6 @@ public class ButtonXboxController extends XboxController {
         kBumperLeft(5), kBumperRight(6), kStickLeft(9), kStickRight(10), kA(1), kB(2), kX(3), kY(4), kBack(7), kStart(
                 8);
 
-        @SuppressWarnings("MemberName")
         private int value;
 
         xBoxButton(int value) {
