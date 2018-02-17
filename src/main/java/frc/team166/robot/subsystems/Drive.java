@@ -80,9 +80,9 @@ public class Drive extends Subsystem {
         addChild(drivePidController);
         addChild(frontLidar);
 
-        Preferences.getInstance().getDouble(RobotMap.Preferences.AUTOMATIC_ROBOT_FORWARD_SPEED,
+        Preferences.getInstance().putDouble(RobotMap.Preferences.AUTOMATIC_ROBOT_FORWARD_SPEED,
                 AUTOMATIC_ROBOT_FORWARD_SPEED);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE);
 
         drivePidController.disable();
         drivePidController.setInputRange(0, 360);

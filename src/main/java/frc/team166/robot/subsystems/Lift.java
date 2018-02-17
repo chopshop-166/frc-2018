@@ -96,14 +96,14 @@ public class Lift extends PIDSubsystem {
         addChild(liftLidar);
         addChild(findLiftHeight());
 
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
-        Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_P, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_I, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_D, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_F, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
+        Preferences.getInstance().putBoolean(RobotMap.Preferences.USE_LIDAR, false);
     }
 
     protected double returnPIDInput() {

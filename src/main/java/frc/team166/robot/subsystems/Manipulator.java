@@ -7,31 +7,33 @@
 
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Preferences;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
     WPI_TalonSRX deploymentMotor = new WPI_TalonSRX(RobotMap.CAN.DEPLOYMENT_MOTOR);
+
     WPI_VictorSPX leftRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_LEFT);
     WPI_VictorSPX rightRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_RIGHT);
+
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
     DoubleSolenoid innerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
@@ -40,6 +42,7 @@ public class Manipulator extends PIDSubsystem {
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
+
     AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
     double ROLLER_RADIUS = 1.4375; //inches
@@ -58,52 +61,36 @@ public class Manipulator extends PIDSubsystem {
 
         addChild(rollers);
         addChild(irSensor);
-        SmartDashboard.putData("cube pickup", CubePickup());
-        SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
-
-        SmartDashboard.putData("Close Outer", CloseOuterManipulator());
-        SmartDashboard.putData("Open Outer", OpenOuterManipulator());
-        SmartDashboard.putData("Close Inner", CloseInnerManipulator());
-        SmartDashboard.putData("Open Inner", OpenInnerManipulator());
-        SmartDashboard.putData("Cube Pickup", CubePickup());
-        SmartDashboard.putData("Cube Eject", CubeEject());
 
         leftRoller.setInverted(true);
         rightRoller.setInverted(true);
 
-        //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.5);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
+        // Adding Commands To SmartDashboard
+        SmartDashboard.putData("Close Outer", CloseOuterManipulator());
+        SmartDashboard.putData("Open Outer", OpenOuterManipulator());
+        SmartDashboard.putData("Close Inner", CloseInnerManipulator());
+        SmartDashboard.putData("Open Inner", OpenInnerManipulator());
+        SmartDashboard.putData("Cube Eject", CubeEject());
+        SmartDashboard.putData("Cube Pickup", CubePickup());
+        SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
+        SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
+        SmartDashboard.putData("Re-Enable Potentiometer", ReEnablePotentiometer());
+
+        // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
+        Preferences.getInstance().putDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_SPEED, 0.5);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.DEPLOY_MANIPULATOR_TIME, 1.5);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.CUBE_EJECT_WAIT_TIME, 5.0);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
+        Preferences.getInstance().putDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
     }
 
-    /**
-     * Gets IR voltage
-     * <p>
-     * Returns the voltage value output from the IR sensor
-     * 
-     * @return The voltage from the IR sensor
-     */
-    protected double returnPIDInput() {
-        return potentiometer.pidGet();
-    }
-
-    protected void usePIDOutput(double output) {
-        deploymentMotor.set(output);
-    }
-
-    private double getIRDistance() {
-        return irSensor.getVoltage(); //Manipulate this data pending experimentation
-    }
-
+    // METHODS  
     private void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
@@ -120,10 +107,22 @@ public class Manipulator extends PIDSubsystem {
         outerSolenoid.set(Value.kReverse);
     }
 
+    private double getIRDistance() {
+        return irSensor.getVoltage(); //Manipulate this data pending experimentation
+    }
+
+    protected double returnPIDInput() {
+        return potentiometer.pidGet();
+    }
+
+    protected void usePIDOutput(double output) {
+        deploymentMotor.set(output);
+    }
+
     /**
      * Sets motors to intake mode
      * <p>
-     * Sets the motors to 4/5 power inward to take in a cube on the field
+     * Turns motors on to intake a cube
      */
     private void setMotorsToIntake() {
         //change once you find optimal motor speed
@@ -133,13 +132,13 @@ public class Manipulator extends PIDSubsystem {
     /**
      * Sets motors to discharge mode
      * <p>
-     * Sets the motors to 4/5 power outward to eject a stored cube
+     * Turns motors on to discharge a cube
      */
     private void setMotorsToDischarge() {
         rollers.set(Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.4)); //change once you find optimal motor speed
     }
 
-    //COMMANDS
+    // COMMANDS
     public void initDefaultCommand() {
     };
 
@@ -161,36 +160,6 @@ public class Manipulator extends PIDSubsystem {
 
     public Command CubeDrop() {
         return new ActionCommand("Drop Cube", this, this::openInnerManipulator);
-    }
-
-    public Command CubePickup() {
-        return new SubsystemCommand("Pick Up Cube", this) {
-
-            @Override
-            protected void initialize() {
-                openOuterManipulator();
-                setMotorsToIntake();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                if (getIRDistance() > Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
-                        1.0)) {
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            protected void end() {
-                closeOuterManipulator();
-                rollers.stopMotor();
-            }
-        };
-    }
-
-    public Command CubePickupWithLights(int blinkCount) {
-        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
     }
 
     public Command CubeEject() {
@@ -225,6 +194,36 @@ public class Manipulator extends PIDSubsystem {
         };
     }
 
+    public Command CubePickup() {
+        return new SubsystemCommand("Pick Up Cube", this) {
+
+            @Override
+            protected void initialize() {
+                openOuterManipulator();
+                setMotorsToIntake();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (getIRDistance() > Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE,
+                        1.0)) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            protected void end() {
+                closeOuterManipulator();
+                rollers.stopMotor();
+            }
+        };
+    }
+
+    public Command CubePickupWithLights(int blinkCount) {
+        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
+    }
+
     public Command DeployManipulator() {
         return new SubsystemCommand("Deploy Manipulator", this) {
 
@@ -251,4 +250,41 @@ public class Manipulator extends PIDSubsystem {
             }
         };
     }
+
+    public Command DeployManipulatorWithJoystick() {
+        return new SubsystemCommand("Deploy Manipulator With Joystick", this) {
+            @Override
+            protected void initialize() {
+                disable();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void execute() {
+                deploymentMotor.set(0);
+
+            }
+
+        };
+    }
+
+    public Command ReEnablePotentiometer() {
+        return new SubsystemCommand("Re-Enable Potentiometer", this) {
+            @Override
+            protected void initialize() {
+                enable();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        };
+    }
+
 }
