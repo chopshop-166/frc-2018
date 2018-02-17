@@ -189,13 +189,25 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
+                if (topLimitSwitch.get() == true || bottomLimitSwitch.get() == true) {
+                    liftDrive.set(0);
+                } else
+                    enable();
             }
 
             @Override
             protected boolean isFinished() {
-                if (topLimitSwitch.get() == true || bottomLimitSwitch.get() == true) {
-                    return true;
-                    else return false;
+                return false;
+            }
+
+            @Override
+            protected void end() {
+                enable();
+            }
+
+            @Override
+            protected void interrupted() {
+                enable();
             }
         };
     }
