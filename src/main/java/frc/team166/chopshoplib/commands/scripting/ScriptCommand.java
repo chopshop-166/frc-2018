@@ -14,6 +14,7 @@ public class ScriptCommand extends Command {
 
     String script;
     Engine engine;
+    Command generatedCommand;
 
     public static final Engine DEFAULT_ENGINE = new SimpleEngine();
 
@@ -134,13 +135,13 @@ public class ScriptCommand extends Command {
 
     @Override
     protected void initialize() {
-        Command cmd = engine.parseScript(script);
-        cmd.start();
+        generatedCommand = engine.parseScript(script);
+        generatedCommand.start();
     }
 
     @Override
     protected boolean isFinished() {
-        return true;
+        return generatedCommand != null && (generatedCommand.isCanceled() || generatedCommand.isCompleted());
     }
 
 }

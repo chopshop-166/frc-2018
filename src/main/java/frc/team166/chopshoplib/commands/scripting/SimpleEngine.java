@@ -53,8 +53,8 @@ public class SimpleEngine implements Engine {
     public Command parseScript(String script) {
         CommandChain result = new CommandChain(script);
         if (!"".equals(script)) {
-            for (String groupStr : script.split(";")) {
-                Command[] cmds = Arrays.stream(groupStr.split("\\|")).map(this::parseSingleCommand)
+            for (String groupStr : script.trim().split(";")) {
+                Command[] cmds = Arrays.stream(groupStr.split("\\|")).map(String::trim).map(this::parseSingleCommand)
                         .toArray(Command[]::new);
                 result.then(cmds);
             }
