@@ -76,10 +76,10 @@ public class RobotMap {
         public static final String K_I = "kI";
         public static final String K_D = "kD";
         public static final String K_F = "kF";
-        public static final String K_PATRICK = "kPatrick";
-        public static final String K_IBSEN = "kIbsen";
-        public static final String K_DERRICK = "kDerrick";
-        public static final String K_FORBATH = "kForbath";
+        public static final String K_P_MANIPULATOR = "kPatrick";
+        public static final String K_I_MANIPULATOR = "kIbsen";
+        public static final String K_D_MANIPULATOR = "kDerrick";
+        public static final String K_F_MANIPULATOR = "kForbath";
         public static final String UP_MAX_SPEED = "Up Max Speed";
         public static final String DOWN_MAX_SPEED = "Down Max Speed";
 

@@ -43,13 +43,15 @@ public class Manipulator extends PIDSubsystem {
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
     double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
 
-    private static double kPatrick = Preferences.getInstance().getDouble(RobotMap.Preferences.K_PATRICK, 1);
-    private static double kIbsen = Preferences.getInstance().getDouble(RobotMap.Preferences.K_IBSEN, 1);
-    private static double kDerrick = Preferences.getInstance().getDouble(RobotMap.Preferences.K_DERRICK, 1);
-    private static double kForbath = Preferences.getInstance().getDouble(RobotMap.Preferences.K_FORBATH, 1);
+    private static double kP_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
+    private static double kI_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
+    private static double kD_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
+    private static double kF_Manipulator = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
 
     public Manipulator() {
-        super("Manipulator (AKA Chadwick)", kPatrick, kIbsen, kDerrick, kForbath);
+        super("Manipulator (AKA Chadwick)", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
+
+        setAbsoluteTolerance(5);
 
         addChild(rollers);
         addChild("IR Sensor", irSensor);
@@ -65,10 +67,10 @@ public class Manipulator extends PIDSubsystem {
         rightRoller.setInverted(true);
 
         //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_PATRICK, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_IBSEN, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_DERRICK, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_FORBATH, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_I_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_D_MANIPULATOR, 1);
+        Preferences.getInstance().getDouble(RobotMap.Preferences.K_F_MANIPULATOR, 1);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
         Preferences.getInstance().getDouble(RobotMap.Preferences.CUBE_PICKUP_DISTANCE, 0.5);
@@ -231,12 +233,7 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
 
-                return isTimedOut();
-            }
-
-            @Override
-            protected void end() {
-                deploymentMotor.stopMotor();
+                return onTarget();
             }
 
             @Override
