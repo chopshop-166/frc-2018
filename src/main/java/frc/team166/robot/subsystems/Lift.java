@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -57,6 +58,7 @@ public class Lift extends PIDSubsystem {
     WPI_TalonSRX liftMotorB = new WPI_TalonSRX(RobotMap.CAN.LIFT_MOTOR_B);
     // Defines the previus motors as one motor 
     SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
+    DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A, RobotMap.Solenoids.LIFT_BRAKE_B);
     DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
             RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
@@ -114,6 +116,14 @@ public class Lift extends PIDSubsystem {
         return findLiftHeight();
     }
 
+    private void brake() {
+        liftBrake.set(Value.kForward);
+    }
+
+    private void dontBrake() {
+        liftBrake.set(Value.kReverse);
+    }
+
     protected void usePIDOutput(double output) {
         if (topLimitSwitch.get() == true && output > 0) {
             setSetpoint(LiftHeights.kMaxHeight.get());
@@ -158,6 +168,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
+                dontBrake();
                 if (isHighGear == true) {
                     shiftToHighGear();
                 } else {
@@ -177,6 +188,7 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
+                dontBrake();
             }
 
             @Override
@@ -213,8 +225,9 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command ClimbUp() {
-        return new CommandChain("Climb Up").then(GoToHeight(LiftHeights.kClimb, true))
-                .then(GoToHeight(LiftHeights.kScaleLow, false));
+        return new CommandChain("Climb Up").then(DontBrake()).then(ShiftToHighGear())
+                .then(GoToHeight(LiftHeights.kClimb, true)).then(ShiftToLowGear())
+                .then(GoToHeight(LiftHeights.kScaleLow, false)).then(Brake());
     }
 
     public Command ShiftToHighGear() {
@@ -223,5 +236,13 @@ public class Lift extends PIDSubsystem {
 
     public Command ShiftToLowGear() {
         return new ActionCommand("Shift To Low Gear", this, this::shiftToLowGear);
+    }
+
+    public Command Brake() {
+        return new ActionCommand("Brake", this, this::brake);
+    }
+
+    public Command DontBrake() {
+        return new ActionCommand("Don't Brake", this, this::dontBrake);
     }
 }
