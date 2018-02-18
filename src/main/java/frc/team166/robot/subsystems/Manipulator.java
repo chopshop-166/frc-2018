@@ -276,18 +276,7 @@ public class Manipulator extends PIDSubsystem {
     }
 
     public Command ReEnablePotentiometer() {
-        return new SubsystemCommand("Re-Enable Potentiometer", this) {
-            @Override
-            protected void initialize() {
-                enable();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-        };
+        return new ActionCommand("Re-Enable Potentiometer", this, this::enable);
     }
 
 }

@@ -104,7 +104,7 @@ public class Lift extends PIDSubsystem {
         PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.DOWN_MAX_SPEED, 1);
-        Preferences.getInstance().putBoolean(PreferenceStrings.USE_LIDAR, false);
+        PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
     }
 
     protected double returnPIDInput() {
