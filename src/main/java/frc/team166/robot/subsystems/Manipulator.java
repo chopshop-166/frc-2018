@@ -46,9 +46,10 @@ public class Manipulator extends PIDSubsystem {
 
     AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
 
-    double ROLLER_RADIUS = 1.4375; //inches
-    double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0); //feet
-    double OPTIMAL_MOTOR_RATE = 6.81; //ft/s
+    // inches:
+    double ROLLER_RADIUS = 1.4375;
+    // ft:
+    double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
 
     private static double kP_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_P_MANIPULATOR, 1);
     private static double kI_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_I_MANIPULATOR, 1);
@@ -75,20 +76,20 @@ public class Manipulator extends PIDSubsystem {
         SmartDashboard.putData("Cube Pickup", CubePickup());
         SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
         SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
-        SmartDashboard.putData("Re-Enable Potentiometer", ReEnablePotentiometer());
+        SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
         // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_P_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_I_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_D_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_F_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_P_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_I_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_D_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_F_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
     }
 
     // METHODS  
@@ -109,7 +110,7 @@ public class Manipulator extends PIDSubsystem {
     }
 
     private double getIRDistance() {
-        return irSensor.getVoltage(); //Manipulate this data pending experimentation
+        return irSensor.getVoltage();
     }
 
     protected double returnPIDInput() {
@@ -138,7 +139,8 @@ public class Manipulator extends PIDSubsystem {
      */
     private void setMotorsToDischarge() {
         rollers.set(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED,
-                -0.4)); //change once you find optimal motor speed
+                -0.4));
+        // change once you find optimal motor speed
     }
 
     // COMMANDS
@@ -237,19 +239,9 @@ public class Manipulator extends PIDSubsystem {
             }
 
             @Override
-            protected void execute() {
-
-            }
-
-            @Override
             protected boolean isFinished() {
 
                 return onTarget();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }
@@ -269,14 +261,12 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected void execute() {
                 deploymentMotor.set(0);
-
             }
-
         };
     }
 
-    public Command ReEnablePotentiometer() {
-        return new ActionCommand("Re-Enable Potentiometer", this, this::enable);
+    public Command enablePID() {
+        return new ActionCommand("Enable PID", this, this::enable);
     }
 
 }
