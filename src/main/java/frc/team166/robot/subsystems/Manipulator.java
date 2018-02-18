@@ -78,7 +78,7 @@ public class Manipulator extends PIDSubsystem {
         SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
         SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
-        // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
+        //Preferences Are Wanted In The Constructer So They Can Appear On Live Window
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
@@ -93,6 +93,9 @@ public class Manipulator extends PIDSubsystem {
     }
 
     // METHODS  
+    public void reset() {
+        rollers.stopMotor();
+    }
     private void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
@@ -143,7 +146,7 @@ public class Manipulator extends PIDSubsystem {
         // change once you find optimal motor speed
     }
 
-    // COMMANDS
+    //COMMANDS
     public void initDefaultCommand() {
     };
 

@@ -56,6 +56,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        drive.reset();
+        // lift.reset();
+        manipulator.reset();
 
     }
 

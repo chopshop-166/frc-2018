@@ -96,6 +96,11 @@ public class Drive extends Subsystem {
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
         setDefaultCommand(joystickArcadeTwoStick());
+
+    }
+
+    public void reset() {
+        m_drive.stopMotor();
     }
 
     public Command xboxArcade() {
@@ -185,7 +190,7 @@ public class Drive extends Subsystem {
                 if (frontLidar.getDistance(true) <= inches) {
                     return true;
                 } else {
-                    return false;
+                return false;
                 }
 
             }
