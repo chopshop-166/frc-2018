@@ -5,6 +5,4 @@
 # Usage
 
 FRC-2018 is powered by [gradleRIO](http://github.com/Open-RIO/GradleRIO).
-To build robot code, run `BUILD.cmd`.
-To create an Eclipse project for development, run `ECLIPSE.cmd`.
 
