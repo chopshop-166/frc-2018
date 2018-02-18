@@ -80,17 +80,17 @@ public class Manipulator extends PIDSubsystem {
         SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
         // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_P_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_I_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_D_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.K_F_MANIPULATOR, 1);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
-        Preferences.getInstance().putDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_P_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_I_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_D_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_F_MANIPULATOR, 1);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
     }
 
     // METHODS  
