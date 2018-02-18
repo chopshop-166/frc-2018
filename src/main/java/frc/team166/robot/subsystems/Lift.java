@@ -184,7 +184,6 @@ public class Lift extends PIDSubsystem {
             protected void initialize() {
                 disengageBrake();
                 disable();
-                liftDrive.set(0);
             }
 
             @Override
@@ -192,7 +191,8 @@ public class Lift extends PIDSubsystem {
                 if (topLimitSwitch.get() == true || bottomLimitSwitch.get() == true) {
                     liftDrive.set(0);
                 } else
-                    enable();
+                    // TODO change to value from joystick
+                    liftDrive.set(0);
             }
 
             @Override
