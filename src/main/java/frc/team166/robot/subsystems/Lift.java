@@ -39,6 +39,7 @@ import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
 import frc.team166.robot.RobotMap;
+import frc.team166.robot.RobotMap.PreferenceStrings;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Lift extends PIDSubsystem {
@@ -58,10 +59,10 @@ public class Lift extends PIDSubsystem {
     DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
             RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
-    private static double kP = Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
-    private static double kI = Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
-    private static double kD = Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
-    private static double kF = Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
+    private static double kP = Preferences.getInstance().getDouble(PreferenceStrings.K_P, 1);
+    private static double kI = Preferences.getInstance().getDouble(PreferenceStrings.K_I, 1);
+    private static double kD = Preferences.getInstance().getDouble(PreferenceStrings.K_D, 1);
+    private static double kF = Preferences.getInstance().getDouble(PreferenceStrings.K_F, 1);
 
     private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
 
@@ -85,8 +86,8 @@ public class Lift extends PIDSubsystem {
 
     public Lift() {
         super("Lift", kP, kI, kD, kF);
-        setOutputRange(Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, -1),
-                Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1));
+        setOutputRange(Preferences.getInstance().getDouble(PreferenceStrings.DOWN_MAX_SPEED, -1),
+                Preferences.getInstance().getDouble(PreferenceStrings.UP_MAX_SPEED, 1));
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
         //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
@@ -96,14 +97,14 @@ public class Lift extends PIDSubsystem {
         addChild(liftLidar);
         addChild(findLiftHeight());
 
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_P, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_I, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_D, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.K_F, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.UP_MAX_SPEED, 1);
-        Preferences.getInstance().getDouble(RobotMap.Preferences.DOWN_MAX_SPEED, 1);
-        Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_P, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_I, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_D, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_F, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.DOWN_MAX_SPEED, 1);
+        PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
     }
 
     protected double returnPIDInput() {
@@ -134,7 +135,7 @@ public class Lift extends PIDSubsystem {
     }
 
     public double findLiftHeight() {
-        if (Preferences.getInstance().getBoolean(RobotMap.Preferences.USE_LIDAR, false) == true) {
+        if (Preferences.getInstance().getBoolean(PreferenceStrings.USE_LIDAR, false) == true) {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {
                 return (liftLidar.getDistance(true));
             } else {
@@ -187,8 +188,7 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                setSetpointRelative(
-                        Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1));
+                setSetpointRelative(Preferences.getInstance().getDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1));
             }
 
             @Override
@@ -207,8 +207,7 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                setSetpointRelative(
-                        -Preferences.getInstance().getDouble(RobotMap.Preferences.LIFT_UP_DOWN_INCREMENT, 1));
+                setSetpointRelative(-Preferences.getInstance().getDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1));
 
             }
 
