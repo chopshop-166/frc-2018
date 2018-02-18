@@ -240,19 +240,9 @@ public class Manipulator extends PIDSubsystem {
             }
 
             @Override
-            protected void execute() {
-
-            }
-
-            @Override
             protected boolean isFinished() {
 
                 return onTarget();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
         };
     }
@@ -272,9 +262,7 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected void execute() {
                 deploymentMotor.set(0);
-
             }
-
         };
     }
 
