@@ -50,8 +50,7 @@ public class Manipulator extends PIDSubsystem {
     double ROLLER_RADIUS = 1.4375;
     // ft:
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
-    // ft/s:
-    double OPTIMAL_MOTOR_RATE = 6.81;
+
     private static double kP_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_P_MANIPULATOR, 1);
     private static double kI_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_I_MANIPULATOR, 1);
     private static double kD_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_D_MANIPULATOR, 1);
