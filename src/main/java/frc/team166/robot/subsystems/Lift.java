@@ -31,13 +31,16 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.sensors.Lidar;
+import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -105,6 +108,14 @@ public class Lift extends PIDSubsystem {
         PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.DOWN_MAX_SPEED, 1);
         PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
+
+        registerCommands();
+    }
+
+    private void registerCommands() {
+        SmartDashboard.putData("Brake", Brake());
+        SmartDashboard.putData("Shift to Low Gear", ShiftToLowGear());
+        SmartDashboard.putData("Shift to High Gear", ShiftToHighGear());
     }
 
     protected double returnPIDInput() {
@@ -157,6 +168,7 @@ public class Lift extends PIDSubsystem {
 
     //does not do anything
     public void initDefaultCommand() {
+        setDefaultCommand(ManualLift());
     }
 
     public Command GoToHeight(LiftHeights height, boolean isHighGear) {
@@ -189,11 +201,20 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                if (topLimitSwitch.get() == true || bottomLimitSwitch.get() == true) {
+                double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
+                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft);
+
+                if (elevatorControl > 0 && topLimitSwitch.get()) {
                     liftDrive.set(0);
-                } else
-                    // TODO change to value from joystick
+                    return;
+                }
+
+                if (elevatorControl < 0 && bottomLimitSwitch.get()) {
                     liftDrive.set(0);
+                    return;
+                }
+
+                liftDrive.set(elevatorControl);
             }
 
             @Override
