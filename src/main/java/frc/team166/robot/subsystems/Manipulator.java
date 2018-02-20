@@ -74,7 +74,7 @@ public class Manipulator extends PIDSubsystem {
         SmartDashboard.putData("Open Inner", OpenInnerManipulator());
         SmartDashboard.putData("Cube Eject", CubeEject());
         SmartDashboard.putData("Cube Pickup", CubePickup());
-        SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
+        // SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
         SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
         SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
@@ -225,9 +225,9 @@ public class Manipulator extends PIDSubsystem {
         };
     }
 
-    public Command CubePickupWithLights(int blinkCount) {
-        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
-    }
+    // public Command CubePickupWithLights(int blinkCount) {
+    //     return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
+    // }
 
     public Command DeployManipulator() {
         return new SubsystemCommand("Deploy Manipulator", this) {

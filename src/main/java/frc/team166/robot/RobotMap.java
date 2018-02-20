@@ -18,15 +18,15 @@ import edu.wpi.first.wpilibj.Preferences;
 public class RobotMap {
     public static class CAN {
         //changes motor ports into integers
-        public final static int FRONT_RIGHT = 10;
-        public final static int FRONT_LEFT = 5;
-        public final static int BACK_RIGHT = 9;
-        public final static int BACK_LEFT = 6;
-        public final static int ROLLER_LEFT = 4;
-        public final static int ROLLER_RIGHT = 2;
-        public final static int LIFT_MOTOR_A = 7;
-        public final static int LIFT_MOTOR_B = 8;
-        public final static int DEPLOYMENT_MOTOR = 3;
+        public final static int FRONT_RIGHT = 9;
+        public final static int FRONT_LEFT = 4;
+        public final static int BACK_RIGHT = 8;
+        public final static int BACK_LEFT = 5;
+        public final static int ROLLER_LEFT = 3;
+        public final static int ROLLER_RIGHT = 1;
+        public final static int LIFT_MOTOR_A = 6;
+        public final static int LIFT_MOTOR_B = 7;
+        public final static int DEPLOYMENT_MOTOR = 2;
     }
 
     //"GIT er done" -Mr.P "I ask for so little, and get so much less in return"
@@ -54,26 +54,26 @@ public class RobotMap {
 
     public static class Encoders {
         //changes Encoder ports into integers
-        public final static int LIFT_A = 1;
-        public final static int LIFT_B = 2;
+        public final static int LIFT_A = 0;
+        public final static int LIFT_B = 1;
     }
 
     public static class Solenoids {
         //changes Solenoid ports into integers
-        public final static int LIFT_TRANSMISSION_A = 1;
-        public final static int LIFT_TRANSMISSION_B = 2;
-        public final static int MANIPULATOR_SOLENOID_INNER_A = 3;
-        public final static int MANIPULATOR_SOLENOID_INNER_B = 4;
-        public final static int MANIPULATOR_SOLENOID_OUTER_A = 5;
-        public final static int MANIPULATOR_SOLENOID_OUTER_B = 6;
-        public final static int LIFT_BRAKE_A = 7;
-        public final static int LIFT_BRAKE_B = 8;
+        public final static int LIFT_TRANSMISSION_A = 0;
+        public final static int LIFT_TRANSMISSION_B = 1;
+        public final static int MANIPULATOR_SOLENOID_INNER_A = 4;
+        public final static int MANIPULATOR_SOLENOID_INNER_B = 5;
+        public final static int MANIPULATOR_SOLENOID_OUTER_A = 6;
+        public final static int MANIPULATOR_SOLENOID_OUTER_B = 7;
+        public final static int LIFT_BRAKE_A = 2;
+        public final static int LIFT_BRAKE_B = 3;
     }
 
     public static class DigitalInputs {
         //changes digital imput ports into integers
-        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 1;
-        public final static int LIFT_LIMIT_SWITCH_TOP = 2;
+        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 2;
+        public final static int LIFT_LIMIT_SWITCH_TOP = 3;
     }
 
     public static class PreferenceStrings {

@@ -27,7 +27,7 @@ import frc.team166.robot.subsystems.Lift;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final LED led = new LED();
+    // public static final LED led = new LED();
     public static final Drive drive = new Drive();
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();

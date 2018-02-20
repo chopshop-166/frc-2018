@@ -24,7 +24,7 @@ lower lift
 
 package frc.team166.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
@@ -54,8 +54,8 @@ public class Lift extends PIDSubsystem {
     // TODO we still need to calculate this
     private final double encoderDistancePerTick = 0.01;
     // Defines Motors 
-    WPI_TalonSRX liftMotorA = new WPI_TalonSRX(RobotMap.CAN.LIFT_MOTOR_A);
-    WPI_TalonSRX liftMotorB = new WPI_TalonSRX(RobotMap.CAN.LIFT_MOTOR_B);
+    WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
+    WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
     // Defines the previus motors as one motor 
     SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
     DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A, RobotMap.Solenoids.LIFT_BRAKE_B);
@@ -99,6 +99,7 @@ public class Lift extends PIDSubsystem {
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
         addChild(findLiftHeight());
+        liftDrive.setInverted(true);
 
         PreferenceStrings.setDefaultDouble(PreferenceStrings.K_P, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.K_I, 1);
@@ -159,11 +160,11 @@ public class Lift extends PIDSubsystem {
 
     //gear changes
     public void shiftToHighGear() {
-        liftTransmission.set(Value.kForward);
+        liftTransmission.set(Value.kReverse);
     }
 
     public void shiftToLowGear() {
-        liftTransmission.set(Value.kReverse);
+        liftTransmission.set(Value.kForward);
     }
 
     //does not do anything
