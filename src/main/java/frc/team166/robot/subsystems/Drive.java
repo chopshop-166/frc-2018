@@ -95,7 +95,7 @@ public class Drive extends Subsystem {
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(joystickArcadeTwoStick());
+        setDefaultCommand(JoystickArcadeTwoStick());
 
     }
 
