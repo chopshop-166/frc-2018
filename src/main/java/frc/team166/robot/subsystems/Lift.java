@@ -238,6 +238,7 @@ public class Lift extends PIDSubsystem {
                         bottomLimitSwitchCounter++;
                     } else {
                         downStop = true;
+                        liftEncoder.reset();
                     }
                 }
 
