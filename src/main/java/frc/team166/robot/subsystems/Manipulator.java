@@ -93,6 +93,11 @@ public class Manipulator extends PIDSubsystem {
     }
 
     // METHODS  
+    public void reset() {
+        rollers.stopMotor();
+        deploymentMotor.stopMotor();
+    }
+
     private void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
