@@ -147,6 +147,10 @@ public class Lift extends PIDSubsystem {
         liftDrive.set(output);
     }
 
+    public void reset() {
+        liftDrive.stopMotor();
+    }
+
     public double findLiftHeight() {
         if (Preferences.getInstance().getBoolean(PreferenceStrings.USE_LIDAR, false) == true) {
             if (liftLidar.getDistance(true) > kMaxLidarDistance) {

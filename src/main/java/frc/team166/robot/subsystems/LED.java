@@ -10,6 +10,7 @@ package frc.team166.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.robot.RobotMap;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -20,9 +21,9 @@ public class LED extends Subsystem {
     };
 
     //these will be changed from DigitalOutputs to something else when we get real hardware...
-    DigitalOutput red = new DigitalOutput(0);
-    DigitalOutput green = new DigitalOutput(1);
-    DigitalOutput blue = new DigitalOutput(2);
+    DigitalOutput red = new DigitalOutput(RobotMap.DigitalInputs.RED_LED);
+    DigitalOutput green = new DigitalOutput(RobotMap.DigitalInputs.GREEN_LED);
+    DigitalOutput blue = new DigitalOutput(RobotMap.DigitalInputs.BLUE_LED);
 
     public LED() {
 
