@@ -20,10 +20,10 @@ public class OI {
         //defines the joysticks as joysticks and assigns left and right
         leftDriveStick = new ButtonJoystick(RobotMap.Controller.leftcontrol);
         rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
-        leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.driveStraight());
+        leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.DriveStraight());
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
         // xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
-        xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.driveStraight());
+        xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.DriveStraight());
 
         //// CREATING BUTTONS
         // One type of button is a joystick button which is any button on a

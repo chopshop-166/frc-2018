@@ -52,7 +52,7 @@ public class Lift extends PIDSubsystem {
     // Defines Encoders 
     Encoder liftEncoder = new Encoder(RobotMap.Encoders.LIFT_A, RobotMap.Encoders.LIFT_B);
     // TODO we still need to calculate this
-    private final double encoderDistancePerTick = 0.01;
+    private final double encoderDistancePerTick = 0.01636;
     // Defines Motors 
     WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
     WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
@@ -99,6 +99,7 @@ public class Lift extends PIDSubsystem {
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
         addChild(findLiftHeight());
+
         liftDrive.setInverted(true);
 
         PreferenceStrings.setDefaultDouble(PreferenceStrings.K_P, 1);
@@ -205,7 +206,7 @@ public class Lift extends PIDSubsystem {
                 double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
                         - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft);
 
-                if (elevatorControl > 0 && topLimitSwitch.get()) {
+                if (elevatorControl > 0 && !topLimitSwitch.get()) {
                     liftDrive.set(0);
                     return;
                 }

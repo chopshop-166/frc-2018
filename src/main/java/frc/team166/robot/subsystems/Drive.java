@@ -70,11 +70,11 @@ public class Drive extends Subsystem {
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
 
-        SmartDashboard.putData("XBox", xboxArcade());
-        SmartDashboard.putData("Turn -45", turnByDegrees(-45));
-        SmartDashboard.putData("Turn 45", turnByDegrees(45));
-        SmartDashboard.putData("Drive 2s", driveTime(2, .6));
-        SmartDashboard.putData("Drive Box", driveBox());
+        SmartDashboard.putData("XBox", XboxArcade());
+        SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
+        SmartDashboard.putData("Turn 45", TurnByDegrees(45));
+        SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
+        SmartDashboard.putData("Drive Box", DriveBox());
 
         addChild(tempestGyro);
         addChild(m_drive);
@@ -95,10 +95,10 @@ public class Drive extends Subsystem {
 
     //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
     public void initDefaultCommand() {
-        setDefaultCommand(joystickArcadeTwoStick());
+        setDefaultCommand(JoystickArcadeTwoStick());
     }
 
-    public Command xboxArcade() {
+    public Command XboxArcade() {
         return new SubsystemCommand("XBoxArcade", this) {
             @Override
             protected boolean isFinished() {
@@ -114,7 +114,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command joystickArcadeTwoStick() {
+    public Command JoystickArcadeTwoStick() {
         return new SubsystemCommand("joystick Arcade with two sticks", this) {
             @Override
             protected void initialize() {
@@ -134,7 +134,7 @@ public class Drive extends Subsystem {
         };
     };
 
-    public Command driveStraight() {
+    public Command DriveStraight() {
         return new SubsystemCommand("Drive Straight", this) {
             @Override
             protected void initialize() {
@@ -161,7 +161,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command drivetoProximity(double inches) {
+    public Command DrivetoProximity(double inches) {
         return new SubsystemCommand("Drive Distance", this) {
 
             //double realDistanceInches = frontLidar.getDistance(true);
@@ -197,7 +197,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command turnByDegrees(double degrees) {
+    public Command TurnByDegrees(double degrees) {
         return new SubsystemCommand("Turn " + degrees, this) {
             @Override
             protected void initialize() {
@@ -228,7 +228,7 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command driveTime(double seconds, double speed) {
+    public Command DriveTime(double seconds, double speed) {
         return new SubsystemCommand("Drive Time", this) {
             @Override
             protected void initialize() {
@@ -255,10 +255,10 @@ public class Drive extends Subsystem {
         };
     }
 
-    public Command driveBox() {
-        return new CommandChain("Box Drive").then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
-                .then(turnByDegrees(90)).then(driveTime(1, .8)).then(turnByDegrees(90)).then(driveTime(.5, .8))
-                .then(turnByDegrees(90));
+    public Command DriveBox() {
+        return new CommandChain("Box Drive").then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
+                .then(TurnByDegrees(90)).then(DriveTime(1, .8)).then(TurnByDegrees(90)).then(DriveTime(.5, .8))
+                .then(TurnByDegrees(90));
 
     }
 
