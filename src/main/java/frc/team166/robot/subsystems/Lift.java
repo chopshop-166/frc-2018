@@ -103,6 +103,7 @@ public class Lift extends PIDSubsystem {
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
         addChild(findLiftHeight());
+
         liftDrive.setInverted(true);
 
         PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
