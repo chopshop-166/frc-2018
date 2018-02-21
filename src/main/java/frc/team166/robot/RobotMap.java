@@ -97,16 +97,9 @@ public class RobotMap {
         }
 
         public static final String LIFT_UP_DOWN_INCREMENT = "liftUpDownIncrement";
-        public static final String K_P = "kP";
-        public static final String K_I = "kI";
-        public static final String K_D = "kD";
-        public static final String K_F = "kF";
-        public static final String K_P_MANIPULATOR = "kP_Manipulator";
-        public static final String K_I_MANIPULATOR = "kI_Manipulator";
-        public static final String K_D_MANIPULATOR = "kD_Manipulator";
-        public static final String K_F_MANIPULATOR = "kF_Manipulator";
         public static final String UP_MAX_SPEED = "Up Max Speed";
         public static final String DOWN_MAX_SPEED = "Down Max Speed";
+        public static final String LIFT_CYCLES_BEFORE_STOP = "Lift Cycles Before Stop";
         public static final String MANIPULATOR_MOTOR_INTAKE_SPEED = "manipulatorMotorIntakeSpeed";
         public static final String MANIPULATOR_MOTOR_DISCHARGE_SPEED = "manipulatorMotorDischargeSpeed";
         public static final String CUBE_PICKUP_DISTANCE = "cubePickupDistance";
