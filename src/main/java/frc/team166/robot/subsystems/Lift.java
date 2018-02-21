@@ -49,10 +49,10 @@ public class Lift extends PIDSubsystem {
     // Defines Limit Switches (Digital imputs)
     DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
     DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
-    // Defines Encoders 
+    // Defines Encoders and sets the the distance per Tick
     Encoder liftEncoder = new Encoder(RobotMap.Encoders.LIFT_A, RobotMap.Encoders.LIFT_B);
-    // TODO we still need to calculate this
-    private final double encoderDistancePerTick = 0.01;
+    // This is for one inch
+    private final double encoderDistancePerTick = 0.01636;
     // Defines Motors 
     WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
     WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
@@ -62,11 +62,14 @@ public class Lift extends PIDSubsystem {
     DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
             RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
-    private static double kP = Preferences.getInstance().getDouble(PreferenceStrings.K_P, 1);
-    private static double kI = Preferences.getInstance().getDouble(PreferenceStrings.K_I, 1);
-    private static double kD = Preferences.getInstance().getDouble(PreferenceStrings.K_D, 1);
-    private static double kF = Preferences.getInstance().getDouble(PreferenceStrings.K_F, 1);
+    //TODO we need to calculate these
+    //these define the PID values for the lift
+    private static double kP = 0;
+    private static double kI = 0;
+    private static double kD = 0;
+    private static double kF = 0;
 
+    //this adds the LIDAR sensor
     private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
 
     //enumerator that will be pulled from for the GoToHeight Command
@@ -85,6 +88,7 @@ public class Lift extends PIDSubsystem {
         }
     }
 
+    //sets the maximum lidar distance before switching to the encoder
     private final static double kMaxLidarDistance = 60;
 
     public Lift() {
@@ -101,14 +105,11 @@ public class Lift extends PIDSubsystem {
         addChild(findLiftHeight());
         liftDrive.setInverted(true);
 
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_P, 1);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_I, 1);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_D, 1);
-        PreferenceStrings.setDefaultDouble(PreferenceStrings.K_F, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.DOWN_MAX_SPEED, 1);
         PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
+        PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 1);
 
         registerCommands();
     }
@@ -198,6 +199,11 @@ public class Lift extends PIDSubsystem {
 
     public Command ManualLift() {
         return new SubsystemCommand(this) {
+            double topLimitSwitchCounter = 0;
+            double bottomLimitSwitchCounter = 0;
+            Boolean downStop = false;
+            Boolean upStop = false;
+
             @Override
             protected void initialize() {
                 disengageBrake();
@@ -209,13 +215,46 @@ public class Lift extends PIDSubsystem {
                 double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
                         - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft);
 
-                if (elevatorControl > 0 && topLimitSwitch.get()) {
-                    liftDrive.set(0);
+                if (elevatorControl >= 0 && topLimitSwitch.get()) {
+                    if (topLimitSwitchCounter < Preferences.getInstance()
+                            .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
+                        topLimitSwitchCounter++;
+                    } else {
+                        upStop = true;
+                    }
+                }
+
+                if (!topLimitSwitch.get()) {
+                    if (topLimitSwitchCounter > 0) {
+                        topLimitSwitchCounter--;
+                    } else {
+                        upStop = false;
+                    }
+                }
+                if (upStop == true) {
+                    liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft));
                     return;
                 }
 
-                if (elevatorControl < 0 && bottomLimitSwitch.get()) {
-                    liftDrive.set(0);
+                if (elevatorControl <= 0 && bottomLimitSwitch.get()) {
+                    if (bottomLimitSwitchCounter < Preferences.getInstance()
+                            .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
+                        bottomLimitSwitchCounter++;
+                    } else {
+                        downStop = true;
+                        liftEncoder.reset();
+                    }
+                }
+
+                if (!bottomLimitSwitch.get()) {
+                    if (bottomLimitSwitchCounter > 0) {
+                        bottomLimitSwitchCounter--;
+                    } else {
+                        downStop = false;
+                    }
+                }
+                if (downStop == true) {
+                    liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight));
                     return;
                 }
 
