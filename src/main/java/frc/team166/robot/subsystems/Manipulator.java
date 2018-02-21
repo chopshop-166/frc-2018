@@ -51,10 +51,10 @@ public class Manipulator extends PIDSubsystem {
     // ft:
     double DIST_PER_PULSE_INTAKE = (((ROLLER_RADIUS * 2.0 * Math.PI) / 1024.0) / 12.0);
 
-    private static double kP_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_P_MANIPULATOR, 1);
-    private static double kI_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_I_MANIPULATOR, 1);
-    private static double kD_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_D_MANIPULATOR, 1);
-    private static double kF_Manipulator = Preferences.getInstance().getDouble(PreferenceStrings.K_F_MANIPULATOR, 1);
+    private static double kP_Manipulator = 0;
+    private static double kI_Manipulator = 0;
+    private static double kD_Manipulator = 0;
+    private static double kF_Manipulator = 0;
 
     public Manipulator() {
         super("Manipulator (AKA Chadwick)", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
@@ -82,17 +82,18 @@ public class Manipulator extends PIDSubsystem {
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_SPEED, 0.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_P_MANIPULATOR, 1);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_I_MANIPULATOR, 1);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_D_MANIPULATOR, 1);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.K_F_MANIPULATOR, 1);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
     }
 
     // METHODS  
+    public void reset() {
+        rollers.stopMotor();
+        deploymentMotor.stopMotor();
+    }
+
     private void openInnerManipulator() {
         innerSolenoid.set(Value.kForward);
     }
