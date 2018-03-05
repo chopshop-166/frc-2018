@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
-import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
@@ -222,7 +222,33 @@ public class Manipulator extends PIDSubsystem {
             protected void end() {
                 closeOuterManipulator();
                 rollers.stopMotor();
+                Rumble().start();
             }
+        };
+    }
+
+    public Command Rumble() {
+
+        return new SubsystemCommand("Rumble", this) {
+
+            @Override
+            protected void initialize() {
+                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 1);
+                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 1);
+                setTimeout(.1);
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return isTimedOut();
+            }
+
+            @Override
+            protected void end() {
+                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kLeftRumble, 0);
+                Robot.m_oi.xBoxTempest.setRumble(RumbleType.kRightRumble, 0);
+            }
+
         };
     }
 
