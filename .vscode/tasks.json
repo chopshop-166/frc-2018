@@ -17,7 +17,8 @@
             "label": "Clean",
             "type": "shell",
             "command": ".\\gradlew clean",
-            "group": "build"
+            "group": "build",
+            "problemMatcher": []
         },
         {
             "label": "Deploy",
@@ -29,7 +30,8 @@
         {
             "label": "Riolog",
             "command": ".\\gradlew riolog",
-            "group": "build"
+            "group": "build",
+            "problemMatcher": []
         },
         {
             "label": "Shuffleboard",
