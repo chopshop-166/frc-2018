@@ -37,10 +37,10 @@ public class OI {
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kStickLeft.get())
                 .whenPressed(Robot.manipulator.DeployManipulatorWithJoystick());
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY.get())
-                .whenPressed(Robot.manipulator.CloseInnerManipulator());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX.get())
-                .whenPressed(Robot.manipulator.OpenInnerManipulator());
+        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY.get())
+        //         .whenPressed(Robot.manipulator.CloseInnerManipulator());
+        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX.get())
+        //         .whenPressed(Robot.manipulator.OpenInnerManipulator());
 
         rightDriveStick.getButton(2).whenPressed(Robot.manipulator.CubeClamp());
         rightDriveStick.getButton(1).whenPressed(Robot.manipulator.CubeDrop());
