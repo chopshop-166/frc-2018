@@ -112,7 +112,7 @@ public class Lift extends PIDSubsystem {
         PreferenceStrings.setDefaultBool(PreferenceStrings.USE_LIDAR, false);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 1);
 
-        registerCommands();
+        // registerCommands();
     }
 
     private void registerCommands() {
@@ -126,8 +126,7 @@ public class Lift extends PIDSubsystem {
     }
 
     private void raiseLift() {
-        liftMotorA.set(0.3);
-        liftMotorB.set(0.3);
+        liftDrive.set(0.5);
     }
 
     private void engageBrake() {
@@ -188,7 +187,8 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void initialize() {
                 setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.0));
-                raiseLift();
+                disengageBrake();
+                liftDrive.set(0.5);
             }
 
             @Override
@@ -204,8 +204,8 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void end() {
-                liftMotorA.stopMotor();
-                liftMotorB.stopMotor();
+                liftDrive.stopMotor();
+                engageBrake();
             }
 
             @Override

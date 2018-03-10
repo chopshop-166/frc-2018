@@ -70,11 +70,11 @@ public class Drive extends Subsystem {
     //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
     public Drive() {
 
-        SmartDashboard.putData("XBox", XboxArcade());
-        SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
-        SmartDashboard.putData("Turn 45", TurnByDegrees(45));
-        SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
-        SmartDashboard.putData("Drive Box", DriveBox());
+        // SmartDashboard.putData("XBox", XboxArcade());
+        // SmartDashboard.putData("Turn -45", TurnByDegrees(-45));
+        // SmartDashboard.putData("Turn 45", TurnByDegrees(45));
+        // SmartDashboard.putData("Drive 2s", DriveTime(2, .6));
+        // SmartDashboard.putData("Drive Box", DriveBox());
 
         addChild(tempestGyro);
         addChild(m_drive);

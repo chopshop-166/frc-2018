@@ -29,9 +29,9 @@ public class OI {
         // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
         // .whenPressed(Robot.manipulator.OpenOuterManipulator());
 
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperRight.get())
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
                 .whileHeld(Robot.manipulator.ManipulatorIntakeHeld());
-        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperLeft.get())
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
                 .whileHeld(Robot.manipulator.ManipulatorDischargeHeld());
 
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kStickLeft.get())

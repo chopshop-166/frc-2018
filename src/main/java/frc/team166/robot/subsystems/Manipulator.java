@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Preferences;
@@ -70,15 +71,15 @@ public class Manipulator extends PIDSubsystem {
         deploymentMotor.setInverted(true);
 
         // Adding Commands To SmartDashboard
-        SmartDashboard.putData("Close Outer", CloseOuterManipulator());
-        SmartDashboard.putData("Open Outer", OpenOuterManipulator());
-        SmartDashboard.putData("Close Inner", CloseInnerManipulator());
-        SmartDashboard.putData("Open Inner", OpenInnerManipulator());
-        SmartDashboard.putData("Cube Eject", CubeEject());
-        SmartDashboard.putData("Cube Pickup", CubePickup());
+        // SmartDashboard.putData("Close Outer", CloseOuterManipulator());
+        // SmartDashboard.putData("Open Outer", OpenOuterManipulator());
+        // SmartDashboard.putData("Close Inner", CloseInnerManipulator());
+        // SmartDashboard.putData("Open Inner", OpenInnerManipulator());
+        // SmartDashboard.putData("Cube Eject", CubeEject());
+        // SmartDashboard.putData("Cube Pickup", CubePickup());
         // SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
-        SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
-        SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
+        // SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
+        // SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
         // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_PICKUP_DISTANCE, 0.5);
@@ -249,7 +250,14 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected void initialize() {
                 setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 2.0));
-                setMotorsToDischarge();
+                String gameData;
+                gameData = DriverStation.getInstance().getGameSpecificMessage();
+
+                if (gameData.length() > 0) {
+                    if (gameData.charAt(0) == 'R') {
+                        setMotorsToDischarge();
+                    }
+                }
             }
 
             @Override
