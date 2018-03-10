@@ -9,27 +9,35 @@ package frc.team166.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team166.chopshoplib.commands.ActionCommand;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
+import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
-import edu.wpi.first.wpilibj.DigitalOutput;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class LED extends Subsystem {
 
     public void initDefaultCommand() {
+        // setDefaultCommand(command);
     };
 
     //these will be changed from DigitalOutputs to something else when we get real hardware...
-    DigitalOutput red = new DigitalOutput(RobotMap.DigitalInputs.RED_LED);
-    DigitalOutput green = new DigitalOutput(RobotMap.DigitalInputs.GREEN_LED);
-    DigitalOutput blue = new DigitalOutput(RobotMap.DigitalInputs.BLUE_LED);
+    DigitalOutputDutyCycle red = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.RED_LED);
+    DigitalOutputDutyCycle green = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.GREEN_LED);
+    DigitalOutputDutyCycle blue = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.BLUE_LED);
 
     public LED() {
 
     }
 
     // METHODS
+    private void registerCommands() {
+        SmartDashboard.putData("Breath Blue", Breath(blue, 10));
+    }
+
     private void allOff() {
         red.set(false);
         green.set(false);
@@ -64,7 +72,7 @@ public class LED extends Subsystem {
     }
 
     // COMMANDS
-    public Command blinkGreen(int numberOfBlinks) {
+    public Command BlinkGreen(int numberOfBlinks) {
         return new SubsystemCommand(this) {
             double lastUpdateTime = System.currentTimeMillis();
             boolean isOn = true;
@@ -108,7 +116,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command blinkTeamColor() {
+    public Command BlinkTeamColor() {
         return new SubsystemCommand(this) {
             double lastUpdateTime = System.currentTimeMillis();
             boolean isOn = true;
@@ -144,7 +152,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command blueOn() {
+    public Command BlueOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -163,7 +171,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command cyanOn() {
+    public Command CyanOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -184,7 +192,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command greenOn() {
+    public Command GreenOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -203,7 +211,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command lightTeamColor() {
+    public Command LightTeamColor() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -222,7 +230,7 @@ public class LED extends Subsystem {
         };
     }
 
-    public Command redOn() {
+    public Command RedOn() {
         return new SubsystemCommand(this) {
             @Override
             protected void initialize() {
@@ -240,5 +248,59 @@ public class LED extends Subsystem {
             }
         };
     }
+
+    public Command Breath(DigitalOutputDutyCycle color, int frequency) {
+        return new SubsystemCommand("fade", this) {
+            boolean isDutyCycleIncreasing = true;
+            final double period = (1 / frequency);
+            final double executePeriod = 20; //Approx how often execute is called
+            final double dutyCycleChangePerPeriod = 2.0;
+            double changeAmount = dutyCycleChangePerPeriod / ((period / executePeriod));
+
+            @Override
+            protected void initialize() {
+                color.enablePWM(0);
+                isDutyCycleIncreasing = true;
+            }
+
+            @Override
+            protected void execute() {
+                if (isDutyCycleIncreasing == true) {
+                    color.updateDutyCycle(color.getPWMRate() + changeAmount);
+                } else {
+                    color.updateDutyCycle(color.getPWMRate() - changeAmount);
+                }
+                if ((color.getPWMRate() >= 1) || (color.getPWMRate() <= 0)) {
+                    isDutyCycleIncreasing = !isDutyCycleIncreasing;
+                }
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        };
+    }
+
+    // private Command BreathTeamColor() {
+    //     return new ActionCommand("Breath Team Color", this, () -> {
+    //         if (isBlueTeam()) {
+    //             red.set(false);
+    //             if (turnOn) {
+    //                 blue.set(true);
+    //             } else {
+    //                 blue.set(false);
+    //             }
+    //         } else {
+    //             blue.set(false);
+    //             if (turnOn) {
+    //                 red.set(true);
+    //             } else {
+    //                 red.set(false);
+    //             }
+    //         }
+    //     });
+    // }
 
 }

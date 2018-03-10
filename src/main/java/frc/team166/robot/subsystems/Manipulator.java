@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
@@ -146,6 +147,7 @@ public class Manipulator extends PIDSubsystem {
 
     // COMMANDS
     public void initDefaultCommand() {
+        setDefaultCommand(DeployManipulatorWithJoystick());
     };
 
     public Command CloseOuterManipulator() {
@@ -162,6 +164,14 @@ public class Manipulator extends PIDSubsystem {
 
     public Command CloseInnerManipulator() {
         return new ActionCommand("Close Inner Manipulator", this, this::closeInnerManipulator);
+    }
+
+    public Command ManipulatorDischarge() {
+        return new ActionCommand("DisCharge Manipulator", this, this::setMotorsToDischarge);
+    }
+
+    public Command ManipulatorIntake() {
+        return new ActionCommand("Intake Manipulator", this, this::setMotorsToIntake);
     }
 
     public Command CubeDrop() {
@@ -274,7 +284,7 @@ public class Manipulator extends PIDSubsystem {
     }
 
     public Command DeployManipulatorWithJoystick() {
-        return new SubsystemCommand("Deploy Manipulator With Joystick", this) {
+        return new SubsystemCommand("Deploy Manipulator With Joystick") {
             @Override
             protected void initialize() {
                 disable();
@@ -287,7 +297,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                deploymentMotor.set(0);
+                deploymentMotor.set(Robot.m_oi.xBoxTempest.getY(Hand.kLeft));
             }
         };
     }

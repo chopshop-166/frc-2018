@@ -7,6 +7,7 @@
 
 package frc.team166.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.team166.chopshoplib.controls.ButtonJoystick;
 import frc.team166.chopshoplib.controls.ButtonXboxController;;
 
@@ -23,7 +24,18 @@ public class OI {
         leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.DriveStraight());
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
         // xBoxTempest.getButton(RobotMap.Buttons.XboxAbutton).whileHeld(Robot.drive.Ebrake());
-        xBoxTempest.getButton(RobotMap.Buttons.XboxXbutton).whileHeld(Robot.drive.DriveStraight());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
+                .whileHeld(Robot.manipulator.CloseOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
+                .whileHeld(Robot.manipulator.OpenOuterManipulator());
+
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperRight.get())
+                .whileHeld(Robot.manipulator.ManipulatorIntake());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kBumperLeft.get())
+                .whileHeld(Robot.manipulator.ManipulatorDischarge());
+
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kStickLeft.get())
+                .whenPressed(Robot.manipulator.DeployManipulatorWithJoystick());
 
         //// CREATING BUTTONS
         // One type of button is a joystick button which is any button on a

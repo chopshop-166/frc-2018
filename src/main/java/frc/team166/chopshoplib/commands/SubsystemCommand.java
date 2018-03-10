@@ -26,6 +26,15 @@ public abstract class SubsystemCommand extends Command {
         setName(name);
     }
 
+    /**
+     * Create a command with a name
+     * @param name The name of the command
+     */
+    public SubsystemCommand(String name) {
+        setSubsystem(name);
+        setName(name);
+    }
+
     @Override
     protected void interrupted() {
         end();
