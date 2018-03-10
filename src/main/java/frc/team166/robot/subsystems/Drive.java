@@ -238,8 +238,8 @@ public class Drive extends Subsystem {
             @Override
             protected void initialize() {
                 drivePidController.reset();
-                drivePidController.setSetpoint(tempestGyro.getAngle());
-                drivePidController.enable();
+                // drivePidController.setSetpoint(tempestGyro.getAngle());
+                // drivePidController.enable();
                 setTimeout(seconds);
             }
 

@@ -31,10 +31,10 @@ public class Manipulator extends PIDSubsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    WPI_TalonSRX deploymentMotor = new WPI_TalonSRX(RobotMap.CAN.DEPLOYMENT_MOTOR);
+    WPI_VictorSPX deploymentMotor = new WPI_VictorSPX(RobotMap.CAN.DEPLOYMENT_MOTOR);
 
     WPI_VictorSPX leftRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_LEFT);
-    WPI_VictorSPX rightRoller = new WPI_VictorSPX(RobotMap.CAN.ROLLER_RIGHT);
+    WPI_TalonSRX rightRoller = new WPI_TalonSRX(RobotMap.CAN.ROLLER_RIGHT);
 
     SpeedControllerGroup rollers = new SpeedControllerGroup(leftRoller, rightRoller);
 
@@ -65,8 +65,9 @@ public class Manipulator extends PIDSubsystem {
         addChild(rollers);
         addChild(irSensor);
 
-        leftRoller.setInverted(true);
+        leftRoller.setInverted(false);
         rightRoller.setInverted(true);
+        deploymentMotor.setInverted(true);
 
         // Adding Commands To SmartDashboard
         SmartDashboard.putData("Close Outer", CloseOuterManipulator());
@@ -131,7 +132,7 @@ public class Manipulator extends PIDSubsystem {
     private void setMotorsToIntake() {
         //change once you find optimal motor speed
         rollers.set(
-                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.4));
+                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.6));
     }
 
     /**
@@ -141,14 +142,20 @@ public class Manipulator extends PIDSubsystem {
      */
     private void setMotorsToDischarge() {
         rollers.set(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED,
-                -0.4));
+                -0.35));
         // change once you find optimal motor speed
     }
 
     // COMMANDS
     public void initDefaultCommand() {
-        setDefaultCommand(DeployManipulatorWithJoystick());
+        setDefaultCommand(DefaultCommand());
     };
+
+    public Command DefaultCommand() {
+        return new ActionCommand("Manipulator Default Command", this, () -> {
+            DeployManipulatorWithJoystick().start();
+        });
+    }
 
     public Command CloseOuterManipulator() {
         return new ActionCommand("Close Outer Manipulator", this, this::closeOuterManipulator);
@@ -176,6 +183,64 @@ public class Manipulator extends PIDSubsystem {
 
     public Command CubeDrop() {
         return new ActionCommand("Drop Cube", this, this::openInnerManipulator);
+    }
+
+    public Command CubeClamp() {
+        return new ActionCommand("Cube Clamp", this, this::closeInnerManipulator);
+    }
+
+    public Command ManipulatorIntakeHeld() {
+        return new SubsystemCommand("Intake", this) {
+
+            @Override
+            protected void initialize() {
+                setMotorsToIntake();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+
+            }
+
+            @Override
+            protected void end() {
+                rollers.set(0);
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+
+        };
+    }
+
+    public Command ManipulatorDischargeHeld() {
+        return new SubsystemCommand("Discharge", this) {
+
+            @Override
+            protected void initialize() {
+                setMotorsToDischarge();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+
+            }
+
+            @Override
+            protected void end() {
+                rollers.set(0);
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+
+        };
     }
 
     public Command CubeEject() {
@@ -297,7 +362,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                deploymentMotor.set(Robot.m_oi.xBoxTempest.getY(Hand.kLeft));
+                deploymentMotor.set(Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2));
             }
         };
     }

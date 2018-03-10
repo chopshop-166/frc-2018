@@ -104,7 +104,7 @@ public class Lift extends PIDSubsystem {
         addChild(liftLidar);
         addChild(findLiftHeight());
 
-        liftDrive.setInverted(true);
+        liftDrive.setInverted(false);
 
         PreferenceStrings.setDefaultDouble(PreferenceStrings.LIFT_UP_DOWN_INCREMENT, 1);
         PreferenceStrings.setDefaultDouble(PreferenceStrings.UP_MAX_SPEED, 1);
@@ -125,7 +125,12 @@ public class Lift extends PIDSubsystem {
         return findLiftHeight();
     }
 
-    private void brake() {
+    private void raiseLift() {
+        liftMotorA.set(0.3);
+        liftMotorB.set(0.3);
+    }
+
+    private void engageBrake() {
         liftBrake.set(Value.kForward);
     }
 
@@ -178,6 +183,38 @@ public class Lift extends PIDSubsystem {
         setDefaultCommand(ManualLift());
     }
 
+    public Command RaiseLiftALittle() {
+        return new SubsystemCommand("Raise Lift A Little", this) {
+            @Override
+            protected void initialize() {
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.0));
+                raiseLift();
+            }
+
+            @Override
+            protected void execute() {
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+
+                return isTimedOut();
+            }
+
+            @Override
+            protected void end() {
+                liftMotorA.stopMotor();
+                liftMotorB.stopMotor();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+        };
+    }
+
     public Command GoToHeight(LiftHeights height, boolean isHighGear) {
         return new SubsystemCommand(this) {
             @Override
@@ -207,59 +244,71 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                disengageBrake();
+                // disengageBrake();
                 disable();
             }
 
             @Override
             protected void execute() {
-                double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight)
-                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft);
+                double elevatorControl = Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft)
+                        - Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight);
 
-                if (elevatorControl >= 0 && topLimitSwitch.get()) {
-                    if (topLimitSwitchCounter < Preferences.getInstance()
-                            .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
-                        topLimitSwitchCounter++;
-                    } else {
-                        upStop = true;
-                    }
+                if (elevatorControl >= 0 && !topLimitSwitch.get()) {
+                    // if (topLimitSwitchCounter < Preferences.getInstance()
+                    //         .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
+                    //     topLimitSwitchCounter++;
+                    // } else {
+                    upStop = true;
+                    // }
+                } else {
+                    upStop = false;
+                }
+                if (elevatorControl >= .1 || elevatorControl <= -0.1) {
+                    disengageBrake();
+                } else {
+                    engageBrake();
+
+                }
+                // if (!topLimitSwitch.get()) {
+                //     if (topLimitSwitchCounter > 0) {
+                //         topLimitSwitchCounter--;
+                //     } else {
+                //         upStop = false;
+                //     }
+                // }
+                // if (upStop == true) {
+                //     liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft));
+                //     return;
+                // }
+
+                if (elevatorControl <= 0 && !bottomLimitSwitch.get()) {
+                    // if (bottomLimitSwitchCounter < Preferences.getInstance()
+                    //         .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
+                    //     bottomLimitSwitchCounter++;
+                    // } else {
+                    downStop = true;
+                    //     liftEncoder.reset();
+                    // }
+                } else {
+                    downStop = false;
                 }
 
-                if (!topLimitSwitch.get()) {
-                    if (topLimitSwitchCounter > 0) {
-                        topLimitSwitchCounter--;
-                    } else {
-                        upStop = false;
-                    }
-                }
-                if (upStop == true) {
+                // if (!bottomLimitSwitch.get()) {
+                //     if (bottomLimitSwitchCounter > 0) {
+                //         bottomLimitSwitchCounter--;
+                //     } else {
+                //         downStop = false;
+                //     }
+                // }
+                if (elevatorControl >= 0 && !topLimitSwitch.get()) {
                     liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kLeft));
+                } else if ((elevatorControl <= 0 && !bottomLimitSwitch.get())) {
+                    liftDrive.set(-Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight));
                     return;
+                } else {
+                    liftDrive.set(elevatorControl);
                 }
 
-                if (elevatorControl <= 0 && bottomLimitSwitch.get()) {
-                    if (bottomLimitSwitchCounter < Preferences.getInstance()
-                            .getDouble(PreferenceStrings.LIFT_CYCLES_BEFORE_STOP, 2)) {
-                        bottomLimitSwitchCounter++;
-                    } else {
-                        downStop = true;
-                        liftEncoder.reset();
-                    }
-                }
-
-                if (!bottomLimitSwitch.get()) {
-                    if (bottomLimitSwitchCounter > 0) {
-                        bottomLimitSwitchCounter--;
-                    } else {
-                        downStop = false;
-                    }
-                }
-                if (downStop == true) {
-                    liftDrive.set(Robot.m_oi.xBoxTempest.getTriggerAxis(Hand.kRight));
-                    return;
-                }
-
-                liftDrive.set(elevatorControl);
             }
 
             @Override
@@ -333,7 +382,7 @@ public class Lift extends PIDSubsystem {
     }
 
     public Command Brake() {
-        return new ActionCommand("Brake", this, this::brake);
+        return new ActionCommand("Brake", this, this::engageBrake);
     }
 
     public Command DisengageBrake() {

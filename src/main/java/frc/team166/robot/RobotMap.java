@@ -23,10 +23,10 @@ public class RobotMap {
         public final static int BACK_RIGHT = 5;
         public final static int BACK_LEFT = 9;
         public final static int ROLLER_LEFT = 3;
-        public final static int ROLLER_RIGHT = 1;
+        public final static int ROLLER_RIGHT = 2;
         public final static int LIFT_MOTOR_A = 6;
         public final static int LIFT_MOTOR_B = 7;
-        public final static int DEPLOYMENT_MOTOR = 2;
+        public final static int DEPLOYMENT_MOTOR = 1;
     }
 
     //"GIT er done" -Mr.P "I ask for so little, and get so much less in return"
@@ -61,20 +61,20 @@ public class RobotMap {
 
     public static class Solenoids {
         //changes Solenoid ports into integers
-        public final static int LIFT_TRANSMISSION_A = 0;
-        public final static int LIFT_TRANSMISSION_B = 1;
-        public final static int MANIPULATOR_SOLENOID_INNER_A = 4;
-        public final static int MANIPULATOR_SOLENOID_INNER_B = 5;
-        public final static int MANIPULATOR_SOLENOID_OUTER_A = 6;
-        public final static int MANIPULATOR_SOLENOID_OUTER_B = 7;
-        public final static int LIFT_BRAKE_A = 2;
-        public final static int LIFT_BRAKE_B = 3;
+        public final static int LIFT_TRANSMISSION_A = 4;
+        public final static int LIFT_TRANSMISSION_B = 5;
+        public final static int MANIPULATOR_SOLENOID_INNER_A = 3;
+        public final static int MANIPULATOR_SOLENOID_INNER_B = 2;
+        public final static int MANIPULATOR_SOLENOID_OUTER_A = 1;
+        public final static int MANIPULATOR_SOLENOID_OUTER_B = 0;
+        public final static int LIFT_BRAKE_A = 7;
+        public final static int LIFT_BRAKE_B = 6;
     }
 
     public static class DigitalInputs {
         //changes digital imput ports into integers
-        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 2;
-        public final static int LIFT_LIMIT_SWITCH_TOP = 3;
+        public final static int LIFT_LIMIT_SWITCH_BOTTOM = 9;
+        public final static int LIFT_LIMIT_SWITCH_TOP = 8;
         public final static int RED_LED = 4;
         public final static int GREEN_LED = 1;
         public final static int BLUE_LED = 0;
@@ -114,5 +114,6 @@ public class RobotMap {
         public static final String DEPLOY_MANIPULATOR_TIME = "deployManipulatorTime";
         public static final String DEPLOY_MANIPULATOR_SPEED = "deployManipulatorSpeed";
         public static final String MANIPULATOR_HORIZONTAL_INPUT = "manipulatorHorizontalInput";
+        public static final String RAISE_LIFT_WAIT_TIME = "raiseLiftWaitTime";
     }
 }

@@ -8,6 +8,7 @@
 package frc.team166.robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -32,6 +33,7 @@ public class Robot extends TimedRobot {
     public static final Manipulator manipulator = new Manipulator();
     public static final Lift lift = new Lift();
     public static OI m_oi;
+    public static final Compressor compressy = new Compressor(1);
 
     Command m_autonomousCommand;
     SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -43,7 +45,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_oi = new OI();
-        m_chooser.addDefault("Default Auto", drive.DriveTime(2, 0.6));
+        m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
@@ -130,7 +132,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(4, 0.6)).then(manipulator.CubeEject());
+        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(3, 0.6)).then(lift.RaiseLiftALittle())
+                .then(manipulator.CubeEject());
     }
 
 }
