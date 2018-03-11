@@ -76,8 +76,8 @@ public class RobotMap {
         public final static int LIFT_LIMIT_SWITCH_BOTTOM = 9;
         public final static int LIFT_LIMIT_SWITCH_TOP = 8;
         public final static int RED_LED = 4;
-        public final static int GREEN_LED = 1;
-        public final static int BLUE_LED = 0;
+        public final static int GREEN_LED = 5;
+        public final static int BLUE_LED = 6;
     }
 
     public static class PreferenceStrings {

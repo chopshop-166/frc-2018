@@ -358,8 +358,11 @@ public class Manipulator extends PIDSubsystem {
 
     public Command DeployManipulatorWithJoystick() {
         return new SubsystemCommand("Deploy Manipulator With Joystick") {
+            double rotation;
+
             @Override
             protected void initialize() {
+
                 disable();
             }
 
@@ -370,7 +373,11 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                deploymentMotor.set(Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2));
+                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
+                rotation = rotation
+                        * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
+
+                deploymentMotor.set(rotation);
             }
         };
     }

@@ -126,7 +126,7 @@ public class Lift extends PIDSubsystem {
     }
 
     private void raiseLift() {
-        liftDrive.set(0.5);
+        liftDrive.set(-0.75);
     }
 
     private void engageBrake() {

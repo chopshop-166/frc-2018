@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 public class LED extends Subsystem {
 
     public void initDefaultCommand() {
-        // setDefaultCommand(command);
+        setDefaultCommand(BreathTeamColor());
     };
 
     //these will be changed from DigitalOutputs to something else when we get real hardware...
@@ -30,7 +30,7 @@ public class LED extends Subsystem {
     DigitalOutputDutyCycle blue = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.BLUE_LED);
 
     public LED() {
-
+        registerCommands();
     }
 
     // METHODS
@@ -283,24 +283,16 @@ public class LED extends Subsystem {
         };
     }
 
-    // private Command BreathTeamColor() {
-    //     return new ActionCommand("Breath Team Color", this, () -> {
-    //         if (isBlueTeam()) {
-    //             red.set(false);
-    //             if (turnOn) {
-    //                 blue.set(true);
-    //             } else {
-    //                 blue.set(false);
-    //             }
-    //         } else {
-    //             blue.set(false);
-    //             if (turnOn) {
-    //                 red.set(true);
-    //             } else {
-    //                 red.set(false);
-    //             }
-    //         }
-    //     });
-    // }
+    private Command BreathTeamColor() {
+        return new ActionCommand("Breath Team Color", this, () -> {
+            if (isBlueTeam()) {
+                red.set(false);
+                Breath(blue, 20).start();
+            } else {
+                blue.set(false);
+                Breath(red, 20).start();
+            }
+        });
+    }
 
 }
