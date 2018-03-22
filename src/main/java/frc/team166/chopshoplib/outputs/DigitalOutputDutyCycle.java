@@ -11,9 +11,9 @@ public class DigitalOutputDutyCycle extends DigitalOutput {
     }
 
     @Override
-    public void setPWMRate(double rate) {
+    public void updateDutyCycle(double rate) {
         mRate = rate;
-        super.setPWMRate(rate);
+        super.updateDutyCycle(rate);
     }
 
     @Override

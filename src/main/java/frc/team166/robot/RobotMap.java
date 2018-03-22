@@ -55,8 +55,8 @@ public class RobotMap {
 
     public static class Encoders {
         //changes Encoder ports into integers
-        public final static int LIFT_A = 5;
-        public final static int LIFT_B = 6;
+        public final static int LIFT_A = 1;
+        public final static int LIFT_B = 2;
     }
 
     public static class Solenoids {

@@ -252,13 +252,15 @@ public class LED extends Subsystem {
     public Command Breath(DigitalOutputDutyCycle color, int frequency) {
         return new SubsystemCommand("fade", this) {
             boolean isDutyCycleIncreasing = true;
-            final double period = (1 / frequency);
-            final double executePeriod = 20; //Approx how often execute is called
+            double period;
+            final double executePeriod = 20 * 0.001; //Approx how often execute is called
             final double dutyCycleChangePerPeriod = 2.0;
-            double changeAmount = dutyCycleChangePerPeriod / ((period / executePeriod));
+            double changeAmount;
 
             @Override
             protected void initialize() {
+                period = (1.0 / frequency);
+                changeAmount = dutyCycleChangePerPeriod / ((period / executePeriod));
                 color.enablePWM(0);
                 isDutyCycleIncreasing = true;
             }
@@ -286,11 +288,11 @@ public class LED extends Subsystem {
     private Command BreathTeamColor() {
         return new ActionCommand("Breath Team Color", this, () -> {
             if (isBlueTeam()) {
-                red.set(false);
-                Breath(blue, 20).start();
+                red.disablePWM();
+                Breath(blue, 2).start();
             } else {
-                blue.set(false);
-                Breath(red, 20).start();
+                blue.disablePWM();
+                Breath(red, 2).start();
             }
         });
     }
