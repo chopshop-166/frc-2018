@@ -36,6 +36,7 @@ public class LED extends Subsystem {
     // METHODS
     private void registerCommands() {
         SmartDashboard.putData("Breath Blue", Breath(blue, 10));
+        SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
     }
 
     private void allOff() {

@@ -257,6 +257,11 @@ public class Drive extends Subsystem {
             protected void end() {
                 drivePidController.disable();
             }
+
+            @Override
+            protected void interrupted() {
+                drivePidController.disable();
+            }
         };
     }
 

@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(3, 0.6), lift.RaiseLiftALittle())
+        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.RaiseLiftALittle())
                 .then(manipulator.CubeEject());
     }
 
