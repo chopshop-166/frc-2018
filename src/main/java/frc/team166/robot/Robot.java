@@ -151,7 +151,6 @@ public class Robot extends TimedRobot {
                 System.out.println("Right");
 
             } else {
-
                 degrees = -90.00;
                 //turning left               
                 System.out.println("Left");
