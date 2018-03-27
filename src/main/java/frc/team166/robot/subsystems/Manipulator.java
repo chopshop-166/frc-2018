@@ -256,6 +256,7 @@ public class Manipulator extends PIDSubsystem {
                 if (gameData.length() > 0) {
                     if (gameData.charAt(0) == 'R') {
                         setMotorsToDischarge();
+                        System.out.println("Eject");
                     }
                 }
             }

@@ -186,14 +186,15 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.0));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.5));
                 disengageBrake();
                 liftDrive.set(0.5);
             }
 
             @Override
             protected void execute() {
-
+                liftDrive.set(0.5);
+                System.out.println("Running! " + liftDrive.get());
             }
 
             @Override
@@ -266,6 +267,7 @@ public class Lift extends PIDSubsystem {
                 } else {
                     liftDrive.set(elevatorControl);
                 }
+                System.out.println(liftDrive.get());
             }
 
             @Override
