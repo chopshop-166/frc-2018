@@ -7,8 +7,11 @@
 
 package frc.team166.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -134,6 +137,31 @@ public class Robot extends TimedRobot {
     public Command CrossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.RaiseLiftALittle())
                 .then(manipulator.CubeEject());
+    }
+
+    public Command MidAuto() {
+        String gameData;
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        double degrees = 0.0;
+        if (gameData.length() > 0) {
+            if (gameData.charAt(0) == 'R') {
+                //"R" is for RIGHT NOT RED
+                degrees = 90.00;
+                //turning right                
+                System.out.println("Right");
+
+            } else {
+
+                degrees = -90.00;
+                //turning left               
+                System.out.println("Left");
+            }
+        }
+        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
+                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.3, .6)).then(drive.TurnByDegrees(-degrees))
+                .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
+        return cmdMidAuto;
+
     }
 
 }
