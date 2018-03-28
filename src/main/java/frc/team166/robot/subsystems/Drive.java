@@ -50,8 +50,8 @@ public class Drive extends Subsystem {
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
-    final static double kP = 1.0 / 100;
-    final static double kI = 0.000085;
+    final static double kP = 0.015;
+    final static double kI = 0.00005;
     final static double kD = 0;
     final static double kF = 0;
 
@@ -80,6 +80,9 @@ public class Drive extends Subsystem {
         addChild(m_drive);
         addChild(drivePidController);
         addChild("Front LiDAR", frontLidar);
+        tempestGyro.setSensitivity(0.0125 / 5.45);
+        drivePidController.setOutputRange(-0.6, 0.6);
+        drivePidController.setPercentTolerance(0.90);
 
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.AUTOMATIC_ROBOT_FORWARD_SPEED,
                 AUTOMATIC_ROBOT_FORWARD_SPEED);

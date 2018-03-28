@@ -52,6 +52,8 @@ public class Robot extends TimedRobot {
         m_chooser.addObject("Mid Auto", MidAuto());
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
+        SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
+        SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
         CameraServer.getInstance().startAutomaticCapture();
     }
 
@@ -147,18 +149,18 @@ public class Robot extends TimedRobot {
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
                 //"R" is for RIGHT NOT RED
-                degrees = 90.00;
+                degrees = -90;
                 //turning right                
                 System.out.println("Right");
 
             } else {
-                degrees = -90.00;
+                degrees = 90.00;
                 //turning left               
                 System.out.println("Left");
             }
         }
-        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.3, .6)).then(drive.TurnByDegrees(-degrees))
+        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
+                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.5, .6)).then(drive.TurnByDegrees(-degrees))
                 .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
         return cmdMidAuto;
 
