@@ -162,5 +162,63 @@ public class Robot extends TimedRobot {
         return cmdMidAuto;
 
     }
+    Public Command ScaleAutoLeftStart() {
+        String gameData;
+        Command cmdLeftAuto;
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        double degrees = 0.0;
+         if (gameData.length() > 0) {
+            if (gameData.charAt(1) == 'L') {
+                //we gon do the scale. Put in corner
+                degrees = 90.00;
+                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
+                .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+            } else  if (gameData.charAt(0) == 'L'){
+                //move forward and eject on switch. Align right behind switch
+                degrees = 90.00;
+                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
+                .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle())
+                .then(manipulator.CubeDrop());
+            }
+            
+            else{
+                //just cross the line 
+                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
+                ());
+            }
+        }
+        
+        return cmdLeftAuto;
+    }
+    Public Command ScaleAutoRightStart() {
+        String gameData;
+        Command cmdRightAuto;
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        double degrees = 0.0;
+         if (gameData.length() > 0) {
+            if (gameData.charAt(1) == 'L') {
+                //we gon do the scale. Put in corner
+                degrees = -90.00;
+                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
+                .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+            } else  if (gameData.charAt(0) == 'L'){
+                //move forward and eject on switch. Align right behind switch
+                degrees = -90.00;
+                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
+                .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle())
+                .then(manipulator.CubeDrop());
+            }
+            
+            else{
+                //just cross the line 
+                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
+                ());
+            }
+        }
+        
+        return cmdRightAuto;
+    }
+
+
 
 }

@@ -325,6 +325,28 @@ public class Lift extends PIDSubsystem {
             }
         };
     }
+    public Command GoToTopLift() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+                ShiftToHighGear();
+            }
+
+            @Override
+            protected void execute() {
+                if topLimitSwitch.get == true {
+                    liftDrive.set (.5);
+                }   else return
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+                engageBrake();
+            }
+        };
+    }
 
     public Command ClimbUp() {
         return new CommandChain("Climb Up").then(DisengageBrake()).then(ShiftToHighGear())
