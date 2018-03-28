@@ -79,7 +79,7 @@ public class Drive extends Subsystem {
         addChild(tempestGyro);
         addChild(m_drive);
         addChild(drivePidController);
-        addChild(frontLidar);
+        addChild("Front LiDAR", frontLidar);
 
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.AUTOMATIC_ROBOT_FORWARD_SPEED,
                 AUTOMATIC_ROBOT_FORWARD_SPEED);

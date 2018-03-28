@@ -59,12 +59,17 @@ public class Manipulator extends PIDSubsystem {
     private static double kF_Manipulator = 0;
 
     public Manipulator() {
-        super("Manipulator (AKA Chadwick)", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
+        super("Manipulator", kP_Manipulator, kI_Manipulator, kD_Manipulator, kF_Manipulator);
 
         setAbsoluteTolerance(5);
 
         addChild(rollers);
-        addChild(irSensor);
+        addChild("IR", irSensor);
+        addChild("Potentiometer", potentiometer);
+        addChild("Deploy Motor", deploymentMotor);
+        addChild("Rollers", rollers);
+        addChild("Inner", innerSolenoid);
+        addChild("Outer", outerSolenoid);
 
         leftRoller.setInverted(false);
         rightRoller.setInverted(true);

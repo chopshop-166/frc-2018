@@ -31,6 +31,9 @@ public class LED extends Subsystem {
 
     public LED() {
         registerCommands();
+        addChild("Red", red);
+        addChild("Green", green);
+        addChild("Blue", blue);
     }
 
     // METHODS

@@ -41,7 +41,6 @@ public class RobotMap {
         //changes input ports into integers
         public final static int tempestgyro = 1;
         public final static int IR = 2;
-        public final static int liftEncoder = 3;
         public final static int MANIPULATOR_POTENTIOMETER = 3;
     }
 
@@ -51,12 +50,6 @@ public class RobotMap {
         public final static int XboxBbutton = 2;
         public final static int XboxXbutton = 3;
         public final static int JoystickTrigger = 1;
-    }
-
-    public static class Encoders {
-        //changes Encoder ports into integers
-        public final static int LIFT_A = 1;
-        public final static int LIFT_B = 2;
     }
 
     public static class Solenoids {
@@ -78,6 +71,8 @@ public class RobotMap {
         public final static int RED_LED = 4;
         public final static int GREEN_LED = 5;
         public final static int BLUE_LED = 6;
+        public final static int LIFT_A = 1;
+        public final static int LIFT_B = 2;
     }
 
     public static class PreferenceStrings {

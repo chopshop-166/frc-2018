@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_oi = new OI();
         m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
+        m_chooser.addObject("Mid Auto", MidAuto());
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();

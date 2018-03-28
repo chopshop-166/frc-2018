@@ -50,7 +50,7 @@ public class Lift extends PIDSubsystem {
     DigitalInput bottomLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_BOTTOM);
     DigitalInput topLimitSwitch = new DigitalInput(RobotMap.DigitalInputs.LIFT_LIMIT_SWITCH_TOP);
     // Defines Encoders and sets the the distance per Tick
-    Encoder liftEncoder = new Encoder(RobotMap.Encoders.LIFT_A, RobotMap.Encoders.LIFT_B);
+    Encoder liftEncoder = new Encoder(RobotMap.DigitalInputs.LIFT_A, RobotMap.DigitalInputs.LIFT_B);
     // This is for one inch
     private final double encoderDistancePerTick = 0.01636;
     // Defines Motors 
@@ -98,10 +98,13 @@ public class Lift extends PIDSubsystem {
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
         //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
-        addChild(liftEncoder);
-        addChild(topLimitSwitch);
-        addChild(bottomLimitSwitch);
-        addChild(liftLidar);
+        addChild("Encoder", liftEncoder);
+        addChild("Top", topLimitSwitch);
+        addChild("Bottom", bottomLimitSwitch);
+        addChild("LiDAR", liftLidar);
+        addChild("Transmission", liftTransmission);
+        addChild("Brake", liftBrake);
+        addChild("Drive", liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
