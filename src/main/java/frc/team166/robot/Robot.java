@@ -149,12 +149,12 @@ public class Robot extends TimedRobot {
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
                 //"R" is for RIGHT NOT RED
-                degrees = -90;
+                degrees = 90;
                 //turning right                
                 System.out.println("Right");
 
             } else {
-                degrees = 90.00;
+                degrees = -90.00;
                 //turning left               
                 System.out.println("Left");
             }
