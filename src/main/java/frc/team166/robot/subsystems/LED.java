@@ -40,6 +40,7 @@ public class LED extends Subsystem {
     private void registerCommands() {
         SmartDashboard.putData("Breath Blue", Breath(blue, 10));
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
+        SmartDashboard.putData("STEVIE WONDER THEM", NotSeizure(1000));
     }
 
     private void allOff() {
@@ -299,6 +300,54 @@ public class LED extends Subsystem {
                 Breath(red, 2).start();
             }
         });
+    }
+
+    public Command NotSeizure(int numberOfBlinks) {
+
+        return new SubsystemCommand(this) {
+            double lastUpdateTime = System.currentTimeMillis();
+            boolean isOn = true;
+            double count = 0;
+
+            @Override
+            protected void initialize() {
+                count = 0;
+                blue.set(true);
+            }
+
+            @Override
+            protected void execute() {
+                if (System.currentTimeMillis() >= lastUpdateTime + 500) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    if (isOn) {
+                        blue.set(false);
+                        red.set(true);
+                        isOn = false;
+                        count++;
+                    } else {
+                        blue.set(true);
+                        red.set(false);
+                        isOn = true;
+
+                    }
+                }
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (count >= numberOfBlinks) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void end() {
+                red.set(false);
+                blue.set(false);
+            }
+        };
     }
 
 }
