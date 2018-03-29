@@ -7,7 +7,7 @@
 
 package frc.team166.robot;
 
-import javax.lang.model.util.ElementScanner6;
+//import javax.lang.model.util.ElementScanner6;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -162,63 +162,61 @@ public class Robot extends TimedRobot {
         return cmdMidAuto;
 
     }
-    Public Command ScaleAutoLeftStart() {
+
+    public Command ScaleAutoLeftStart() {
         String gameData;
-        Command cmdLeftAuto;
+        Command cmdLeftAuto = new CommandChain("Autonomous");
+        //The line above is to make VS Code happy and to take care of syntax errors
         gameData = DriverStation.getInstance().getGameSpecificMessage();
         double degrees = 0.0;
-         if (gameData.length() > 0) {
+        if (gameData.length() > 0) {
             if (gameData.charAt(1) == 'L') {
                 //we gon do the scale. Put in corner
                 degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
-                .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
-            } else  if (gameData.charAt(0) == 'L'){
+                cmdLeftAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
+                        .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+            } else if (gameData.charAt(0) == 'L') {
                 //move forward and eject on switch. Align right behind switch
                 degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle())
-                .then(manipulator.CubeDrop());
+                cmdLeftAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6))
+                        .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
             }
-            
-            else{
-                //just cross the line 
-                cmdLeftAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                ());
+
+            else { //just cross the line
+                cmdLeftAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
+
             }
+            return cmdLeftAuto;
         }
-        
         return cmdLeftAuto;
     }
-    Public Command ScaleAutoRightStart() {
+
+    public Command ScaleAutoRightStart() {
         String gameData;
-        Command cmdRightAuto;
+        Command cmdRightAuto = new CommandChain("Autonomous");
+        //The line above is to make VS Code happy and to take care of syntax errors
         gameData = DriverStation.getInstance().getGameSpecificMessage();
         double degrees = 0.0;
-         if (gameData.length() > 0) {
-            if (gameData.charAt(1) == 'L') {
+        if (gameData.length() > 0) {
+            if (gameData.charAt(1) == 'R') {
                 //we gon do the scale. Put in corner
                 degrees = -90.00;
-                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
-                .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
-            } else  if (gameData.charAt(0) == 'L'){
+                cmdRightAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
+                        .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+            } else if (gameData.charAt(0) == 'R') {
                 //move forward and eject on switch. Align right behind switch
                 degrees = -90.00;
-                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle())
-                .then(manipulator.CubeDrop());
+                cmdRightAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6))
+                        .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
             }
-            
-            else{
+
+            else {
                 //just cross the line 
-                cmdRightAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                ());
+                cmdRightAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
             }
+            return cmdRightAuto;
         }
-        
         return cmdRightAuto;
     }
-
-
 
 }

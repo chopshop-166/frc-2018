@@ -207,6 +207,7 @@ public class Lift extends PIDSubsystem {
             protected void end() {
                 liftDrive.stopMotor();
                 engageBrake();
+                liftDrive.set(0);
             }
 
             @Override
@@ -325,6 +326,7 @@ public class Lift extends PIDSubsystem {
             }
         };
     }
+
     public Command GoToTopLift() {
         return new SubsystemCommand(this) {
             @Override
@@ -335,15 +337,17 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                if topLimitSwitch.get == true {
-                    liftDrive.set (.5);
-                }   else return
+                if (topLimitSwitch.get() == true) {
+                    liftDrive.set(.5);
+                } else
+                    return;
 
             }
 
             @Override
             protected boolean isFinished() {
                 engageBrake();
+                return true;
             }
         };
     }
