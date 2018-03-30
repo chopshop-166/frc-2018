@@ -160,10 +160,16 @@ public class Drive extends Subsystem {
             @Override
             protected boolean isFinished() {
                 return false;
+
             }
 
             @Override
             protected void end() {
+                drivePidController.disable();
+            }
+
+            @Override
+            protected void interrupted() {
                 drivePidController.disable();
             }
         };
@@ -202,6 +208,11 @@ public class Drive extends Subsystem {
             protected void end() {
                 drivePidController.disable();
             }
+
+            @Override
+            protected void interrupted() {
+                drivePidController.disable();
+            }
         };
     }
 
@@ -231,6 +242,11 @@ public class Drive extends Subsystem {
 
             @Override
             protected void end() {
+                drivePidController.disable();
+            }
+
+            @Override
+            protected void interrupted() {
                 drivePidController.disable();
             }
         };

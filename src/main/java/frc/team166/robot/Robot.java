@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
     public static OI m_oi;
     public static final Compressor compressy = new Compressor(1);
 
-    // Command m_autonomousCommand;
-    //  SendableChooser<Command> m_chooser = new SendableChooser<>();
+    Command m_autonomousCommand;
+    SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
      * This function is run when the robot is first started up and should be
@@ -48,12 +48,12 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_oi = new OI();
-        //      m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
-        //     m_chooser.addObject("Mid Auto", MidAuto());
-        //     m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
-        //  SmartDashboard.putData("Auto mode", m_chooser);
-        //  SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
-        //  SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
+        m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
+        m_chooser.addObject("Mid Auto", MidAuto());
+        m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
+        SmartDashboard.putData("Auto mode", m_chooser);
+        SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
+        SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
         CameraServer.getInstance().startAutomaticCapture();
     }
 
