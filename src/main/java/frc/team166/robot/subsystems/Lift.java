@@ -98,10 +98,14 @@ public class Lift extends PIDSubsystem {
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
         //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
+
         addChild(liftEncoder);
         addChild(topLimitSwitch);
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
+        addChild(liftTransmission);
+        addChild(liftBrake);
+        addChild(liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
@@ -131,6 +135,11 @@ public class Lift extends PIDSubsystem {
 
     private void engageBrake() {
         liftBrake.set(Value.kForward);
+    }
+
+    private void lowerLift() {
+
+        liftDrive.set(0.75);
     }
 
     private void disengageBrake() {
@@ -213,6 +222,49 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void interrupted() {
                 end();
+            }
+        };
+    }
+
+    public Command LowerLiftToLimitSwitch() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (bottomLimitSwitch.get()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+    }
+
+    public Command LowerLiftForTime() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+                setTimeout(2);
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return isTimedOut();
             }
         };
     }

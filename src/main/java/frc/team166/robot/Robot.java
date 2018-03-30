@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_oi = new OI();
         m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
+        m_chooser.addObject("Mid Auto", MidAuto());
         m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
         SmartDashboard.putData("Auto mode", m_chooser);
         CameraServer.getInstance().startAutomaticCapture();
@@ -135,7 +136,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.RaiseLiftALittle())
+        return new CommandChain("Cross Line And Drop Cube")
+                .then(drive.DriveTime(1.8, 0.6), lift.LowerLiftToLimitSwitch()).then(lift.RaiseLiftALittle())
                 .then(manipulator.CubeEject());
     }
 
@@ -156,8 +158,8 @@ public class Robot extends TimedRobot {
                 System.out.println("Left");
             }
         }
-        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.3, .6))
-                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.3, .6)).then(drive.TurnByDegrees(-degrees))
+        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
+                .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.5, .6)).then(drive.TurnByDegrees(-degrees))
                 .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
         return cmdMidAuto;
 

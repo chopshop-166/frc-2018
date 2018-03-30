@@ -23,10 +23,10 @@ public class OI {
         rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
         // leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.DriveStraight());
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
-        // .whenPressed(Robot.manipulator.CloseOuterManipulator());
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
-        // .whenPressed(Robot.manipulator.OpenOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
+                .whenPressed(Robot.manipulator.CloseOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
+                .whenPressed(Robot.manipulator.OpenOuterManipulator());
 
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
                 .whileHeld(Robot.manipulator.ManipulatorIntakeHeld());
