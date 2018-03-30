@@ -44,6 +44,9 @@ public class Manipulator extends PIDSubsystem {
     DoubleSolenoid outerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
 
+    DoubleSolenoid manipulatorBrakeSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIP_BRAKE_SOLENOID_A,
+            RobotMap.Solenoids.MANIP_BRAKE_SOLENOID_B);
+
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
     AnalogPotentiometer potentiometer = new AnalogPotentiometer(RobotMap.AnalogInputs.MANIPULATOR_POTENTIOMETER);
@@ -116,6 +119,14 @@ public class Manipulator extends PIDSubsystem {
 
     private void closeOuterManipulator() {
         outerSolenoid.set(Value.kReverse);
+    }
+
+    private void engageBrake() {
+        manipulatorBrakeSolenoid.set(Value.kForward);
+    }
+
+    private void disengageBrake() {
+        manipulatorBrakeSolenoid.set(Value.kReverse);
     }
 
     private double getIRDistance() {
@@ -368,13 +379,8 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-
+                disengageBrake();
                 disable();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return false;
             }
 
             @Override
@@ -386,6 +392,22 @@ public class Manipulator extends PIDSubsystem {
 
                 deploymentMotor.set(rotation);
             }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            protected void end() {
+                engageBrake();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
+            }
+
         };
     }
 

@@ -54,6 +54,8 @@ public class RobotMap {
 
     public static class Solenoids {
         //changes Solenoid ports into integers
+        public final static int MANIP_BRAKE_SOLENOID_A = 8;
+        public final static int MANIP_BRAKE_SOLENOID_B = 9;
         public final static int LIFT_TRANSMISSION_A = 4;
         public final static int LIFT_TRANSMISSION_B = 5;
         public final static int MANIPULATOR_SOLENOID_INNER_A = 3;
@@ -76,7 +78,7 @@ public class RobotMap {
     }
 
     public static class PreferenceStrings {
-        //changes preferences to strings
+        //changes preferences to stringsq
         public static void setDefaultDouble(String preferenceName, double defaultValue) {
             Preferences prefs = Preferences.getInstance();
 
