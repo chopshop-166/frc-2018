@@ -135,6 +135,7 @@ public class Lift extends PIDSubsystem {
 
     private void engageBrake() {
         liftBrake.set(Value.kForward);
+
     }
 
     private void lowerLift() {
