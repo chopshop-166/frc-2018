@@ -346,8 +346,14 @@ public class Lift extends PIDSubsystem {
 
             @Override
             protected boolean isFinished() {
+
+                return topLimitSwitch.get();
+            }
+
+            protected void end() {
+                liftDrive.stopMotor();
                 engageBrake();
-                return true;
+
             }
         };
     }
