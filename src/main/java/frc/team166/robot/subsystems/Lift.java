@@ -215,6 +215,7 @@ public class Lift extends PIDSubsystem {
             protected void end() {
                 liftDrive.stopMotor();
                 engageBrake();
+                liftDrive.set(0);
             }
 
             @Override
