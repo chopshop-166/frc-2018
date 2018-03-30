@@ -136,12 +136,14 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftToLimitSwitch())
-                .then(drive.DriveTime(1.8, 0.6), lift.RaiseLiftALittle()).then(manipulator.CubeEject());
+        // return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.LowerLiftForTime())
+        //       .then(lift.RaiseLiftALittle()).then(manipulator.CubeEject());
+        return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftToLimitSwitch());
     }
 
     public Command MidAuto() {
         String gameData;
+
         gameData = DriverStation.getInstance().getGameSpecificMessage();
         double degrees = 0.0;
         if (gameData.length() > 0) {

@@ -237,13 +237,17 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void execute() {
                 lowerLift();
+                System.out.println(bottomLimitSwitch);
+                if (bottomLimitSwitch.get()) {
+                    liftDrive.set(0);
+                }
             }
 
             @Override
             protected boolean isFinished() {
-                if (bottomLimitSwitch.get()) {
+                if (bottomLimitSwitch.get() == true)
                     return true;
-                } else {
+                else {
                     return false;
                 }
             }
@@ -255,7 +259,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void initialize() {
                 disengageBrake();
-                setTimeout(2);
+                setTimeout(.1);
             }
 
             @Override
