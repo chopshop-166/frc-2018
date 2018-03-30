@@ -23,22 +23,23 @@ public class OI {
         rightDriveStick = new ButtonJoystick(RobotMap.Controller.rightcontrol);
         // leftDriveStick.getButton(RobotMap.Buttons.JoystickTrigger).whileHeld(Robot.drive.DriveStraight());
         xBoxTempest = new ButtonXboxController(RobotMap.Controller.Xboxcontrol);
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
-        // .whenPressed(Robot.manipulator.CloseOuterManipulator());
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
-        // .whenPressed(Robot.manipulator.OpenOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY.get())
+                .whenPressed(Robot.manipulator.CloseOuterManipulator());
+        xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX.get())
+                .whenPressed(Robot.manipulator.OpenOuterManipulator());
 
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kA.get())
                 .whileHeld(Robot.manipulator.ManipulatorIntakeHeld());
         xBoxTempest.getButton(ButtonXboxController.xBoxButton.kB.get())
                 .whileHeld(Robot.manipulator.ManipulatorDischargeHeld());
 
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY.get())
-        //         .whenPressed(Robot.manipulator.CloseInnerManipulator());
-        // xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX.get())
-        //         .whenPressed(Robot.manipulator.OpenInnerManipulator());
+        //xBoxTempest.getButton(ButtonXboxController.xBoxButton.kY.get())
+        //        .whenPressed(Robot.manipulator.CloseInnerManipulator());
+        //xBoxTempest.getButton(ButtonXboxController.xBoxButton.kX.get())
+        //        .whenPressed(Robot.manipulator.OpenInnerManipulator());
 
         rightDriveStick.getButton(2).whenPressed(Robot.manipulator.CubeClamp());
         rightDriveStick.getButton(1).whenPressed(Robot.manipulator.CubeDrop());
+
     }
 }

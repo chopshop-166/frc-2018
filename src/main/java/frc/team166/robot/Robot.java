@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
     public static OI m_oi;
     public static final Compressor compressy = new Compressor(1);
 
-    Command m_autonomousCommand;
-    SendableChooser<Command> m_chooser = new SendableChooser<>();
+    // Command m_autonomousCommand;
+    //  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     /**
      * This function is run when the robot is first started up and should be
@@ -48,12 +48,12 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         m_oi = new OI();
-        m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
-        m_chooser.addObject("Mid Auto", MidAuto());
-        m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
-        SmartDashboard.putData("Auto mode", m_chooser);
-        SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
-        SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
+        //      m_chooser.addDefault("Default Auto", drive.DriveTime(3, 0.6));
+        //     m_chooser.addObject("Mid Auto", MidAuto());
+        //     m_chooser.addObject("Cross Line And Drop Cube", CrossLineAndDropCube());
+        //  SmartDashboard.putData("Auto mode", m_chooser);
+        //  SmartDashboard.putData("Turn 90", drive.TurnByDegrees(90));
+        //  SmartDashboard.putData("Turn -90", drive.TurnByDegrees(-90));
         CameraServer.getInstance().startAutomaticCapture();
     }
 
@@ -86,10 +86,10 @@ public class Robot extends TimedRobot {
      * chooser code above (like the commented example) or additional comparisons
      * to the switch structure below with additional strings & commands.
      */
-    @Override
+    /*   @Override
     public void autonomousInit() {
         m_autonomousCommand = m_chooser.getSelected();
-
+    
         /*
          * String autoSelected = SmartDashboard.getString("Auto Selector",
          * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -97,11 +97,11 @@ public class Robot extends TimedRobot {
          * autonomousCommand = new ExampleCommand(); break; }
          */
 
-        // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.start();
-        }
-    }
+    // schedule the autonomous command (example)
+    //if (m_autonomousCommand != null) {
+    //          m_autonomousCommand.start();
+    //      }
+    //   }
 
     /**
      * This function is called periodically during autonomous.
@@ -117,9 +117,9 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
+        //     if (m_autonomousCommand != null) {
+        //        m_autonomousCommand.cancel();
+        //      }
     }
 
     /**
@@ -138,7 +138,8 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.RaiseLiftALittle())
+        return new CommandChain("Cross Line And Drop Cube")
+                .then(drive.DriveTime(1.8, 0.6), lift.LowerLiftToLimitSwitch()).then(lift.RaiseLiftALittle())
                 .then(manipulator.CubeEject());
     }
 

@@ -132,6 +132,11 @@ public class Lift extends PIDSubsystem {
         liftDrive.set(-0.75);
     }
 
+    private void lowerLift() {
+        //AJ changed to positive to test.
+        liftDrive.set(0.75);
+    }
+
     private void engageBrake() {
         liftBrake.set(Value.kForward);
     }
@@ -270,7 +275,7 @@ public class Lift extends PIDSubsystem {
                 } else {
                     liftDrive.set(elevatorControl);
                 }
-                System.out.println(liftDrive.get());
+                System.out.println(liftDrive.get() + "Bottom Switch: " + bottomLimitSwitch.get());
             }
 
             @Override
@@ -325,6 +330,50 @@ public class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 return false;
+            }
+        };
+    }
+
+    public Command LowerLiftToLimitSwitch() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (bottomLimitSwitch.get()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+    }
+
+    public Command LowerLiftForTime() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+                setTimeout(2);
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+            }
+
+            @Override
+            protected boolean isFinished() {
+
+                return isTimedOut();
             }
         };
     }

@@ -41,11 +41,9 @@ public class Manipulator extends PIDSubsystem {
 
     DoubleSolenoid innerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_INNER_B);
+
     DoubleSolenoid outerSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_A,
             RobotMap.Solenoids.MANIPULATOR_SOLENOID_OUTER_B);
-
-    DoubleSolenoid manipulatorBrakeSolenoid = new DoubleSolenoid(RobotMap.Solenoids.MANIP_BRAKE_SOLENOID_A,
-            RobotMap.Solenoids.MANIP_BRAKE_SOLENOID_B);
 
     AnalogInput irSensor = new AnalogInput(RobotMap.AnalogInputs.IR);
 
@@ -119,14 +117,6 @@ public class Manipulator extends PIDSubsystem {
 
     private void closeOuterManipulator() {
         outerSolenoid.set(Value.kReverse);
-    }
-
-    private void engageBrake() {
-        manipulatorBrakeSolenoid.set(Value.kForward);
-    }
-
-    private void disengageBrake() {
-        manipulatorBrakeSolenoid.set(Value.kReverse);
     }
 
     private double getIRDistance() {
@@ -271,7 +261,7 @@ public class Manipulator extends PIDSubsystem {
 
                 if (gameData.length() > 0) {
                     if (gameData.charAt(0) == 'R') {
-                        setMotorsToDischarge();
+                        setMotorsToIntake();
                         System.out.println("Eject");
                     }
                 }
@@ -379,33 +369,23 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                disengageBrake();
                 disable();
             }
 
             @Override
             protected void execute() {
-                //   rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
-                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
+                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
+                //rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
                 rotation = rotation
                         * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
 
                 deploymentMotor.set(rotation);
+                System.out.println("Printing" + Robot.m_oi.xBoxTempest.getY(Hand.kLeft) + "," + rotation);
             }
 
             @Override
             protected boolean isFinished() {
                 return false;
-            }
-
-            @Override
-            protected void end() {
-                engageBrake();
-            }
-
-            @Override
-            protected void interrupted() {
-                end();
             }
 
         };

@@ -294,10 +294,15 @@ public class LED extends Subsystem {
         return new ActionCommand("Breath Team Color", this, () -> {
             if (isBlueTeam()) {
                 red.disablePWM();
+                green.disablePWM();
                 Breath(blue, 2).start();
+                System.out.println("Current Color: Blue");
             } else {
                 blue.disablePWM();
+                green.disablePWM();
                 Breath(red, 2).start();
+                System.out.println("Current Color: Red");
+
             }
         });
     }
@@ -317,7 +322,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 500) {
+                if (System.currentTimeMillis() >= lastUpdateTime + 200) {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
                         blue.set(false);
