@@ -249,13 +249,14 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 2.0));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 3.2));
                 String gameData;
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
 
                 if (gameData.length() > 0) {
                     if (gameData.charAt(0) == 'R') {
                         setMotorsToDischarge();
+                        System.out.println("Eject");
                     }
                 }
             }
@@ -373,7 +374,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
+                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
                 rotation = rotation
                         * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
 

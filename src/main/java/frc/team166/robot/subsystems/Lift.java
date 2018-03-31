@@ -98,10 +98,14 @@ public class Lift extends PIDSubsystem {
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
         //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
+
         addChild(liftEncoder);
         addChild(topLimitSwitch);
         addChild(bottomLimitSwitch);
         addChild(liftLidar);
+        addChild(liftTransmission);
+        addChild(liftBrake);
+        addChild(liftDrive);
         addChild(findLiftHeight());
 
         liftDrive.setInverted(true);
@@ -126,11 +130,17 @@ public class Lift extends PIDSubsystem {
     }
 
     private void raiseLift() {
-        liftDrive.set(-0.75);
+        liftDrive.set(0.75);
     }
 
     private void engageBrake() {
         liftBrake.set(Value.kForward);
+
+    }
+
+    private void lowerLift() {
+
+        liftDrive.set(-0.75);
     }
 
     private void disengageBrake() {
@@ -186,14 +196,15 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.0));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 5));
                 disengageBrake();
-                liftDrive.set(0.5);
+                liftDrive.set(.5);
             }
 
             @Override
             protected void execute() {
-
+                liftDrive.set(0.5);
+                System.out.println("Running! " + liftDrive.get());
             }
 
             @Override
@@ -206,11 +217,56 @@ public class Lift extends PIDSubsystem {
             protected void end() {
                 liftDrive.stopMotor();
                 engageBrake();
+                liftDrive.set(0);
             }
 
             @Override
             protected void interrupted() {
                 end();
+            }
+        };
+    }
+
+    public Command LowerLiftToLimitSwitch() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+                System.out.println(bottomLimitSwitch);
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (bottomLimitSwitch.get()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+    }
+
+    public Command LowerLiftForTime() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+                setTimeout(.2);
+            }
+
+            @Override
+            protected void execute() {
+                lowerLift();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return isTimedOut();
             }
         };
     }
@@ -266,6 +322,7 @@ public class Lift extends PIDSubsystem {
                 } else {
                     liftDrive.set(elevatorControl);
                 }
+                System.out.println(liftDrive.get());
             }
 
             @Override
@@ -320,6 +377,37 @@ public class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 return false;
+            }
+        };
+    }
+
+    public Command GoToTopLift() {
+        return new SubsystemCommand(this) {
+            @Override
+            protected void initialize() {
+                disengageBrake();
+                ShiftToHighGear();
+            }
+
+            @Override
+            protected void execute() {
+                if (topLimitSwitch.get() == true) {
+                    liftDrive.set(.5);
+                } else
+                    return;
+
+            }
+
+            @Override
+            protected boolean isFinished() {
+
+                return topLimitSwitch.get();
+            }
+
+            protected void end() {
+                liftDrive.stopMotor();
+                engageBrake();
+
             }
         };
     }

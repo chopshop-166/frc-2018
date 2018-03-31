@@ -13,7 +13,9 @@ def ROBOT_CLASS = "frc.team166.robot.Robot"
 deploy {
     targets {
         target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
+            //team = TEAM
+            addresses << "roborio-166-frc.local"
+            //addresses << "10.1.66.2"
         }
     }
     artifacts {
