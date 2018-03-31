@@ -130,7 +130,7 @@ public class Lift extends PIDSubsystem {
     }
 
     private void raiseLift() {
-        liftDrive.set(-0.75);
+        liftDrive.set(0.75);
     }
 
     private void engageBrake() {
@@ -140,7 +140,7 @@ public class Lift extends PIDSubsystem {
 
     private void lowerLift() {
 
-        liftDrive.set(0.75);
+        liftDrive.set(-0.75);
     }
 
     private void disengageBrake() {
@@ -196,9 +196,9 @@ public class Lift extends PIDSubsystem {
         return new SubsystemCommand("Raise Lift A Little", this) {
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 1.5));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.RAISE_LIFT_WAIT_TIME, 5));
                 disengageBrake();
-                liftDrive.set(0.5);
+                liftDrive.set(.5);
             }
 
             @Override
@@ -243,9 +243,9 @@ public class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 if (bottomLimitSwitch.get()) {
-                    return false;
-                } else {
                     return true;
+                } else {
+                    return false;
                 }
             }
         };
@@ -256,7 +256,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void initialize() {
                 disengageBrake();
-                setTimeout(.1);
+                setTimeout(.2);
             }
 
             @Override

@@ -136,15 +136,18 @@ public class Robot extends TimedRobot {
     }
 
     public Command CrossLineAndDropCube() {
-        // return new CommandChain("Cross Line And Drop Cube").then(drive.DriveTime(1.8, 0.6), lift.LowerLiftForTime())
-        //       .then(lift.RaiseLiftALittle()).then(manipulator.CubeEject());
-        return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftToLimitSwitch());
+        return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftForTime())
+                .then(drive.DriveTime(2.5, 0.6), (lift.RaiseLiftALittle())).then(manipulator.CubeEject());
+        //return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftForTime());
+        //Check the limit switch things because the bottom one is on port 9 in robot map under digital 
+        //inputs. Are they backwards??????????????????
     }
 
     public Command MidAuto() {
         String gameData;
 
         gameData = DriverStation.getInstance().getGameSpecificMessage();
+
         double degrees = 0.0;
         if (gameData.length() > 0) {
             if (gameData.charAt(0) == 'R') {
@@ -159,9 +162,9 @@ public class Robot extends TimedRobot {
                 System.out.println("Left");
             }
         }
-        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6))
+        Command cmdMidAuto = new CommandChain("Mid Auto").then(drive.DriveTime(.75, .6), (lift.LowerLiftForTime()))
                 .then(drive.TurnByDegrees(degrees)).then(drive.DriveTime(.5, .6)).then(drive.TurnByDegrees(-degrees))
-                .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle());
+                .then(drive.DriveTime(.3, .6), lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
         return cmdMidAuto;
 
     }
@@ -176,12 +179,12 @@ public class Robot extends TimedRobot {
             if (gameData.charAt(1) == 'L') {
                 //we gon do the scale. Put in corner
                 degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
-                        .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+                cmdLeftAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6), lift.LowerLiftForTime())
+                        .then(lift.GoToTopLift()).then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
             } else if (gameData.charAt(0) == 'L') {
                 //move forward and eject on switch. Align right behind switch
                 degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6))
+                cmdLeftAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6), lift.LowerLiftForTime())
                         .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
             }
 
@@ -189,7 +192,6 @@ public class Robot extends TimedRobot {
                 cmdLeftAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
 
             }
-            return cmdLeftAuto;
         }
         return cmdLeftAuto;
     }
@@ -204,12 +206,12 @@ public class Robot extends TimedRobot {
             if (gameData.charAt(1) == 'R') {
                 //we gon do the scale. Put in corner
                 degrees = -90.00;
-                cmdRightAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6)).then(lift.GoToTopLift())
-                        .then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
+                cmdRightAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6), lift.LowerLiftForTime())
+                        .then(lift.GoToTopLift()).then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
             } else if (gameData.charAt(0) == 'R') {
                 //move forward and eject on switch. Align right behind switch
                 degrees = -90.00;
-                cmdRightAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6))
+                cmdRightAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6), lift.LowerLiftForTime())
                         .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
             }
 
@@ -217,7 +219,6 @@ public class Robot extends TimedRobot {
                 //just cross the line 
                 cmdRightAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
             }
-            return cmdRightAuto;
         }
         return cmdRightAuto;
     }

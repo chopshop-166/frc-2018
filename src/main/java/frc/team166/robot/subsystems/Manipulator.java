@@ -249,7 +249,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void initialize() {
-                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 2.0));
+                setTimeout(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 3.2));
                 String gameData;
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
 
