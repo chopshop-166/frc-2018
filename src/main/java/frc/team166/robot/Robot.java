@@ -139,8 +139,7 @@ public class Robot extends TimedRobot {
         return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftForTime())
                 .then(drive.DriveTime(2.5, 0.6), (lift.RaiseLiftALittle())).then(manipulator.CubeEject());
         //return new CommandChain("Cross Line And Drop Cube").then(lift.LowerLiftForTime());
-        //Check the limit switch things because the bottom one is on port 9 in robot map under digital 
-        //inputs. Are they backwards??????????????????
+
     }
 
     public Command MidAuto() {
@@ -169,58 +168,36 @@ public class Robot extends TimedRobot {
 
     }
 
-    public Command ScaleAutoLeftStart() {
+    private Command ScaleAutoSide(char side, double degrees) {
         String gameData;
-        Command cmdLeftAuto = new CommandChain("Autonomous");
+        Command cmdAuto = new CommandChain("Autonomous");
         //The line above is to make VS Code happy and to take care of syntax errors
         gameData = DriverStation.getInstance().getGameSpecificMessage();
-        double degrees = 0.0;
         if (gameData.length() > 0) {
-            if (gameData.charAt(1) == 'L') {
+            if (gameData.charAt(1) == side) {
                 //we gon do the scale. Put in corner
-                degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6), lift.LowerLiftForTime())
+                cmdAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6), lift.LowerLiftForTime())
                         .then(lift.GoToTopLift()).then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
-            } else if (gameData.charAt(0) == 'L') {
+            } else if (gameData.charAt(0) == side) {
                 //move forward and eject on switch. Align right behind switch
-                degrees = 90.00;
-                cmdLeftAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6), lift.LowerLiftForTime())
+                cmdAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6), lift.LowerLiftForTime())
                         .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
             }
 
             else { //just cross the line
-                cmdLeftAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
+                cmdAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
 
             }
         }
-        return cmdLeftAuto;
+        return cmdAuto;
+    }
+
+    public Command ScaleAutoLeftStart() {
+        return ScaleAutoSide('L', 90.0);
     }
 
     public Command ScaleAutoRightStart() {
-        String gameData;
-        Command cmdRightAuto = new CommandChain("Autonomous");
-        //The line above is to make VS Code happy and to take care of syntax errors
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
-        double degrees = 0.0;
-        if (gameData.length() > 0) {
-            if (gameData.charAt(1) == 'R') {
-                //we gon do the scale. Put in corner
-                degrees = -90.00;
-                cmdRightAuto = new CommandChain("Scale Auto").then(drive.DriveTime(1.3, .6), lift.LowerLiftForTime())
-                        .then(lift.GoToTopLift()).then(drive.TurnByDegrees(degrees)).then(manipulator.CubeDrop());
-            } else if (gameData.charAt(0) == 'R') {
-                //move forward and eject on switch. Align right behind switch
-                degrees = -90.00;
-                cmdRightAuto = new CommandChain("Switch Auto").then(drive.DriveTime(.3, .6), lift.LowerLiftForTime())
-                        .then(drive.TurnByDegrees(degrees)).then(lift.RaiseLiftALittle()).then(manipulator.CubeDrop());
-            }
-
-            else {
-                //just cross the line 
-                cmdRightAuto = new CommandChain("Cross Line Auto").then(drive.DriveTime(.3, .6));
-            }
-        }
-        return cmdRightAuto;
+        return ScaleAutoSide('R', -90.0);
     }
 
 }

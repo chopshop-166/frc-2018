@@ -374,7 +374,7 @@ public class Manipulator extends PIDSubsystem {
 
             @Override
             protected void execute() {
-                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
+                rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
                 rotation = rotation
                         * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
 
