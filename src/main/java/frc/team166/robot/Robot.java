@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
      * chooser code above (like the commented example) or additional comparisons
      * to the switch structure below with additional strings & commands.
      */
-    /*   @Override
+    @Override
     public void autonomousInit() {
         m_autonomousCommand = m_chooser.getSelected();
     
@@ -97,11 +97,11 @@ public class Robot extends TimedRobot {
          * autonomousCommand = new ExampleCommand(); break; }
          */
 
-    // schedule the autonomous command (example)
-    //if (m_autonomousCommand != null) {
-    //          m_autonomousCommand.start();
-    //      }
-    //   }
+        // schedule the autonomous command (example)
+        if (m_autonomousCommand != null) {
+             m_autonomousCommand.start();
+         }
+    }
 
     /**
      * This function is called periodically during autonomous.
@@ -139,7 +139,8 @@ public class Robot extends TimedRobot {
 
     public Command CrossLineAndDropCube() {
         return new CommandChain("Cross Line And Drop Cube")
-                .then(drive.DriveTime(1.8, 0.6), lift.LowerLiftToLimitSwitch()).then(lift.RaiseLiftALittle())
+                .then(lift.LowerLiftToLimitSwitch())
+                .then(drive.DriveTime(3.6, 0.3), lift.RaiseLiftALittle())
                 .then(manipulator.CubeEject());
     }
 

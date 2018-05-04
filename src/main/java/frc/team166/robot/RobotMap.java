@@ -72,8 +72,8 @@ public class RobotMap {
         public final static int RED_LED = 4;
         public final static int GREEN_LED = 5;
         public final static int BLUE_LED = 6;
-        public final static int LIFT_A = 1;
-        public final static int LIFT_B = 2;
+        public final static int LIFT_A = 0;
+        public final static int LIFT_B = 1;
     }
 
     public static class PreferenceStrings {
