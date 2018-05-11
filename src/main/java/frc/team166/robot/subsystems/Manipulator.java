@@ -84,7 +84,8 @@ public class Manipulator extends PIDSubsystem {
         // SmartDashboard.putData("Cube Eject", CubeEject());
         // SmartDashboard.putData("Cube Pickup", CubePickup());
         // SmartDashboard.putData("cube pickup with lights", CubePickupWithLights(3));
-        // SmartDashboard.putData("Deploy Manipulator With Joystick", DeployManipulatorWithJoystick());
+        // SmartDashboard.putData("Deploy Manipulator With Joystick",
+        // DeployManipulatorWithJoystick());
         // SmartDashboard.putData("Re-Enable Potentiometer", enablePID());
 
         // Preferences Are Wanted In The Constructer So They Can Appear On Live Window
@@ -93,11 +94,11 @@ public class Manipulator extends PIDSubsystem {
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.DEPLOY_MANIPULATOR_TIME, 1.5);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.CUBE_EJECT_WAIT_TIME, 5.0);
         PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_HORIZONTAL_INPUT, 2.5);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.8);
-        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, -0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, -0.8);
+        PreferenceStrings.setDefaultDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, 0.8);
     }
 
-    // METHODS  
+    // METHODS
     public void reset() {
         rollers.stopMotor();
         deploymentMotor.stopMotor();
@@ -137,9 +138,9 @@ public class Manipulator extends PIDSubsystem {
      * Turns motors on to intake a cube
      */
     private void setMotorsToIntake() {
-        //change once you find optimal motor speed
+        // change once you find optimal motor speed
         rollers.set(
-                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, 0.6));
+                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_INTAKE_SPEED, -0.6));
     }
 
     /**
@@ -148,8 +149,8 @@ public class Manipulator extends PIDSubsystem {
      * Turns motors on to discharge a cube
      */
     private void setMotorsToDischarge() {
-        rollers.set(Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED,
-                -0.35));
+        rollers.set(
+                Preferences.getInstance().getDouble(RobotMap.PreferenceStrings.MANIPULATOR_MOTOR_DISCHARGE_SPEED, 0.6));
         // change once you find optimal motor speed
     }
 
@@ -261,7 +262,7 @@ public class Manipulator extends PIDSubsystem {
 
                 if (gameData.length() > 0) {
                     if (gameData.charAt(0) == 'R') {
-                        setMotorsToIntake();
+                        setMotorsToDischarge();
                     }
                 }
             }
@@ -337,7 +338,8 @@ public class Manipulator extends PIDSubsystem {
     }
 
     // public Command CubePickupWithLights(int blinkCount) {
-    //     return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
+    // return new CommandChain("Cube Pickup with
+    // Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
     // }
 
     public Command DeployManipulator() {
@@ -369,7 +371,7 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected void execute() {
                 rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
-                //rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
+                // rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
                 rotation = rotation
                         * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
 

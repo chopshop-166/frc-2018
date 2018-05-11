@@ -15,6 +15,8 @@ import frc.team166.chopshoplib.commands.SubsystemCommand;
 import frc.team166.chopshoplib.outputs.DigitalOutputDutyCycle;
 import frc.team166.robot.RobotMap;
 
+import java.util.Random;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -24,7 +26,8 @@ public class LED extends Subsystem {
         setDefaultCommand(BreathTeamColor());
     };
 
-    //these will be changed from DigitalOutputs to something else when we get real hardware...
+    // these will be changed from DigitalOutputs to something else when we get real
+    // hardware...
     DigitalOutputDutyCycle red = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.RED_LED);
     DigitalOutputDutyCycle green = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.GREEN_LED);
     DigitalOutputDutyCycle blue = new DigitalOutputDutyCycle(RobotMap.DigitalInputs.BLUE_LED);
@@ -41,6 +44,7 @@ public class LED extends Subsystem {
         SmartDashboard.putData("Breath Blue", Breath(blue, 10));
         SmartDashboard.putData("All Off", new ActionCommand("OFF GERALD", this, this::allOff));
         SmartDashboard.putData("STEVIE WONDER THEM", NotSeizure(1000));
+        SmartDashboard.putData("NYAN", Rainbow(1000));
     }
 
     private void allOff() {
@@ -258,7 +262,7 @@ public class LED extends Subsystem {
         return new SubsystemCommand("fade", this) {
             boolean isDutyCycleIncreasing = true;
             double period;
-            final double executePeriod = 20 * 0.001; //Approx how often execute is called
+            final double executePeriod = 20 * 0.001; // Approx how often execute is called
             final double dutyCycleChangePerPeriod = 2.0;
             double changeAmount;
 
@@ -296,12 +300,11 @@ public class LED extends Subsystem {
                 red.disablePWM();
                 green.disablePWM();
                 Breath(blue, 2).start();
-                System.out.println("Current Color: Blue");
+
             } else {
                 blue.disablePWM();
                 green.disablePWM();
                 Breath(red, 2).start();
-                System.out.println("Current Color: Red");
 
             }
         });
@@ -322,7 +325,7 @@ public class LED extends Subsystem {
 
             @Override
             protected void execute() {
-                if (System.currentTimeMillis() >= lastUpdateTime + 200) {
+                if (System.currentTimeMillis() >= lastUpdateTime + 15) {
                     lastUpdateTime = System.currentTimeMillis();
                     if (isOn) {
                         blue.set(false);
@@ -351,6 +354,48 @@ public class LED extends Subsystem {
             protected void end() {
                 red.set(false);
                 blue.set(false);
+            }
+        };
+    }
+
+    public Command Rainbow(int numberOfBlinks) {
+
+        return new SubsystemCommand(this) {
+            double lastUpdateTime = System.currentTimeMillis();
+            Random r = new Random();
+            double count = 0;
+
+            @Override
+            protected void initialize() {
+                count = 0;
+                blue.set(true);
+            }
+
+            @Override
+            protected void execute() {
+                if (System.currentTimeMillis() >= lastUpdateTime + 15) {
+                    lastUpdateTime = System.currentTimeMillis();
+                    blue.set(r.nextBoolean());
+                    red.set(r.nextBoolean());
+                    green.set(r.nextBoolean());
+                    count++;
+                }
+            }
+
+            @Override
+            protected boolean isFinished() {
+                if (count >= numberOfBlinks) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void end() {
+                red.set(false);
+                blue.set(false);
+                green.set(false);
             }
         };
     }

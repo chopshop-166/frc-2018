@@ -53,28 +53,28 @@ public class Lift extends PIDSubsystem {
     Encoder liftEncoder = new Encoder(RobotMap.DigitalInputs.LIFT_A, RobotMap.DigitalInputs.LIFT_B);
     // This is for one inch
     private final double encoderDistancePerTick = 0.01636;
-    // Defines Motors 
+    // Defines Motors
     WPI_VictorSPX liftMotorA = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_A);
     WPI_VictorSPX liftMotorB = new WPI_VictorSPX(RobotMap.CAN.LIFT_MOTOR_B);
-    // Defines the previus motors as one motor 
+    // Defines the previus motors as one motor
     SpeedControllerGroup liftDrive = new SpeedControllerGroup(liftMotorA, liftMotorB);
     DoubleSolenoid liftBrake = new DoubleSolenoid(RobotMap.Solenoids.LIFT_BRAKE_A, RobotMap.Solenoids.LIFT_BRAKE_B);
     DoubleSolenoid liftTransmission = new DoubleSolenoid(RobotMap.Solenoids.LIFT_TRANSMISSION_A,
             RobotMap.Solenoids.LIFT_TRANSMISSION_B);
 
-    //TODO we need to calculate these
-    //these define the PID values for the lift
+    // TODO we need to calculate these
+    // these define the PID values for the lift
     private static double kP = 0;
     private static double kI = 0;
     private static double kD = 0;
     private static double kF = 0;
 
-    //this adds the LIDAR sensor
+    // this adds the LIDAR sensor
     private Lidar liftLidar = new Lidar(Port.kOnboard, 0x60);
 
-    //enumerator that will be pulled from for the GoToHeight Command
+    // enumerator that will be pulled from for the GoToHeight Command
     public enum LiftHeights {
-        //will be changed
+        // will be changed
         kFloor(0), kSwitch(1), kPortal(2), kIntake(3), kScaleLow(4), kScaleHigh(5), kClimb(6), kMaxHeight(7);
 
         private double value;
@@ -88,7 +88,7 @@ public class Lift extends PIDSubsystem {
         }
     }
 
-    //sets the maximum lidar distance before switching to the encoder
+    // sets the maximum lidar distance before switching to the encoder
     private final static double kMaxLidarDistance = 60;
 
     public Lift() {
@@ -97,7 +97,8 @@ public class Lift extends PIDSubsystem {
                 Preferences.getInstance().getDouble(PreferenceStrings.UP_MAX_SPEED, 1));
         setAbsoluteTolerance(0.05);
         liftEncoder.setDistancePerPulse(encoderDistancePerTick);
-        //creates a child for the encoders and other stuff (limit switches, lidar, etc.)
+        // creates a child for the encoders and other stuff (limit switches, lidar,
+        // etc.)
         addChild("Encoder", liftEncoder);
         addChild("Top", topLimitSwitch);
         addChild("Bottom", bottomLimitSwitch);
@@ -122,7 +123,7 @@ public class Lift extends PIDSubsystem {
         // SmartDashboard.putData("Brake", Brake());
         // SmartDashboard.putData("Shift to Low Gear", ShiftToLowGear());
         // SmartDashboard.putData("Shift to High Gear", ShiftToHighGear());
-        SmartDashboard.putData("Go up distance", UpSpecified(8));
+        SmartDashboard.putData("Go up distance", MoveLiftByInches(8));
     }
 
     protected double returnPIDInput() {
@@ -134,7 +135,7 @@ public class Lift extends PIDSubsystem {
     }
 
     private void lowerLift() {
-        //AJ changed to positive to test.
+
         liftDrive.set(-0.5);
     }
 
@@ -177,7 +178,7 @@ public class Lift extends PIDSubsystem {
         }
     }
 
-    //gear changes
+    // gear changes
     public void shiftToHighGear() {
         liftTransmission.set(Value.kReverse);
     }
@@ -186,7 +187,7 @@ public class Lift extends PIDSubsystem {
         liftTransmission.set(Value.kForward);
     }
 
-    //does not do anything
+    // does not do anything
     public void initDefaultCommand() {
         setDefaultCommand(ManualLift());
     }
@@ -203,7 +204,7 @@ public class Lift extends PIDSubsystem {
             @Override
             protected void execute() {
                 liftDrive.set(0.5);
-                System.out.println("Running! " + liftDrive.get());
+
             }
 
             @Override
@@ -277,7 +278,7 @@ public class Lift extends PIDSubsystem {
                 } else {
                     liftDrive.set(elevatorControl);
                 }
-                System.out.println(liftDrive.get() + "Bottom Switch: " + bottomLimitSwitch.get());
+
             }
 
             @Override
@@ -297,26 +298,45 @@ public class Lift extends PIDSubsystem {
         };
     }
 
-    public Command UpSpecified(double inches) {
+    public Command MoveLiftByInches(double inches) {
         return new SubsystemCommand(this) {
-            double upSpecifiedIncrement = liftEncoder.get();
+            double LiftDestinationHeight;
+
             @Override
             protected void initialize() {
+                disable();
                 disengageBrake();
-                upSpecifiedIncrement = liftEncoder.get();
+                LiftDestinationHeight = liftEncoder.getDistance() + inches;
+                if (LiftDestinationHeight > liftEncoder.getDistance()) {
+                    liftDrive.set(0.75);
+                } else {
+                    liftDrive.set(-0.50);
+                }
             }
-            @Override
-            protected void execute() {
-                if (upSpecifiedIncrement + 1 <=1) {
-                    liftDrive.set(.5);
-                } else liftDrive.set(0);
-            }
-            
+
             @Override
             protected boolean isFinished() {
-                if (upSpecifiedIncrement + 1 >=1) {
-                    return true;
-                }   else return false;
+                if (liftDrive.get() > 0) {
+                    if (liftEncoder.getDistance() >= LiftDestinationHeight) {
+                        return true;
+                    }
+                } else {
+                    if (liftEncoder.getDistance() <= LiftDestinationHeight) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void end() {
+                liftDrive.set(0);
+                engageBrake();
+            }
+
+            @Override
+            protected void interrupted() {
+                end();
             }
         };
     }
@@ -375,27 +395,6 @@ public class Lift extends PIDSubsystem {
             @Override
             protected boolean isFinished() {
                 return !bottomLimitSwitch.get();
-            }
-        };
-    }
-
-    public Command LowerLiftForTime() {
-        return new SubsystemCommand(this) {
-            @Override
-            protected void initialize() {
-                disengageBrake();
-                setTimeout(2);
-            }
-
-            @Override
-            protected void execute() {
-                lowerLift();
-            }
-
-            @Override
-            protected boolean isFinished() {
-
-                return isTimedOut();
             }
         };
     }

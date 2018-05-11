@@ -27,47 +27,53 @@ import frc.team166.chopshoplib.sensors.Lidar;
 import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
- * An example subsystem.  You can replace me with your own Subsystem.
+ * An example subsystem. You can replace me with your own Subsystem.
  */
 public class Drive extends Subsystem {
 
     // declare lidar
     Lidar frontLidar = new Lidar(Port.kOnboard, 0x10);
-    //defines the gyro
+    // defines the gyro
     AnalogGyro tempestGyro = new AnalogGyro(RobotMap.AnalogInputs.tempestgyro);
-    //defines the left motors as motors and combines the left motors into one motor
+    // defines the left motors as motors and combines the left motors into one motor
     WPI_VictorSPX m_rearleft = new WPI_VictorSPX(RobotMap.CAN.BACK_LEFT);
     WPI_VictorSPX m_frontleft = new WPI_VictorSPX(RobotMap.CAN.FRONT_LEFT);
     SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontleft, m_rearleft);
-    //defines the right motors as motors and combines the left motors into one motor
+    // defines the right motors as motors and combines the left motors into one
+    // motor
     WPI_VictorSPX m_rearright = new WPI_VictorSPX(RobotMap.CAN.BACK_RIGHT);
     WPI_VictorSPX m_frontright = new WPI_VictorSPX(RobotMap.CAN.FRONT_RIGHT);
     SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontright, m_rearright);
 
-    /**defines the left and right motors defined above into a differential drive
+    /**
+     * defines the left and right motors defined above into a differential drive
      * that can be used for arcade and tank drive, amung other things
      */
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
-    //defines values that will be used in the PIDController (In order of where they will fall in the Controller)
+    // defines values that will be used in the PIDController (In order of where they
+    // will fall in the Controller)
     final static double kP = 0.015;
     final static double kI = 0.00005;
     final static double kD = 0;
     final static double kF = 0;
 
-    //defines a new double that is going to be used in the line that defines the drive type
+    // defines a new double that is going to be used in the line that defines the
+    // drive type
     double angleCorrection;
 
-    //PIDController loop used to find the power of the motors needed to keep the angle of the gyro at 0 
+    // PIDController loop used to find the power of the motors needed to keep the
+    // angle of the gyro at 0
     PIDController drivePidController = new PIDController(kP, kI, kD, kF, tempestGyro, (double value) -> {
-        //this assigns the output to the angle (double) defined later in the code)
+        // this assigns the output to the angle (double) defined later in the code)
         angleCorrection = value;
     });
 
     final static double AUTOMATIC_ROBOT_FORWARD_SPEED = .2;
     final static double ABSOLUTE_TOLERANCE_ANGLE = 3;
 
-    //this makes children that control the tempestGyro, drive motors, and PIDController loop. 
+    // this makes children that control the tempestGyro, drive motors, and
+    // PIDController loop.
     public Drive() {
 
         // SmartDashboard.putData("XBox", XboxArcade());
@@ -96,7 +102,8 @@ public class Drive extends Subsystem {
                 .getDouble(RobotMap.PreferenceStrings.ABSOLUTE_TOLERANCE_ANGLE, ABSOLUTE_TOLERANCE_ANGLE));
     }
 
-    //the default command for this code is supposed to rotate the robot so that it's gyro value is 0
+    // the default command for this code is supposed to rotate the robot so that
+    // it's gyro value is 0
     public void initDefaultCommand() {
         setDefaultCommand(JoystickArcadeTwoStick());
 
@@ -178,7 +185,7 @@ public class Drive extends Subsystem {
     public Command DrivetoProximity(double inches) {
         return new SubsystemCommand("Drive Distance", this) {
 
-            //double realDistanceInches = frontLidar.getDistance(true);
+            // double realDistanceInches = frontLidar.getDistance(true);
 
             @Override
             protected void initialize() {
@@ -275,6 +282,7 @@ public class Drive extends Subsystem {
             @Override
             protected void end() {
                 drivePidController.disable();
+                m_drive.stopMotor();
             }
 
             @Override

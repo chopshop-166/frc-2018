@@ -77,7 +77,7 @@ public class RobotMap {
     }
 
     public static class PreferenceStrings {
-        //changes preferences to stringsq
+        //changes preferences to strings
         public static void setDefaultDouble(String preferenceName, double defaultValue) {
             Preferences prefs = Preferences.getInstance();
 
