@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import frc.team166.chopshoplib.commands.ActionCommand;
+import frc.team166.chopshoplib.commands.CommandChain;
 import frc.team166.chopshoplib.commands.SubsystemCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,7 +26,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.team166.robot.Robot;
 import frc.team166.robot.RobotMap;
 import frc.team166.robot.RobotMap.PreferenceStrings;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class Manipulator extends PIDSubsystem {
@@ -337,10 +337,9 @@ public class Manipulator extends PIDSubsystem {
         };
     }
 
-    // public Command CubePickupWithLights(int blinkCount) {
-    // return new CommandChain("Cube Pickup with
-    // Lights").then(CubePickup()).then(Robot.led.blinkGreen(blinkCount));
-    // }
+    public Command CubePickupWithLights(int blinkCount) {
+        return new CommandChain("Cube Pickup with Lights").then(CubePickup()).then(Robot.led.BlinkGreen(blinkCount));
+    }
 
     public Command DeployManipulator() {
         return new SubsystemCommand("Deploy Manipulator", this) {
@@ -371,7 +370,7 @@ public class Manipulator extends PIDSubsystem {
             @Override
             protected void execute() {
                 rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2);
-                // rotation = Math.pow(Robot.m_oi.xBoxTempest.getY(Hand.kLeft), 2.5);
+
                 rotation = rotation
                         * (Robot.m_oi.xBoxTempest.getY(Hand.kLeft) / Math.abs(Robot.m_oi.xBoxTempest.getY(Hand.kLeft)));
 

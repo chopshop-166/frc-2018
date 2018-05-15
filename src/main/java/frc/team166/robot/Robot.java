@@ -7,8 +7,6 @@
 
 package frc.team166.robot;
 
-//import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
